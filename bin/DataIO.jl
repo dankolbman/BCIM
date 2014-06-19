@@ -61,6 +61,20 @@ function writeConf(filen, conf)
   close(f)
 end
 
+# Appends output to a logfile
+# Params
+#   str - the string to write
+#   conf - the configuration Dict
+function log(str,conf)
+  path = string(conf["path"],"log.txt")
+  f = open(path,"w+")
+  t = TmStruct(time())
+  str = string("[",t.hour,":",t.min,":",t.sec,"]: ",str)
+  write(f,str)
+  if(conf["verbose"] == 1) println(str) end
+  close(f)
+end
+
 #Testing
 #conf1 = readConf("defaults.cnf")
 #writeConf("newconf.cnf", conf1)
