@@ -5,7 +5,8 @@
 ##
 
 import DataIO
-
+import Experiment
+using ArgParse
 
 # Initialize the file system by creating needed directories and files
 # Params:
@@ -22,16 +23,38 @@ function initFS(conf)
       exit()
     end
   end
-  # Log
-  DataIO.log("Simulation started", conf)
 end
 
+function parseArgs()
+  s = ArgParseSettings()
+  s.prog = "bcim"
+
+  @add_arg_table s begin
+    "config"
+      help = "The configuration file"
+      required = true
+      arg_type = String
+    "-o", "--outdir"
+        help = "The directory path to save output to"
+        arg_type = String
+        default = "."
+    "run"
+      help = "Run an experiment"
+      action = :command
+  end
+
+  return parse_args(s)
+end
+    
 
 function main()
+  parsedArgs = parseArgs()
   # Read the configuration file
-  conf = DataIO.readConf("defaults.cnf")
+  conf = DataIO.readConf(parsedArgs["config"])
   # Initialize the file sysetm
   initFS(conf)
+  # Log
+  DataIO.log("Experiment starting...", conf)
   Experiment.run()
 end
 

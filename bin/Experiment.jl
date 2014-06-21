@@ -8,6 +8,9 @@
 
 module Experiment
 
+import DataIO
+import Simulation
+
 # Run an experiment by runing a group of identical trials
 # Params
 #   conf - the configuration dict containing experiment params
@@ -16,6 +19,7 @@ function run(conf)
   # TODO Spawn each trial on a different worker
   for trial in 1:conf["ntrials"]
     DataIO.log(string("Begin trial ", trial), conf)
+    Simulation.run(conf)
   end
 end
 

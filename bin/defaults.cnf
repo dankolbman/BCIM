@@ -1,0 +1,4 @@
+path ../data/test1/
+verbose 1
+ntrials 10
+nsteps 100
