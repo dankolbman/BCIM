@@ -1,10 +1,24 @@
 ##
 # Functions for file reading and writing
-#
+# 
 # Dan Kolbman 2014
 ##
 
 module DataIO
+
+# Appends output to a logfile
+# Params
+#   str - the string to write
+#   conf - the configuration Dict
+function log(str,conf)
+  path = string(conf["path"],"log.txt")
+  f = open(path,"a")
+  t = TmStruct(time())
+  str = string("[",t.hour,":",t.min,":",t.sec,"]: ",str,"\n")
+  write(f,str)
+  if(conf["verbose"] == 1) print(str) end
+  close(f)
+end
 
 # Read a configuration file
 # Params:
@@ -13,7 +27,7 @@ module DataIO
 #   A Dict with param, value pairs
 function readConf(filen)
   # Reads data into an array separated by ' '
-  data = readdlm(filen,' ')
+  data = readdlm(filen,' ',comments=true)
   params = Dict{String, Any}()
   # Each element in the array corresponds to a parameter
   for line in 1:size(data,1)
@@ -61,24 +75,45 @@ function writeConf(filen, conf)
   close(f)
 end
 
-# Appends output to a logfile
+# Reads particle data from a file
+# Format spec:
+#   [ xcoord ycoord  ... xvel yvel ... msd ] 
 # Params
-#   str - the string to write
-#   conf - the configuration Dict
-function log(str,conf)
-  path = string(conf["path"],"log.txt")
-  f = open(path,"w+")
-  t = TmStruct(time())
-  str = string("[",t.hour,":",t.min,":",t.sec,"]: ",str)
-  write(f,str)
-  if(conf["verbose"] == 1) println(str) end
+#   filen - the path to write the file
+# Returns
+#   a particle array
+function readParts(filen)
+  parts = readdlm(filen,' ')
+  return parts
+end
+
+# Write particle data to a file
+# Format spec:
+#   [ xcoord ycoord  ... xvel yvel ... msd ] 
+# Params
+#   filen - the file to write to
+#   pdat - the particle data (see format spec)
+function writeParts(filen, pdat)
+  f = open(filen, "w")
+  writedlm(f, pdat,' ')
   close(f)
 end
 
-#Testing
-#conf1 = readConf("defaults.cnf")
-#writeConf("newconf.cnf", conf1)
-#conf2 = readConf("newconf.cnf")
-#println(conf2)
+# Test functions
+function test()
+  #Configuration files
+  #conf1 = readConf("defaults.cnf")
+  #writeConf("newconf.cnf", conf1)
+  #conf2 = readConf("newconf.cnf")
+  #println(conf2)
+
+  #Particle positions
+  partdat = [[ 1.0 20.0 -1.0 0.4 0.0 0.2 4.0 ],[ 0.0 2.0 0.2 -0.2 0.1 0.3 -3.0]]
+  writeParts("parts.dat", partdat)
+  parts1 = readParts("parts.dat")
+  #println(parts1[2,2])
+  println(parts1)
+  println(typeof(parts1))
+end
 
 end

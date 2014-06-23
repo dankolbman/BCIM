@@ -25,6 +25,9 @@ function initFS(conf)
   end
 end
 
+# Parse arguements from the command line
+# Returns
+#   A dict with the agruement flags and their values
 function parseArgs()
   s = ArgParseSettings()
   s.prog = "bcim"
@@ -37,25 +40,27 @@ function parseArgs()
     "-o", "--outdir"
         help = "The directory path to save output to"
         arg_type = String
-        default = "."
     "run"
       help = "Run an experiment"
       action = :command
   end
-
   return parse_args(s)
 end
     
-
+# Main function loop
 function main()
   parsedArgs = parseArgs()
   # Read the configuration file
   conf = DataIO.readConf(parsedArgs["config"])
+
+  if(parsedArgs["outdir"]!=nothing)
+    conf["path"] = parsedArgs["outdir"]
+  end
   # Initialize the file sysetm
   initFS(conf)
   # Log
   DataIO.log("Experiment starting...", conf)
-  Experiment.run()
+  Experiment.run(conf)
 end
 
 main()
