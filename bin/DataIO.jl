@@ -19,16 +19,26 @@ function log(str,conf)
   if(conf["verbose"] == 1) print(str) end
   close(f)
 end
-
-# Read a configuration file
+# Read a configuration file and returns a new configuration dict
 # Params:
 #   filen - the path for the configuration file
 # Returns:
 #   A Dict with param, value pairs
 function readConf(filen)
+  params = Dict{String, Any}()
+  readConf(filen, conf)
+  return params
+
+end
+
+# Read a configuration file and assigns values to conf dict.
+# Modifies the conf in place. Existing parameters may be overwritten
+# Params:
+#   filen - the path for the configuration file
+#   conf - a configuration dict
+function readConf(filen, conf)
   # Reads data into an array separated by ' '
   data = readdlm(filen,' ',comments=true)
-  params = Dict{String, Any}()
   # Each element in the array corresponds to a parameter
   for line in 1:size(data,1)
     # The first element is the parameter name
@@ -42,14 +52,12 @@ function readConf(filen)
     end
     # If only one value, assign it to the key
     if(size(vals,1) == 1)
-      params[key] = vals[1]
+      conf[key] = vals[1]
     # If more than one value, assign the array as the value
     elseif(size(vals,1) > 1)
-      params[key] = vals
+      conf[key] = vals
     end
   end
-  return params
-
 end
 
 # Write a configuration file

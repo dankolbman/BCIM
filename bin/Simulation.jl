@@ -30,8 +30,10 @@ end
 #   A particle array
 function init(conf)
   # The length of a side of a cube for the required packing fraction
-  conf["size"] = cbrt(4/3*pi*conf["dia"]^3/2/(conf["phi"]))
-  parts = makeRanBox(conf)
+  #conf["size"] = cbrt(4/3*pi*conf["dia"]^3/2/(conf["phi"]))
+  # The radius for a sphere with the desired packing fraction
+  conf["size"] = cbrt((conf["dia"]/2)^3*conf["npart"] / conf["phi"])
+  parts = makeRanSphere(conf)
   DataIO.writeParts("parts.dat",parts)
 end
 
@@ -43,7 +45,28 @@ function step(conf)
   pos = [0]
 end
 
+# Generates particles randomly inside a sphere
+# Params
+#   conf - the configuration dict with experiment parameters
+# Returns
+#   A particle array
+function makeRanSphere(conf)
+  parts = Array(Float64,int(conf["npart"]), 7)
+  for i = 1:int(conf["npart"])
+    lam = conf["size"]*cbrt(rand())
+    u = 2*rand()-1
+    phi = 2*pi*rand()
+    xyz = [ lam*sqrt(1-u^2)*cos(phi) lam*sqrt(1-u^2)*sin(phi) lam*u ]
+    parts[i,:] = [ xyz 0 0 0 0 ]
+  end
+  return parts
+end
+
 # Generates particles inside a box
+# Params
+#   conf - the configuration dict with experiment parameters
+# Returns
+#   A particle array
 function makeBox(conf)
   # Number of particles per side
   sideNum = cbrt(ceil((conf["npart"])))
