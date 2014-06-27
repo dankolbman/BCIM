@@ -15,15 +15,18 @@ import DataIO
 function run(conf)
   
   # Initialize simulation
-  init(conf)
+  parts = init(conf)
 
   for s in 1:conf["nsteps"]
-    step(conf)
+    step(conf, parts)
   end
   
 end
 
 # Initializes the physical environment
+# Determine size of the system
+# Generate particles
+# Write data to file
 # Params
 #   conf - the configuration dict with experiment parameters
 # Returns
@@ -34,13 +37,17 @@ function init(conf)
   # The radius for a sphere with the desired packing fraction
   conf["size"] = cbrt((conf["dia"]/2)^3*conf["npart"] / conf["phi"])
   parts = makeRanSphere(conf)
-  DataIO.writeParts("parts.dat",parts)
+  DataIO.writeParts("$(conf["path"])init.dat",parts)
+  # Write configuration file for the trial
+  DataIO.writeConf("$(conf["path"])sim.cnf", conf)
+
+  return parts
 end
 
 # One simulation step. All forces are calculated, then positions updated
 # Params
 #   conf - the configuration dict with experiment parameters
-function step(conf)
+function step(conf,parts)
   # Update pos
   pos = [0]
 end
@@ -57,7 +64,7 @@ function makeRanSphere(conf)
     u = 2*rand()-1
     phi = 2*pi*rand()
     xyz = [ lam*sqrt(1-u^2)*cos(phi) lam*sqrt(1-u^2)*sin(phi) lam*u ]
-    parts[i,:] = [ xyz 0 0 0 0 ]
+    parts[i,:] = [ xyz 0 0 0 2*pi*rand() 0 ]
   end
   return parts
 end
@@ -79,7 +86,7 @@ function makeBox(conf)
     for j = 1:sideNum
       for k = 1:sideNum
         if(np <= int(conf["npart"]))
-          parts[np,:] = [ i*lc j*lc k*lc 0 0 0 0 ] 
+          parts[np,:] = [ i*lc j*lc k*lc 0 0 0 2*pi*rand() 0 ] 
           np += 1
         end
       end
@@ -92,7 +99,7 @@ end
 function makeRanBox(conf)
   parts = Array(Float64,int(conf["npart"]),7)
   for i in 1:conf["npart"]
-    parts[i,:] = [ conf["size"]*rand(1,3) 0 0 0 0 ]
+    parts[i,:] = [ conf["size"]*rand(1,3) 0 0 0 2*pi*rand() 0 ]
   end
   return parts
 end

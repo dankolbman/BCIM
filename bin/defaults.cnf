@@ -2,11 +2,11 @@
 path ../data/test1/
 # The verbosity when run, prints everything to stdout if 1
 verbose 1
-npart 125
+npart 100 100
 phi 0.40
 # The diameter of one particle
 dia 1.0
 # Number of trials to run per experiment
-ntrials 1
+ntrials 2
 # How many steps to run for each trial
 nsteps 100

@@ -33,9 +33,8 @@ function parseArgs()
   s.prog = "bcim"
 
   @add_arg_table s begin
-    "config"
+    "-c", "--config"
       help = "The configuration file"
-      required = true
       arg_type = String
     "-o", "--outdir"
         help = "The directory path to save output to"
@@ -103,13 +102,17 @@ end
     
 # Main function loop
 function main()
+  # Generate default params
   conf = defaultConf()
+  # Get the arguements passed to the program
   parsedArgs = parseArgs()
   # Assign params from the configuration file
-  DataIO.readConf(parsedArgs["config"], conf)
+  if(parsedArgs["config"]!=nothing)
+    DataIO.readConf(parsedArgs["config"], conf)
+  end
   # De-dimensionalise parameters
   dedimension(conf)
-
+  # Override path if specified from cli
   if(parsedArgs["outdir"]!=nothing)
     conf["path"] = parsedArgs["outdir"]
   end

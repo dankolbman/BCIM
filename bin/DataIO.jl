@@ -85,7 +85,7 @@ end
 
 # Reads particle data from a file
 # Format spec:
-#   [ xcoord ycoord  ... xvel yvel ... msd ] 
+#   [ xcoord ycoord  ... xvel yvel ... angle msd ] 
 # Params
 #   filen - the path to write the file
 # Returns
@@ -97,7 +97,7 @@ end
 
 # Write particle data to a file
 # Format spec:
-#   [ xcoord ycoord  ... xvel yvel ... msd ] 
+#   [ xcoord ycoord  ... xvel yvel ... angle msd ] 
 # Params
 #   filen - the file to write to
 #   pdat - the particle data (see format spec)
