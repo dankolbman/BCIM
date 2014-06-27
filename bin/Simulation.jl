@@ -18,7 +18,7 @@ function run(conf)
   parts = init(conf)
 
   for s in 1:conf["nsteps"]
-    step(conf, parts)
+    #step(conf, parts)
   end
   
 end
@@ -35,11 +35,11 @@ function init(conf)
   # The length of a side of a cube for the required packing fraction
   #conf["size"] = cbrt(4/3*pi*conf["dia"]^3/2/(conf["phi"]))
   # The radius for a sphere with the desired packing fraction
-  conf["size"] = cbrt((conf["dia"]/2)^3*conf["npart"] / conf["phi"])
+  conf["size"] = cbrt((conf["dia"]/2)^3*conf["npart"][1] / conf["phi"])
   parts = makeRanSphere(conf)
-  DataIO.writeParts("$(conf["path"])init.dat",parts)
+  DataIO.writeParts("$(conf["path"])init",parts)
   # Write configuration file for the trial
-  DataIO.writeConf("$(conf["path"])sim.cnf", conf)
+  DataIO.writeConf("$(conf["path"])sim", conf)
 
   return parts
 end
@@ -56,15 +56,25 @@ end
 # Params
 #   conf - the configuration dict with experiment parameters
 # Returns
-#   A particle array
+#   A particle species array
 function makeRanSphere(conf)
-  parts = Array(Float64,int(conf["npart"]), 7)
-  for i = 1:int(conf["npart"])
-    lam = conf["size"]*cbrt(rand())
-    u = 2*rand()-1
-    phi = 2*pi*rand()
-    xyz = [ lam*sqrt(1-u^2)*cos(phi) lam*sqrt(1-u^2)*sin(phi) lam*u ]
-    parts[i,:] = [ xyz 0 0 0 2*pi*rand() 0 ]
+
+  # Create an array of particle matricies
+  parts = Array(Any, length(conf["npart"]))
+  # Appearently can't specify arrays of arrays of floats?
+  #parts = Array(Array{Float64}, length(conf["npart"])) 
+  # Iterate through each species
+  for sp in 1:length(conf["npart"])
+    # An array for all particles in the species
+    spn = Array(Float64,int(conf["npart"][sp]), 8)
+    for i = 1:int(conf["npart"][sp])
+      lam = conf["size"]*cbrt(rand())
+      u = 2*rand()-1
+      phi = 2*pi*rand()
+      xyz = [ lam*sqrt(1-u^2)*cos(phi) lam*sqrt(1-u^2)*sin(phi) lam*u ]
+      spn[i,:] = [ xyz 0 0 0 2*pi*rand() 0 ]
+    end
+    parts[sp] = spn
   end
   return parts
 end

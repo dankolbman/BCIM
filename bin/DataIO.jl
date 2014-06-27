@@ -65,7 +65,7 @@ end
 #   filen - the path to write the configuration file to
 #   conf - a Dict of parameters
 function writeConf(filen, conf)
-  f = open(filen, "w")
+  f = open("$filen.cnf", "w")
   for key in keys(conf)
     line = key
     # If the parameter has multiple values..
@@ -83,28 +83,42 @@ function writeConf(filen, conf)
   close(f)
 end
 
-# Reads particle data from a file
-# Format spec:
-#   [ xcoord ycoord  ... xvel yvel ... angle msd ] 
+# Reads particle data for all species from files begining with filen
 # Params
 #   filen - the path to write the file
 # Returns
-#   a particle array
+#   a species array
 function readParts(filen)
+  
+end
+
+# Reads a single species from a data file
+# Params
+#   filen - the file name of the species
+# Returns
+#   An array of particle data for the species
+function readSpecies(filen)
   parts = readdlm(filen,' ')
   return parts
 end
 
-# Write particle data to a file
-# Format spec:
-#   [ xcoord ycoord  ... xvel yvel ... angle msd ] 
+# Write particle data to a file.
+# If no species is defined, write all species to different data files
 # Params
 #   filen - the file to write to
-#   pdat - the particle data (see format spec)
-function writeParts(filen, pdat)
-  f = open(filen, "w")
-  writedlm(f, pdat,' ')
-  close(f)
+#   parts - particle species array
+#   spec - which species to write
+function writeParts(filen, parts, spec=0)
+  print(parts[1])
+  if(spec != 0)
+    writedlm("$filen.dat", parts[spec],' ')
+  else
+    # Write all species to different files
+    for sp in 1:length(parts)
+      writedlm("$(filen)SP$sp.dat", parts[sp], ' ')
+    end
+  end
+
 end
 
 # Test functions
