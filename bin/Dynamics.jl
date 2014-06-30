@@ -10,17 +10,12 @@ module Dynamics
 function forceCalc(conf, parts)
 
   # Apply a brownian force to all particle
-  brownian(parts, conf)
-
-  # Iterate through all interactions
-  for p1 in 1:size(parts,1)
-    for p2 in (p1+1):size(parts,1)
-      # Apply the repulsive force
-      repF(parts[p1,1:end], parts[p2,1:end], conf)
-      # Apply the adhesive force
-      adhF(parts[p1,1:end], parts[p2,1:end], conf)
-      
-    
+  prop(conf, parts)
+  # Iterate through each species
+  for sp in 1:size(parts,1)
+    # Iterate through all particles
+    for p1 in 1:size(parts[sp],1)
+      parts[sp][p1,1:3] += parts[sp][p1,4:6]
     end
   end
 end
@@ -29,13 +24,34 @@ end
 # ie rotate earch particle then apply a random force in that direction
 # Params
 #   conf - the configuration dict
-#   parts - the particle array
+#   parts - an array of particle arrays for each species
 function brownian(parts, conf)
-  for p in 1:size(parts,1) 
-    # Update angle
-    parts[p, end-1] += randn()*conf["prerotd"]
-    v = conf["prop1"]*rand()*
-    parts[p,1:3] = parts[p,1:3] + (rand() - 0.5)
+  #
+end
+
+# Applies a propulsion to all particles
+# Params
+#   conf - the configuration dict
+#   parts - an array of particle arrays for each species
+function prop(conf, parts)
+  # Iterate each species
+  for sp in 1:size(parts,1)
+    # Iterate each particle
+    for p in 1:size(parts[sp],1) 
+      phi = parts[sp][p,end-2] + conf["rotdiffus"]*randn()
+      thet = parts[sp][p,end-1] + conf["rotdiffus"]*randn()
+      # Update vars
+      parts[sp][p,end-2] = phi
+      parts[sp][p,end-1] = thet
+      # Determine velocity components
+      v = abs(conf["prop"][sp]*randn())
+      u = cos(phi)
+      vx = v*sqrt(1-u^2)*cos(thet)
+      vy = v*sqrt(1-u^2)*sin(thet)
+      vz = v*u
+      # Update particle velocity
+      parts[sp][p,4:6] = parts[sp][p,4:6] + [ vx vy vz ]
+    end
   end
 end
 
@@ -67,7 +83,7 @@ function dist(p1, p2)
   x = p1[1] - p2[1]
   y = p1[2] - p2[2]
   z = p1[3] - p2[3]
-  return sqrt(x**2 + y**2 + z**2)
+  return sqrt(x^2 + y^2 + z^2)
 end
 
 end

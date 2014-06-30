@@ -89,7 +89,8 @@ end
 # Returns
 #   a species array
 function readParts(filen)
-  
+  #TODO implement this. Not needed until we want to start simulations from
+  # old states.
 end
 
 # Reads a single species from a data file
@@ -109,16 +110,17 @@ end
 #   parts - particle species array
 #   spec - which species to write
 function writeParts(filen, parts, spec=0)
-  print(parts[1])
   if(spec != 0)
     writedlm("$filen.dat", parts[spec],' ')
   else
     # Write all species to different files
     for sp in 1:length(parts)
-      writedlm("$(filen)SP$sp.dat", parts[sp], ' ')
+      f = open("$(filen)SP$sp.dat","a+")
+      writedlm(f, parts[sp], ' ')
+      close(f)
+      #writedlm("$(filen)SP$sp.dat", parts[sp], ' ')
     end
   end
-
 end
 
 # Test functions
@@ -129,13 +131,20 @@ function test()
   #conf2 = readConf("newconf.cnf")
   #println(conf2)
 
-  #Particle positions
-  partdat = [[ 1.0 20.0 -1.0 0.4 0.0 0.2 4.0 ],[ 0.0 2.0 0.2 -0.2 0.1 0.3 -3.0]]
-  writeParts("parts.dat", partdat)
-  parts1 = readParts("parts.dat")
-  #println(parts1[2,2])
-  println(parts1)
-  println(typeof(parts1))
+  # Make some species
+  parts = Array(Any,2)
+  for sp in 1:2
+    # Make some particles for the species
+    spn = Array(Float64,6,8)
+    for p in 1:5
+      spn[p,:] = [ rand(1,6) 2*pi*rand() 0 ]
+    end
+    parts[sp] = spn
+  end
+
+  # Write positions
+  writeParts("parts", parts)
+  print(parts)
 end
 
 end

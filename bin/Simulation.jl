@@ -8,6 +8,7 @@
 module Simulation
 
 import DataIO
+import Dynamics
 
 # Runs a simulation from start to finish
 # Params
@@ -18,7 +19,7 @@ function run(conf)
   parts = init(conf)
 
   for s in 1:conf["nsteps"]
-    #step(conf, parts)
+    step(conf, parts)
   end
   
 end
@@ -49,7 +50,7 @@ end
 #   conf - the configuration dict with experiment parameters
 function step(conf,parts)
   # Update pos
-  pos = [0]
+  Dynamics.forceCalc(conf, parts)
 end
 
 # Generates particles randomly inside a sphere
@@ -58,21 +59,22 @@ end
 # Returns
 #   A particle species array
 function makeRanSphere(conf)
-
-  # Create an array of particle matricies
+  # Create an array of particle matricies for each species
   parts = Array(Any, length(conf["npart"]))
   # Appearently can't specify arrays of arrays of floats?
   #parts = Array(Array{Float64}, length(conf["npart"])) 
   # Iterate through each species
   for sp in 1:length(conf["npart"])
     # An array for all particles in the species
-    spn = Array(Float64,int(conf["npart"][sp]), 8)
+    spn = Array(Float64,int(conf["npart"][sp]), 9)
     for i = 1:int(conf["npart"][sp])
+      # This creates a uniform distribution in the sphere
       lam = conf["size"]*cbrt(rand())
       u = 2*rand()-1
       phi = 2*pi*rand()
       xyz = [ lam*sqrt(1-u^2)*cos(phi) lam*sqrt(1-u^2)*sin(phi) lam*u ]
-      spn[i,:] = [ xyz 0 0 0 2*pi*rand() 0 ]
+      # Write the particle array
+      spn[i,:] = [ xyz 0 0 0 2*pi*rand() 2*pi*rand() 0 ]
     end
     parts[sp] = spn
   end
@@ -80,6 +82,7 @@ function makeRanSphere(conf)
 end
 
 # Generates particles inside a box
+# TODO Update to new particle format
 # Params
 #   conf - the configuration dict with experiment parameters
 # Returns
@@ -89,15 +92,20 @@ function makeBox(conf)
   sideNum = cbrt(ceil((conf["npart"])))
   # Space between particles
   lc = conf["size"]/sideNum
-  
-  parts = Array(Float64,int(conf["npart"]),7)
+  # An array of parcicle arrays for each species
+  parts = Array(Float64,length(conf["npart"]))
+  # Number of particles placed so far
   np = 1
-  for i = 1:sideNum
-    for j = 1:sideNum
-      for k = 1:sideNum
-        if(np <= int(conf["npart"]))
-          parts[np,:] = [ i*lc j*lc k*lc 0 0 0 2*pi*rand() 0 ] 
-          np += 1
+  # Iterate through each species
+  for sp in 1:int(conf["npart"])
+    # Place on lattice
+    for i = 1:sideNum
+      for j = 1:sideNum
+        for k = 1:sideNum
+          if(np <= int(conf["npart"][sp]))
+            parts[np,:] = [ i*lc j*lc k*lc 0 0 0 2*pi*rand() 2*pi*rand() 0 ] 
+            np += 1
+          end
         end
       end
     end
@@ -107,12 +115,19 @@ end
 
 # Generate particles randomly in a box
 function makeRanBox(conf)
-  parts = Array(Float64,int(conf["npart"]),7)
-  for i in 1:conf["npart"]
-    parts[i,:] = [ conf["size"]*rand(1,3) 0 0 0 2*pi*rand() 0 ]
+  # An array of particle arrays for each species
+  parts = Array(Any,length(conf["npart"]))
+  # Iterate each species
+  for sp in 1:length(conf["npart"])
+    # The particle array for this species
+    spn = Array(Float64,int(conf["npart"][sp]))
+    # Make each particle
+    for i in 1:conf["npart"][sp]
+      xyz = [ (conf["size"]-conf["dia"])*rand(1,3) ] + ones(1,3)*conf["dia"]/2.0
+      parts[sp][i,:] = [ xyz 0 0 0 2*pi*rand() 2*pi*rand() 0 ]
+    end
   end
   return parts
 end
-
 
 end

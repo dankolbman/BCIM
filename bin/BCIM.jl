@@ -55,25 +55,27 @@ function defaultConf()
   conf["path"] = "data/test/"
   conf["verbose"] = 1
   conf["ntrials"] = 1
-  conf["nsteps"] = 1000
+  conf["nsteps"] = 100
   conf["freq"] = 100
 
   # Simulation params
-  conf["npart"] = 400
+  conf["npart"] = [ 100 1 ]
   conf["phi"] = 0.40      # Packing frac
+  conf["eta"] = 1.0e-2    # g / (cm s)
   conf["dt"] = 1.0e-6     # s
   conf["temp"] = 298.0    # K
   conf["boltz"] = 1.38e16 # erg / K
   conf["dia"] = 1.07e-4   # g / (cm s)
 
-  conf["diffus"] = 2.15e-10
-  conf["rotdiffus"] = 2.845e7
+  conf["diffus"] = conf["boltz"]*conf["temp"]/(3*pi*conf["eta"]*conf["dia"])
+  conf["rotdiffus"] = 500*conf["boltz"]*conf["temp"]/(
+    pi*conf["eta"]*conf["dia"]^3)
 
   # Coefficients
-  conf["rep"] = 0.001     # energy / length
-  conf["prop"] = 100.0    # length / difftime
-  conf["contact"] = 0.1   # length
+  conf["prop"] = [ 1.0 1.0 ]   # length / difftime
+  conf["rep"] = [ 0.001 0.001 ]    # energy / length
   conf["adh"] = 0.1       # energy / length
+  conf["contact"] = 0.1   # length
 
   return conf
 end
