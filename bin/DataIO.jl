@@ -111,7 +111,9 @@ end
 #   spec - which species to write
 function writeParts(filen, parts, spec=0)
   if(spec != 0)
-    writedlm("$filen.dat", parts[spec],' ')
+    f = open("$(filen).dat","a+")
+    writedlm(f, parts[spec],' ')
+    close(f)
   else
     # Write all species to different files
     for sp in 1:length(parts)

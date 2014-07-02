@@ -55,24 +55,27 @@ function defaultConf()
   conf["path"] = "data/test/"
   conf["verbose"] = 1
   conf["ntrials"] = 1
-  conf["nsteps"] = 100
+  conf["nsteps"] = 10000
   conf["freq"] = 100
 
   # Simulation params
-  conf["npart"] = [ 100 1 ]
+  conf["npart"] = [ 2 1 ]
   conf["phi"] = 0.40      # Packing frac
   conf["eta"] = 1.0e-2    # g / (cm s)
   conf["dt"] = 1.0e-6     # s
   conf["temp"] = 298.0    # K
   conf["boltz"] = 1.38e16 # erg / K
+  # Diameter of particles
   conf["dia"] = 1.07e-4   # g / (cm s)
+  # Radius of boundary (this gets overwritten by Simulation.init())
+  conf["size"] = 1.0
 
   conf["diffus"] = conf["boltz"]*conf["temp"]/(3*pi*conf["eta"]*conf["dia"])
-  conf["rotdiffus"] = 500*conf["boltz"]*conf["temp"]/(
+  conf["rotdiffus"] = 100*500*conf["boltz"]*conf["temp"]/(
     pi*conf["eta"]*conf["dia"]^3)
 
   # Coefficients
-  conf["prop"] = [ 1.0 1.0 ]   # length / difftime
+  conf["prop"] = [ 0.01 1.0 ]   # length / difftime
   conf["rep"] = [ 0.001 0.001 ]    # energy / length
   conf["adh"] = 0.1       # energy / length
   conf["contact"] = 0.1   # length
@@ -93,11 +96,11 @@ function dedimension(conf)
   
   conf["rotdiffus"] = conf["rotdiffus"]*utime
   conf["diffus"] = conf["diffus"]*utime/(ulength^2)
-  conf["dia"] = conf["dia"]/ulength
-  conf["dt"] = conf["dt"]/utime
-  conf["rep"] = conf["rep"]/ulength
-  conf["contact"] = conf["contact"]/ulength
-  conf["adh"] = conf["adh"]/conf["contact"]
+  conf["dia"] = conf["dia"]./ulength
+  conf["dt"] = conf["dt"]./utime
+  conf["rep"] = conf["rep"]./ulength
+  conf["contact"] = conf["contact"]./ulength
+  conf["adh"] = conf["adh"]./conf["contact"]
 
   return conf
 end

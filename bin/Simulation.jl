@@ -20,6 +20,9 @@ function run(conf)
 
   for s in 1:conf["nsteps"]
     step(conf, parts)
+    if(s%10 == 0)
+      DataIO.writeParts("$(conf["path"])pos", parts,1)
+    end
   end
   
 end
@@ -36,7 +39,7 @@ function init(conf)
   # The length of a side of a cube for the required packing fraction
   #conf["size"] = cbrt(4/3*pi*conf["dia"]^3/2/(conf["phi"]))
   # The radius for a sphere with the desired packing fraction
-  conf["size"] = cbrt((conf["dia"]/2)^3*conf["npart"][1] / conf["phi"])
+  conf["size"] = 10*cbrt((conf["dia"]/2)^3*conf["npart"][1] / conf["phi"])
   parts = makeRanSphere(conf)
   DataIO.writeParts("$(conf["path"])init",parts)
   # Write configuration file for the trial

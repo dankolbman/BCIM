@@ -11,11 +11,21 @@ function forceCalc(conf, parts)
 
   # Apply a brownian force to all particle
   prop(conf, parts)
+  
+  # Update positions
   # Iterate through each species
   for sp in 1:size(parts,1)
     # Iterate through all particles
     for p1 in 1:size(parts[sp],1)
-      parts[sp][p1,1:3] += parts[sp][p1,4:6]
+      # Calculate new position
+      newpos = parts[sp][p1,1:3] + parts[sp][p1,4:6]
+      
+      # Apply boundaries
+      dist = sqrt(sum(newpos.^2))
+      if(dist <= conf["size"] - conf["dia"]/2.0)
+        parts[sp][p1,1:3] = newpos
+      end
+      
     end
   end
 end

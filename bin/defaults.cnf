@@ -1,12 +1,32 @@
+## Program Vars
+## These don't change between experiments (Usually)
 # Path to save all output to
 path ../data/test1/
 # The verbosity when run, prints everything to stdout if 1
 verbose 1
-npart 5 5
-phi 0.40
-# The diameter of one particle
-dia 1.0
 # Number of trials to run per experiment
 ntrials 1
 # How many steps to run for each trial
-nsteps 100
+nsteps 1000
+# How many steps between data recording
+freq 100
+# Time step size
+dt 1.0e-4
+## System Vars
+## These affect the physical system
+# Packing fraction
+phi 0.40
+# The diameter of one particle
+dia 1.0
+## Species Vars
+## These are different between species
+# Number of particles
+npart 5 1
+# Propulsion
+prop 0.01 0.01
+# Repulsion
+rep 0.001 0.001
+# Adhesion
+adh 0.1 0.01
+# Contact distance for adhesive force
+contact 0.1 0.0
