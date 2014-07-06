@@ -43,8 +43,6 @@ end
 function init(conf, simPath="")
   # The length of a side of a cube for the required packing fraction
   #conf["size"] = cbrt(4/3*pi*conf["dia"]^3/2/(conf["phi"]))
-  # The radius for a sphere with the desired packing fraction
-  conf["size"] = 10*cbrt((conf["dia"]/2)^3*conf["npart"][1] / conf["phi"])
   parts = makeRanSphere(conf)
   DataIO.writeParts("$(conf["path"])/$(simPath)init",parts)
 

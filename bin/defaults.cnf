@@ -14,16 +14,18 @@ nsteps 1000
 freq 100
 # Time step size
 dt 1.0e-4
+################################################################################
 ## System Vars
 ## These affect the physical system
 # Packing fraction
 phi 0.40
 # The diameter of one particle
 dia 1.0
+################################################################################
 ## Species Vars
 ## These are different between species
 # Number of particles
-npart 5 1
+npart 10 0
 # Propulsion
 prop 0.01 0.01
 # Repulsion
@@ -32,3 +34,9 @@ rep 0.001 0.001
 adh 0.1 0.01
 # Contact distance for adhesive force
 contact 0.1 0.0
+################################################################################
+## Plotting
+# Should the plot script be called?
+plot 1
+# The program to run when we plot
+ploter "python ../scripts/posplot.py"

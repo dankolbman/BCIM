@@ -26,9 +26,9 @@ def readPos(filen):
       xpos.append(float(l[0]))
       ypos.append(float(l[1]))
       zpos.append(float(l[2]))
+    f.close()
   except IOError as e:
     print('IO Error!', e.strerror)
-  f.close()
   return xpos,ypos,zpos
 
 def readMsdave(filen):

@@ -13,7 +13,6 @@ using ArgParse
 #   conf - the configuration Dict
 function initFS(conf)
   path = conf["path"]
-
   # Create a new folder for this run in the path
   if(conf["autodir"]==1)
     n = 1
@@ -64,12 +63,15 @@ end
 function defaultConf()
   conf = Dict{String, Any}()
   # Program params
-  conf["path"] = "..data/"
+  conf["path"] = "../data/"
   conf["autodir"] = 1
   conf["verbose"] = 1
   conf["ntrials"] = 1
   conf["nsteps"] = 10000
   conf["freq"] = 100
+
+  # Plotting
+  conf["plot" ] = 0
 
   # Simulation params
   conf["npart"] = [ 2 1 ]

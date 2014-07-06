@@ -19,6 +19,7 @@ def plotSys(conf, arg):
   ax = fig.gca(projection='3d')
   for i in range(0,len(arg)):
     xpos, ypos, zpos = DataIO.readPos(arg[i])
+    print(xpos)
     ax.scatter(xpos,ypos,zpos)
     
     #circleScatter(xpos, ypos, ax,\
