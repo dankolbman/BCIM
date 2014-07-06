@@ -13,7 +13,19 @@ using ArgParse
 #   conf - the configuration Dict
 function initFS(conf)
   path = conf["path"]
-  if(!isdir(path))
+
+  # Create a new folder for this run in the path
+  if(conf["autodir"]==1)
+    n = 1
+    # Find a suitable directory name
+    # TODO might want to use temporal naming
+    while(ispath("$(path)experiment$n"))
+      n+=1
+    end
+    mkpath("$(path)experiment$n")
+    conf["path"] = "$(path)experiment$n/"
+
+  elseif(!isdir(path))
     mkpath(path)
   # Check for existing data
   elseif(isfile(string(path,"log.txt")))
@@ -52,7 +64,8 @@ end
 function defaultConf()
   conf = Dict{String, Any}()
   # Program params
-  conf["path"] = "data/test/"
+  conf["path"] = "..data/"
+  conf["autodir"] = 1
   conf["verbose"] = 1
   conf["ntrials"] = 1
   conf["nsteps"] = 10000
@@ -125,6 +138,8 @@ function main()
   initFS(conf)
   # Log
   DataIO.log("Experiment starting...", conf)
+  DataIO.log("Experiment path at $(conf["path"])", conf)
+  # TODO add an abstraction to allow several experiments with different params
   Experiment.run(conf)
 end
 

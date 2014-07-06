@@ -110,6 +110,11 @@ end
 #   parts - particle species array
 #   spec - which species to write
 function writeParts(filen, parts, spec=0)
+  # Make file structure if it doesn't exist
+  if(!isdir(dirname(filen)))
+    mkpath(dirname(filen))
+  end
+  
   if(spec != 0)
     f = open("$(filen).dat","a+")
     writedlm(f, parts[spec],' ')

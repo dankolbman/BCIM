@@ -13,15 +13,19 @@ import Dynamics
 # Runs a simulation from start to finish
 # Params
 #   conf - the configuration dict with experiment parameters
-function run(conf)
+#   simPath - the path for the simulation to store files
+function run(conf, simPath="")
   
   # Initialize simulation
-  parts = init(conf)
+  parts = init(conf, simPath)
 
+  # Run each step
   for s in 1:conf["nsteps"]
     step(conf, parts)
-    if(s%10 == 0)
-      DataIO.writeParts("$(conf["path"])pos", parts,1)
+    
+    # Collect data
+    if(s%conf["freq"] == 0)
+      DataIO.writeParts("$(conf["path"])/$(simPath)parts$(int(s))", parts,1)
     end
   end
   
@@ -33,17 +37,16 @@ end
 # Write data to file
 # Params
 #   conf - the configuration dict with experiment parameters
+#   simPath - the path for the simulation to store files
 # Returns
 #   A particle array
-function init(conf)
+function init(conf, simPath="")
   # The length of a side of a cube for the required packing fraction
   #conf["size"] = cbrt(4/3*pi*conf["dia"]^3/2/(conf["phi"]))
   # The radius for a sphere with the desired packing fraction
   conf["size"] = 10*cbrt((conf["dia"]/2)^3*conf["npart"][1] / conf["phi"])
   parts = makeRanSphere(conf)
-  DataIO.writeParts("$(conf["path"])init",parts)
-  # Write configuration file for the trial
-  DataIO.writeConf("$(conf["path"])sim", conf)
+  DataIO.writeParts("$(conf["path"])/$(simPath)init",parts)
 
   return parts
 end

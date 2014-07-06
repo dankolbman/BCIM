@@ -1,7 +1,9 @@
 ## Program Vars
 ## These don't change between experiments (Usually)
 # Path to save all output to
-path ../data/test1/
+path ../data/
+# If 1, a new unique folder will be created in the path and used as the new path
+autodir 1
 # The verbosity when run, prints everything to stdout if 1
 verbose 1
 # Number of trials to run per experiment
