@@ -9,9 +9,9 @@ verbose 1
 # Number of trials to run per experiment
 ntrials 1
 # How many steps to run for each trial
-nsteps 1000
+nsteps 1e3
 # How many steps between data recording
-freq 100
+freq 5e2
 # Time step size
 dt 1.0e-4
 ################################################################################
@@ -20,14 +20,17 @@ dt 1.0e-4
 # Packing fraction
 phi 0.40
 # The diameter of one particle
-dia 1.0
+dia 1.5e-4
+# Diffusions
+#diffus 
+#rotdiffus 
 ################################################################################
 ## Species Vars
 ## These are different between species
 # Number of particles
-npart 10 0
+npart 100 0
 # Propulsion
-prop 0.01 0.01
+prop 1e-7 0.00
 # Repulsion
 rep 0.001 0.001
 # Adhesion

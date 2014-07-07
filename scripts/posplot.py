@@ -19,9 +19,12 @@ def plotSys(conf, arg):
   ax = fig.gca(projection='3d')
   for i in range(0,len(arg)):
     xpos, ypos, zpos = DataIO.readPos(arg[i])
-    print(xpos)
-    ax.scatter(xpos,ypos,zpos)
-    
+    ax.scatter(xpos,ypos,zpos,s=200)
+
+    #for (xi,yi,zi) in zip(xpos, ypos, zpos):
+    #  (xs,ys,zs) = drawSphere(xi,yi,zi,np.pi*(conf["dia"]/2)**2)
+    #  ax.plot_wireframe(xs, ys, zs, color="r")
+
     #circleScatter(xpos, ypos, ax,\
     #        radius=conf['diameter']/2,\
     #        color=colors[i%len(colors)])
@@ -32,6 +35,16 @@ def plotSys(conf, arg):
   ax.set_xlim3d(-conf["size"], conf["size"])
   ax.set_ylim3d(-conf["size"], conf["size"])
   ax.set_zlim3d(-conf["size"], conf["size"])
+
+def drawSphere(xC, yC, zC, r):
+    u, v = np.mgrid[0:2*np.pi:20j, 0:np.pi:10j]
+    x=np.cos(u)*np.sin(v)
+    y=np.sin(u)*np.sin(v)
+    z=np.cos(v)
+    x = r*x + xC
+    y = r*y + yC
+    z = r*z + zC
+    return (x,y,z)
 
 def plotBounds(conf, axes):
   """ plotBounds : Dict Axes -> True

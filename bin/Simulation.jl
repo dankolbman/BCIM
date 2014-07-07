@@ -22,16 +22,16 @@ function runSim(conf, simPath="")
   # Run each step
   for s in 1:conf["nsteps"]
     step(conf, parts)
-    
     # Collect data
     if(s%conf["freq"] == 0)
       DataIO.writeParts("$(conf["path"])/$(simPath)parts$(int(s))", parts,1)
-      #println("Step $s")
+      #DataIO.writeParts("$(conf["path"])/$(simPath)parts", parts,1)
+      println("Done step $s")
       if(conf["plot"] == 1)
         path = "$(conf["path"])$(simPath)parts$(int(s)).dat"
         cnf = "$(conf["path"])sim.cnf"
         cmd = `python ../scripts/posplot.py $cnf $path`
-        @spawn run(cmd)
+        #@spawn run(cmd)
       end
       
     end
@@ -81,7 +81,7 @@ function makeRanSphere(conf)
     spn = Array(Float64,int(conf["npart"][sp]), 9)
     for i = 1:int(conf["npart"][sp])
       # This creates a uniform distribution in the sphere
-      lam = conf["size"]*cbrt(rand())
+      lam = (conf["size"]-conf["dia"]/2)*cbrt(rand())
       u = 2*rand()-1
       phi = 2*pi*rand()
       xyz = [ lam*sqrt(1-u^2)*cos(phi) lam*sqrt(1-u^2)*sin(phi) lam*u ]

@@ -77,16 +77,16 @@ function defaultConf()
   conf["npart"] = [ 2 1 ]
   conf["phi"] = 0.40      # Packing frac
   conf["eta"] = 1.0e-2    # g / (cm s)
-  conf["dt"] = 1.0e-6     # s
+  conf["dt"] = 1.0e-4     # s
   conf["temp"] = 298.0    # K
   conf["boltz"] = 1.38e16 # erg / K
   # Diameter of particles
-  conf["dia"] = 1.07e-4   # g / (cm s)
+  conf["dia"] = 1.5e-4   # g / (cm s)
   # Radius of boundary (this gets overwritten by Simulation.init())
   conf["size"] = 1.0
 
   conf["diffus"] = conf["boltz"]*conf["temp"]/(3*pi*conf["eta"]*conf["dia"])
-  conf["rotdiffus"] = 100*500*conf["boltz"]*conf["temp"]/(
+  conf["rotdiffus"] = 500*conf["boltz"]*conf["temp"]/(
     pi*conf["eta"]*conf["dia"]^3)
 
   # Coefficients
@@ -116,6 +116,8 @@ function dedimension(conf)
   conf["rep"] = conf["rep"]./ulength
   conf["contact"] = conf["contact"]./ulength
   conf["adh"] = conf["adh"]./conf["contact"]
+  conf["pretrad"] = sqrt(2.0*conf["diffus"]/conf["dt"])
+  conf["prerotd"] = sqrt(2.0*conf["rotdiffus"]*conf["dt"])
 
   return conf
 end

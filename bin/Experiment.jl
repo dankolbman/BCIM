@@ -18,7 +18,7 @@ import Simulation
 function runExp(conf, expPath="")
 
   # The radius for a sphere with the desired packing fraction
-  conf["size"] = 10*cbrt((conf["dia"]/2)^3*conf["npart"][1] / conf["phi"])
+  conf["size"] = cbrt((conf["dia"]/2)^3*conf["npart"][1] / conf["phi"])
 
   # Write configuration file for the trial
   DataIO.writeConf("$(conf["path"])sim", conf)
@@ -35,20 +35,20 @@ function runExp(conf, expPath="")
     #p = @spawn Simulation.runSim(conf, "$(expPath)trial$(int(trial))/")
     #procs[trial] = p
 
-    DataIO.log("Trial $(int(trial)) ended taking $(toc())", conf)
+    DataIO.log("Trial $(int(trial)) ended taking $(toq())", conf)
     
     if(conf["plot"] == 1)
-      path = "$(conf["path"])$(expPath)trial$(int(trial))/initSP1.dat"
+      path = "$(conf["path"])$(expPath)trial$(int(trial))/parts1000.dat"
       cnf = "$(conf["path"])$(expPath)sim.cnf"
       cmd = `python ../scripts/posplot.py $cnf $path`
-      @spawn run(cmd)
+      run(cmd)
     end
   end
   
   # Wait on all processes
-  for p in procs
-    wait(p)
-  end
+  #for p in procs
+    #wait(p)
+  #end
 end
 
 end
