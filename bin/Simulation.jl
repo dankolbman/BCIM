@@ -14,7 +14,7 @@ import Dynamics
 # Params
 #   conf - the configuration dict with experiment parameters
 #   simPath - the path for the simulation to store files
-function run(conf, simPath="")
+function runSim(conf, simPath="")
   
   # Initialize simulation
   parts = init(conf, simPath)
@@ -26,6 +26,14 @@ function run(conf, simPath="")
     # Collect data
     if(s%conf["freq"] == 0)
       DataIO.writeParts("$(conf["path"])/$(simPath)parts$(int(s))", parts,1)
+      #println("Step $s")
+      if(conf["plot"] == 1)
+        path = "$(conf["path"])$(simPath)parts$(int(s)).dat"
+        cnf = "$(conf["path"])sim.cnf"
+        cmd = `python ../scripts/posplot.py $cnf $path`
+        @spawn run(cmd)
+      end
+      
     end
   end
   

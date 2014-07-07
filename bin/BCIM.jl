@@ -141,8 +141,14 @@ function main()
   # Log
   DataIO.log("Experiment starting...", conf)
   DataIO.log("Experiment path at $(conf["path"])", conf)
+  
+  #addprocs(3)
+
+  #@everywhere include("./Experiment.jl")
+  
   # TODO add an abstraction to allow several experiments with different params
-  Experiment.run(conf)
+  Experiment.runExp(conf)
+
 end
 
 main()
