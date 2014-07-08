@@ -9,6 +9,7 @@ module Simulation
 
 import DataIO
 import Dynamics
+import Stats
 
 # Runs a simulation from start to finish
 # Params
@@ -27,6 +28,12 @@ function runSim(conf, simPath="")
       DataIO.writeParts("$(conf["path"])/$(simPath)parts$(int(s))", parts,1)
       #DataIO.writeParts("$(conf["path"])/$(simPath)parts", parts,1)
       println("Done step $s")
+
+      DataIO.log("Write g(r)", conf)
+      
+      gr = Stats.gr(parts, conf)
+      writedlm("$(conf["path"])/$(simPath)gr$(int(s)).dat",gr)
+
       if(conf["plot"] == 1)
         path = "$(conf["path"])$(simPath)parts$(int(s)).dat"
         cnf = "$(conf["path"])sim.cnf"

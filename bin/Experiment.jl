@@ -10,6 +10,7 @@ module Experiment
 
 import DataIO
 import Simulation
+import Stats
 
 # Run an experiment by runing a group of identical trials
 # Params
@@ -36,7 +37,7 @@ function runExp(conf, expPath="")
     #procs[trial] = p
 
     DataIO.log("Trial $(int(trial)) ended taking $(toq())", conf)
-    
+
     if(conf["plot"] == 1)
       path = "$(conf["path"])$(expPath)trial$(int(trial))/parts1000.dat"
       cnf = "$(conf["path"])$(expPath)sim.cnf"

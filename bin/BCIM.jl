@@ -73,6 +73,8 @@ function defaultConf()
   # Plotting
   conf["plot" ] = 0
 
+  conf["numbins"] = 200
+
   # Simulation params
   conf["npart"] = [ 2 1 ]
   conf["phi"] = 0.40      # Packing frac
@@ -82,7 +84,7 @@ function defaultConf()
   conf["boltz"] = 1.38e16 # erg / K
   # Diameter of particles
   conf["dia"] = 1.5e-4   # g / (cm s)
-  # Radius of boundary (this gets overwritten by Simulation.init())
+  # Radius of boundary (this gets overwritten by Experiment.runExp())
   conf["size"] = 1.0
 
   conf["diffus"] = conf["boltz"]*conf["temp"]/(3*pi*conf["eta"]*conf["dia"])
@@ -91,9 +93,9 @@ function defaultConf()
 
   # Coefficients
   conf["prop"] = [ 0.01 1.0 ]   # length / difftime
-  conf["rep"] = [ 0.001 0.001 ]    # energy / length
-  conf["adh"] = 0.1       # energy / length
-  conf["contact"] = 0.1   # length
+  conf["rep"] = [ 0.001 0.001 ] # energy / length
+  conf["adh"] = [ 0.01 0.01 ]   # energy / length
+  conf["contact"] = [ 0.1 0.1 ] # length
 
   return conf
 end

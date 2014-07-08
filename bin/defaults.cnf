@@ -11,7 +11,7 @@ ntrials 1
 # How many steps to run for each trial
 nsteps 1e3
 # How many steps between data recording
-freq 5e2
+freq 1e3
 # Time step size
 dt 1.0e-4
 ################################################################################
@@ -28,7 +28,7 @@ dia 1.5e-4
 ## Species Vars
 ## These are different between species
 # Number of particles
-npart 100 0
+npart 10 0
 # Propulsion
 prop 1e-7 0.00
 # Repulsion
