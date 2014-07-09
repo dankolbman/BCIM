@@ -10,7 +10,6 @@ module Experiment
 
 import DataIO
 import Simulation
-import Stats
 
 # Run an experiment by runing a group of identical trials
 # Params

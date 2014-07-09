@@ -8,6 +8,8 @@ import DataIO
 import Experiment
 using ArgParse
 
+require("Types.jl")
+
 # Initialize the file system by creating needed directories and files
 # Params:
 #   conf - the configuration Dict
@@ -155,4 +157,13 @@ function main()
 
 end
 
+function test()
+  println("Testing particle creation and output:")
+  parts = Array(Part, 3)
+  for i in 1:size(parts,1)
+    parts[i] = Part(1, rand(2), rand(2), rand(1), 0.0)
+  end
+  print(parts)
+end
+#test()
 main()

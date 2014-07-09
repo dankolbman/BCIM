@@ -9,7 +9,6 @@ module Simulation
 
 import DataIO
 import Dynamics
-import Stats
 
 # Runs a simulation from start to finish
 # Params
@@ -31,7 +30,7 @@ function runSim(conf, simPath="")
 
       DataIO.log("Write g(r)", conf)
       
-      gr = Stats.gr(parts, conf)
+      #gr = Stats.gr(parts, conf)
       writedlm("$(conf["path"])/$(simPath)gr$(int(s)).dat",gr)
 
       if(conf["plot"] == 1)
@@ -80,8 +79,6 @@ end
 function makeRanSphere(conf)
   # Create an array of particle matricies for each species
   parts = Array(Any, length(conf["npart"]))
-  # Appearently can't specify arrays of arrays of floats?
-  #parts = Array(Array{Float64}, length(conf["npart"])) 
   # Iterate through each species
   for sp in 1:length(conf["npart"])
     # An array for all particles in the species
