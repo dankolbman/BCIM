@@ -6,6 +6,8 @@
 
 module DataIO
 
+include("Types.jl")
+
 # Appends output to a logfile
 # Params
 #   str - the string to write
@@ -120,13 +122,9 @@ function writeParts(filen, parts, spec=0)
     writedlm(f, parts[spec],' ')
     close(f)
   else
-    # Write all species to different files
-    for sp in 1:length(parts)
-      f = open("$(filen)SP$sp.dat","a+")
-      writedlm(f, parts[sp], ' ')
-      close(f)
-      #writedlm("$(filen)SP$sp.dat", parts[sp], ' ')
-    end
+    f = open("$(filen).dat","a+")
+    print(f, parts)
+    close(f)
   end
 end
 
@@ -137,21 +135,15 @@ function test()
   #writeConf("newconf.cnf", conf1)
   #conf2 = readConf("newconf.cnf")
   #println(conf2)
-
-  # Make some species
-  parts = Array(Any,2)
-  for sp in 1:2
-    # Make some particles for the species
-    spn = Array(Float64,6,8)
-    for p in 1:5
-      spn[p,:] = [ rand(1,6) 2*pi*rand() 0 ]
-    end
-    parts[sp] = spn
+  parts = Array(Part, 3)
+  for i in 1:size(parts,1)
+    parts[i] = Part(1, rand(2), rand(2), rand(1), 0.0)
   end
+  print(parts)
 
   # Write positions
+  println("Test DataIO.writeParts")
   writeParts("parts", parts)
-  print(parts)
 end
 
 end

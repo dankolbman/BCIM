@@ -164,6 +164,9 @@ function test()
     parts[i] = Part(1, rand(2), rand(2), rand(1), 0.0)
   end
   print(parts)
+
+  Simulation.test()
+  DataIO.test()
 end
 #test()
 main()

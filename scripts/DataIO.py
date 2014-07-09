@@ -23,9 +23,9 @@ def readPos(filen):
     for line in f:
       l = line.split()
       if len(l) < 3: break
-      xpos.append(float(l[0]))
-      ypos.append(float(l[1]))
-      zpos.append(float(l[2]))
+      xpos.append(float(l[1]))
+      ypos.append(float(l[2]))
+      zpos.append(float(l[3]))
     f.close()
   except IOError as e:
     print('IO Error!', e.strerror)

@@ -38,7 +38,8 @@ function runExp(conf, expPath="")
     DataIO.log("Trial $(int(trial)) ended taking $(toq())", conf)
 
     if(conf["plot"] == 1)
-      path = "$(conf["path"])$(expPath)trial$(int(trial))/parts1000.dat"
+      #path = "$(conf["path"])$(expPath)trial$(int(trial))/parts.dat"
+      path = "$(conf["path"])$(expPath)trial$(int(trial))/parts.dat"
       cnf = "$(conf["path"])$(expPath)sim.cnf"
       cmd = `python ../scripts/posplot.py $cnf $path`
       run(cmd)

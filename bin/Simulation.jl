@@ -10,6 +10,8 @@ module Simulation
 import DataIO
 import Dynamics
 
+include("Types.jl")
+
 # Runs a simulation from start to finish
 # Params
 #   conf - the configuration dict with experiment parameters
@@ -24,17 +26,18 @@ function runSim(conf, simPath="")
     step(conf, parts)
     # Collect data
     if(s%conf["freq"] == 0)
-      DataIO.writeParts("$(conf["path"])/$(simPath)parts$(int(s))", parts,1)
-      #DataIO.writeParts("$(conf["path"])/$(simPath)parts", parts,1)
+      #DataIO.writeParts("$(conf["path"])/$(simPath)parts$(int(s))", parts)
+      DataIO.writeParts("$(conf["path"])$(simPath)parts", parts)
       println("Done step $s")
 
-      DataIO.log("Write g(r)", conf)
+      #DataIO.log("Write g(r)", conf)
       
       #gr = Stats.gr(parts, conf)
-      writedlm("$(conf["path"])/$(simPath)gr$(int(s)).dat",gr)
+      #writedlm("$(conf["path"])/$(simPath)gr$(int(s)).dat",gr)
 
       if(conf["plot"] == 1)
-        path = "$(conf["path"])$(simPath)parts$(int(s)).dat"
+        #path = "$(conf["path"])$(simPath)parts$(int(s)).dat"
+        path = "$(conf["path"])$(simPath)parts.dat"
         cnf = "$(conf["path"])sim.cnf"
         cmd = `python ../scripts/posplot.py $cnf $path`
         #@spawn run(cmd)
@@ -77,22 +80,21 @@ end
 # Returns
 #   A particle species array
 function makeRanSphere(conf)
-  # Create an array of particle matricies for each species
-  parts = Array(Any, length(conf["npart"]))
+  # Creates an array for all the particles
+  parts = Array(Part, int(sum(conf["npart"])))
+  # Number of particles placed
+  pl = 0
   # Iterate through each species
   for sp in 1:length(conf["npart"])
-    # An array for all particles in the species
-    spn = Array(Float64,int(conf["npart"][sp]), 9)
-    for i = 1:int(conf["npart"][sp])
+    for p = 1:int(conf["npart"][sp])
       # This creates a uniform distribution in the sphere
       lam = (conf["size"]-conf["dia"]/2)*cbrt(rand())
       u = 2*rand()-1
       phi = 2*pi*rand()
-      xyz = [ lam*sqrt(1-u^2)*cos(phi) lam*sqrt(1-u^2)*sin(phi) lam*u ]
-      # Write the particle array
-      spn[i,:] = [ xyz 0 0 0 2*pi*rand() 2*pi*rand() 0 ]
+      xyz = [ lam*sqrt(1-u^2)*cos(phi), lam*sqrt(1-u^2)*sin(phi), lam*u ]
+      parts[pl+p] = Part(sp, xyz, [0, 0, 0], 2*pi*rand(2), 0.0)
     end
-    parts[sp] = spn
+    pl += int(conf["npart"][sp])
   end
   return parts
 end
@@ -144,6 +146,12 @@ function makeRanBox(conf)
     end
   end
   return parts
+end
+
+function test()
+  println("Test scoping of particle type")
+  part = Part(1, rand(2), rand(2), rand(1), 0.0)
+  print(part)
 end
 
 end
