@@ -36,21 +36,23 @@ function gr(parts, conf)
       gofr[i,1] = (i+0.5)*binsep/conf["dia"]
     end
   end
-  
 
   return gofr
 end
 
 
 # Compute average msd for an array of particles
-function avgMSD(parts::Array, num::Array,nitn)
-  avg = zeros(Float64, size(num,1))
+function avgMSD(conf, parts)
+  # Update displacements
+  sqdtot = zeros(Float64, size(conf["npart"],1))
+  
   for p in parts
-    avg[p.sp] += p.msd
-    num[p.sp] += 1
-    p.msd = 0
+    #sqdtot[p.sp] +=  sum((p.pos - p.org).^2)
+    d = (p.pos - p.org)
+    sqdtot[p.sp] += d[1]^2 + d[2]^2 + d[3]^2
+    #sqdtot[p.sp] += p.sqd
   end
-  return (avg)./num/nitn
+  return  sqdtot ./ float(conf["npart"])
 end
 
 end

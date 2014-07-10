@@ -73,19 +73,21 @@ function defaultConf()
   conf["freq"] = 100
 
   # Plotting
-  conf["plot" ] = 0
+  conf["plot" ] = 1
+  conf["posplot"] = "../scripts/posplot.py"
+  conf["msdplot"] = "../scripts/msdplot.py"
 
   conf["numbins"] = 200
 
   # Simulation params
-  conf["npart"] = [ 2 1 ]
+  conf["npart"] = {400.0,1.0}
   conf["phi"] = 0.40      # Packing frac
   conf["eta"] = 1.0e-2    # g / (cm s)
   conf["dt"] = 1.0e-4     # s
   conf["temp"] = 298.0    # K
   conf["boltz"] = 1.38e-16 # erg / K
   # Diameter of particles
-  conf["dia"] = 1.5e-4   # g / (cm s)
+  conf["dia"] = 15.0e-4   # g / (cm s)
   # Radius of boundary (this gets overwritten by Experiment.runExp())
   conf["size"] = 1.0
 
@@ -94,10 +96,11 @@ function defaultConf()
     pi*conf["eta"]*conf["dia"]^3)
 
   # Coefficients
-  conf["prop"] = [ 0.01 1.0 ]   # length / difftime
-  conf["rep"] = [ 0.001 0.001 ] # energy / length
-  conf["adh"] = [ 0.01 0.01 ]   # energy / length
-  conf["contact"] = [ 0.1 0.1 ] # length
+  conf["prop"] = [ 0.01, 1.0 ]   # length / difftime
+  conf["rep"] = [ 0.001, 0.001 ] # energy / length
+  conf["adh"] = [ 0.01, 0.01 ]   # energy / length
+  conf["contact"] = [ 0.1, 0.1 ] # length
+
 
   return conf
 end
@@ -109,17 +112,17 @@ end
 #   A configuration dict with nondimensional units
 function dedimension(conf)
   # Dimensionless units
-  utime = (conf["dia"])^2/conf["diffus"]
-  ulength = conf["dia"]
-  uenergy = conf["boltz"]*conf["temp"]
-  conf["rotdiffus"] = conf["rotdiffus"]*utime
-  conf["diffus"] = conf["diffus"]*utime/(ulength^2)
-  conf["dia"] = conf["dia"]./ulength
-  conf["dt"] = conf["dt"]/utime
-  conf["rep"] = conf["rep"]./ulength
-  conf["contact"] = conf["contact"]./ulength
+  conf["utime"] = (conf["dia"])^2/conf["diffus"]
+  conf["ulength"] = conf["dia"]
+  conf["uenergy"] = conf["boltz"]*conf["temp"]
+  conf["rotdiffus"] = conf["rotdiffus"]*conf["utime"]
+  conf["diffus"] = conf["diffus"]*conf["utime"]/(conf["ulength"]^2)
+  conf["dia"] = conf["dia"]./conf["ulength"]
+  conf["dt"] = conf["dt"]/conf["utime"]
+  conf["rep"] = conf["rep"]./conf["ulength"]
+  conf["contact"] = conf["contact"]./conf["ulength"]
   conf["adh"] = conf["adh"]./conf["contact"]
-  conf["pretrad"] = sqrt(2.0*conf["diffus"]/conf["dt"])
+  conf["pretrad"] = sqrt(2.0/conf["dt"])
   conf["prerotd"] = sqrt(2.0*conf["rotdiffus"]*conf["dt"])
 
   return conf
@@ -146,6 +149,7 @@ function main()
   # Log
   DataIO.log("Experiment starting...", conf)
   DataIO.log("Experiment path at $(conf["path"])", conf)
+
   
   #addprocs(3)
 

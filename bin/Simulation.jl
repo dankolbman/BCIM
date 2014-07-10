@@ -20,13 +20,14 @@ include("Types.jl")
 #   conf - the configuration dict with experiment parameters
 #   simPath - the path for the simulation to store files
 function runSim(conf, simPath="")
-  
-  # Initialize simulation
-  parts = init(conf, simPath)
-  
+
+# Initialize simulation
+parts = init(conf, simPath)
+
   ndata = int(conf["nsteps"]/conf["freq"])
 
-  avgmsd = Array(Float64, ndata, size(conf["npart"],1)+1)
+  avgmsd = zeros(Float64, ndata, size(conf["npart"],1)+1)
+
 
   # Run each step
   for s in 1:conf["nsteps"]
@@ -35,39 +36,38 @@ function runSim(conf, simPath="")
 
     # Collect data
     if(s%conf["freq"] == 0)
-      t = s/conf["dt"]
+
+      t = s*conf["dt"]
       #DataIO.writeParts("$(conf["path"])/$(simPath)parts$(int(s))", parts)
       DataIO.writeParts("$(conf["path"])$(simPath)parts", parts, t)
       println("Done step $s")
 
+      # Calculate msd
       avgmsd[int(s/conf["freq"]), 1] = t
-      avgmsd[int(s/conf["freq"]), 2:end] = Stats.avgMSD(parts, conf["npart"],conf["nsteps"])
+      # avgMSD() updates sq displacements and returns avg msd for all species
+      avgmsd[int(s/conf["freq"]), 2:end] = Stats.avgMSD(conf,parts)
 
       #DataIO.log("Write g(r)", conf)
-      
       #gr = Stats.gr(parts, conf)
       #writedlm("$(conf["path"])/$(simPath)gr$(int(s)).dat",gr)
-      
+
       #p1 = plot(avgmsd[:,1],avgmsd[:,2])
       #display(p1)
-      #println("Press enter to continue: ")
-      #readline(STDIN)
-      #savefig("awsome.png")
 
-      if(conf["plot"] == 1)
-
-        #path = "$(conf["path"])$(simPath)parts$(int(s)).dat"
+      if(false)#conf["plot"] == 1)
+        path = "$(conf["path"])$(simPath)parts$(int(s)).dat"
         #path = "$(conf["path"])$(simPath)parts.dat"
-        #cnf = "$(conf["path"])sim.cnf"
-        #cmd = `python ../scripts/posplot.py $cnf $path`
+        cnf = "$(conf["path"])sim.cnf"
+        cmd = `python ../scripts/posplot.py $cnf $path`
         #@spawn run(cmd)
       end
-      
     end
   end
-  
+  #savefig("awsome.png")
+  #println("Press enter to continue: ")
+  #readline(STDIN)
   DataIO.writeMSD("$(conf["path"])$(simPath)avgMSD", avgmsd)
-  
+
 end
 
 # Initializes the physical environment
@@ -114,7 +114,7 @@ function makeRanSphere(conf)
       u = 2*rand()-1
       phi = 2*pi*rand()
       xyz = [ lam*sqrt(1-u^2)*cos(phi), lam*sqrt(1-u^2)*sin(phi), lam*u ]
-      parts[pl+p] = Part(sp, xyz, [0, 0, 0], 2*pi*rand(2), 0.0)
+      parts[pl+p] = Part(sp, xyz, [0, 0, 0], 2*pi*rand(2))
     end
     pl += int(conf["npart"][sp])
   end

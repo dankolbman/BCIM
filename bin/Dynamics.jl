@@ -14,17 +14,17 @@ function forceCalc(conf, parts)
   # Apply a brownian force to all particle
   brownian(conf, parts)
   # Apply propulsion to particles
-  prop(conf, parts)
+  #prop(conf, parts)
   # Repulsive force
   #repF(conf, parts)
 
   for p in parts
-    newpos = p.pos + p.vel
-    dist = sqrt(newpos[1]^2 + newpos[2]^2 + newpos[3]^2)
+    newpos = p.pos + p.vel*conf["dt"]
+    #dist = sqrt(newpos[1]^2 + newpos[2]^2 + newpos[3]^2)
     # Within the sphere bounds
     if(true) #dist <= conf["size"] - conf["dia"]/2.0)
       p.pos = newpos
-      p.msd += dist
+      #p.msd += dist
     else
     # Place on the edge of the sphere
       thet = acos(newpos[3]/dist)
@@ -45,7 +45,8 @@ function brownian(conf, parts)
   # Iterate each particle
   for p in parts 
     # Add some normal velocity
-    p.vel += conf["pretrad"].*randn(3)/1.0e9
+    #p.vel += conf["pretrad"] * randn(3)
+    p.vel = conf["pretrad"] .* randn(3)
   end
 end
 

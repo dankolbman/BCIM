@@ -9,18 +9,18 @@ verbose 1
 # Number of trials to run per experiment
 ntrials 1
 # How many steps to run for each trial
-nsteps 1e4
+nsteps 1e5
 # How many steps between data recording
-freq 1e4
+freq 1e3
 # Time step size
-dt 1.0e-4
+dt 1.0e-6
 ################################################################################
 ## System Vars
 ## These affect the physical system
 # Packing fraction
 phi 0.05
 # The diameter of one particle
-dia 1.5e-4
+dia 15.0e-4
 # Diffusions
 #diffus 
 #rotdiffus 
@@ -28,7 +28,7 @@ dia 1.5e-4
 ## Species Vars
 ## These are different between species
 # Number of particles
-npart 20 0
+npart 512 1
 # Propulsion
 prop 1.0 0.00
 # Repulsion
@@ -42,4 +42,5 @@ contact 0.1 0.0
 # Should the plot script be called?
 plot 1
 # The program to run when we plot
-ploter "python ../scripts/posplot.py"
+posplot "../scripts/posplot.py"
+msdplot "../scripts/msdplot.py"

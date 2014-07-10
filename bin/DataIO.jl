@@ -121,7 +121,7 @@ function writeParts(filen, parts, t=0.0, spec=0)
     mkpath(dirname(filen))
   end
   f = open("$(filen).dat","a+")
-  println(f,"### [ time species pos... vel... ang... msd")
+  println(f,"### [ time species pos... vel... ang... sqd")
   for p in parts 
     println(f, "$t $(p)")
   end
