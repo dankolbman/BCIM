@@ -19,7 +19,7 @@ import Simulation
 function runExp(conf, expPath="")
 
   # The radius for a sphere with the desired packing fraction
-  conf["size"] = 1000*cbrt((conf["dia"]/2)^3*conf["npart"][1] / conf["phi"])
+  conf["size"] = cbrt((conf["dia"]/2)^3*conf["npart"][1] / conf["phi"])
 
   # Write configuration file for the trial
   DataIO.writeConf("$(conf["path"])sim", conf)

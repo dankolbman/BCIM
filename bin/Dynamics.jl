@@ -11,26 +11,27 @@ include("Types.jl")
 # Calculate and apply all forces between particles
 function forceCalc(conf, parts)
 
+  for p in parts
+    p.vel = [ 0, 0, 0 ]
+  end
   # Apply a brownian force to all particle
   brownian(conf, parts)
   # Apply propulsion to particles
-  #prop(conf, parts)
+  prop(conf, parts)
   # Repulsive force
   #repF(conf, parts)
 
   for p in parts
     newpos = p.pos + p.vel*conf["dt"]
-    #dist = sqrt(newpos[1]^2 + newpos[2]^2 + newpos[3]^2)
+    dist = sqrt(newpos[1]^2 + newpos[2]^2 + newpos[3]^2)
     # Within the sphere bounds
-    if(true) #dist <= conf["size"] - conf["dia"]/2.0)
+    if(dist <= conf["size"] - conf["dia"]/2.0)
       p.pos = newpos
-      #p.msd += dist
     else
     # Place on the edge of the sphere
       thet = acos(newpos[3]/dist)
       phi = atan2(newpos[2],newpos[1])
       r = conf["size"]-conf["dia"]/2.0
-      #p.msd += r - sqrt(p.pos[1]^2 + p.pos[2]^2 + p.pos[3]^2)
       p.pos = r*[ sin(thet)*cos(phi), sin(thet)*sin(phi), cos(thet) ]
     end
   end
@@ -45,8 +46,7 @@ function brownian(conf, parts)
   # Iterate each particle
   for p in parts 
     # Add some normal velocity
-    #p.vel += conf["pretrad"] * randn(3)
-    p.vel = conf["pretrad"] .* randn(3)
+    p.vel += conf["pretrad"] * randn(3)
   end
 end
 
@@ -60,7 +60,7 @@ function prop(conf, parts)
     p.ang[1] += conf["rotdiffus"]*randn()
     p.ang[2] += conf["rotdiffus"]*randn()
     # Determine velocity components
-    v = abs(conf["prop"][p.sp]*randn())
+    v = conf["prop"][p.sp]*randn()
     u = cos(p.ang[1])
     vx = v*sqrt(1-u^2)*cos(p.ang[2])
     vy = v*sqrt(1-u^2)*sin(p.ang[2])

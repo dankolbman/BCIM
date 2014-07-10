@@ -11,7 +11,13 @@ type Part
   pos::Array{Float64}
   vel::Array{Float64}
   ang::Array{Float64}
-  msd::Float64
+  # The total square distance, used for msd
+  sqd::Float64
+  # The starting coordinate
+  org::Array{Float64}
+
+  Part(sp, pos, vel, ang, sqd) = new(sp, pos, vel, ang, sqd, pos)
+  Part(sp, pos, vel, ang) = new(sp, pos, vel, ang, 0.0, pos)
 end
 
 # The following formats the output of particle data
@@ -22,7 +28,7 @@ function show(io::IO, p::Part)
   print_arr(io, p.pos)
   print_arr(io, p.vel)
   print_arr(io, p.ang)
-  print(io, "$(p.msd)")
+  print(io, "$(p.sqd)")
 end
 
 function print_arr(io, X::AbstractArray)
