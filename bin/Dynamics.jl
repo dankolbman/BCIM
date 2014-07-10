@@ -12,17 +12,17 @@ include("Types.jl")
 function forceCalc(conf, parts)
 
   # Apply a brownian force to all particle
-  #brownian(conf, parts)
+  brownian(conf, parts)
   # Apply propulsion to particles
-  #prop(conf, parts)
+  prop(conf, parts)
   # Repulsive force
-  repF(conf, parts)
+  #repF(conf, parts)
 
   for p in parts
     newpos = p.pos + p.vel
-    dist = sqrt(sum(newpos.^2))
+    dist = sqrt(newpos[1]^2 + newpos[2]^2 + newpos[3]^2)
     # Within the sphere bounds
-    if(dist <= conf["size"] - conf["dia"]/2.0)
+    if(true) #dist <= conf["size"] - conf["dia"]/2.0)
       p.pos = newpos
       p.msd += dist
     else
@@ -30,7 +30,8 @@ function forceCalc(conf, parts)
       thet = acos(newpos[3]/dist)
       phi = atan2(newpos[2],newpos[1])
       r = conf["size"]-conf["dia"]/2.0
-      p.msd += r - sqrt(sum(p.pos.^2))
+      #p.msd += r - sqrt(p.pos[1]^2 + p.pos[2]^2 + p.pos[3]^2)
+      p.pos = r*[ sin(thet)*cos(phi), sin(thet)*sin(phi), cos(thet) ]
     end
   end
 end
@@ -44,7 +45,7 @@ function brownian(conf, parts)
   # Iterate each particle
   for p in parts 
     # Add some normal velocity
-    p.vel += conf["pretrad"].*randn(3)
+    p.vel += conf["pretrad"].*randn(3)/1.0e9
   end
 end
 
@@ -64,7 +65,7 @@ function prop(conf, parts)
     vy = v*sqrt(1-u^2)*sin(p.ang[2])
     vz = v*u
     # Update particle velocity
-    p.vel += [ vx, vy, vz ]/1000
+    p.vel += [ vx, vy, vz ]
   end
 end
 

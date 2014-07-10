@@ -6,6 +6,8 @@
 
 module Stats
 
+include("Types.jl")
+
 # Compute radial distribution function and return an array [ r gr ]
 # Params
 #   parts - the particles
@@ -16,7 +18,6 @@ function gr(parts, conf)
 
   # Iterate each species
   for sp in 1:size(parts,1)
-    if 
     # Iterate each particle
     for p1 in 1:(size(parts[sp],1)-1)
       for p2 in (p1+1):size(parts[sp],1)
@@ -38,6 +39,18 @@ function gr(parts, conf)
   
 
   return gofr
+end
+
+
+# Compute average msd for an array of particles
+function avgMSD(parts::Array, num::Array,nitn)
+  avg = zeros(Float64, size(num,1))
+  for p in parts
+    avg[p.sp] += p.msd
+    num[p.sp] += 1
+    p.msd = 0
+  end
+  return (avg)./num/nitn
 end
 
 end

@@ -8,6 +8,7 @@
 
 module Experiment
 
+
 import DataIO
 import Simulation
 
@@ -18,7 +19,7 @@ import Simulation
 function runExp(conf, expPath="")
 
   # The radius for a sphere with the desired packing fraction
-  conf["size"] = cbrt((conf["dia"]/2)^3*conf["npart"][1] / conf["phi"])
+  conf["size"] = 1000*cbrt((conf["dia"]/2)^3*conf["npart"][1] / conf["phi"])
 
   # Write configuration file for the trial
   DataIO.writeConf("$(conf["path"])sim", conf)
@@ -40,9 +41,16 @@ function runExp(conf, expPath="")
     if(conf["plot"] == 1)
       #path = "$(conf["path"])$(expPath)trial$(int(trial))/parts.dat"
       path = "$(conf["path"])$(expPath)trial$(int(trial))/parts.dat"
+      out = "$(conf["path"])$(expPath)trial$(int(trial))/pos.png"
       cnf = "$(conf["path"])$(expPath)sim.cnf"
+      cmd = `python $(conf["posplot"]) $cnf $out $path`
       cmd = `python ../scripts/posplot.py $cnf $path`
+      #run(cmd)
+      path = "$(conf["path"])$(expPath)trial$(int(trial))/avgMSD.dat"
+      out = "$(conf["path"])$(expPath)trial$(int(trial))/msd.png"
+      cmd = `python $(conf["msdplot"]) $cnf $out $path`
       run(cmd)
+
     end
   end
   

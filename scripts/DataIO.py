@@ -10,6 +10,7 @@
 """
 import sys
 import re
+import numpy as np
 
 def readPos(filen):
   """ readPos : String -> float[] float[]
@@ -21,33 +22,33 @@ def readPos(filen):
   try:
     f = open(filen)
     for line in f:
-      l = line.split()
-      if len(l) < 3: break
-      xpos.append(float(l[1]))
-      ypos.append(float(l[2]))
-      zpos.append(float(l[3]))
+      if line[0] != "#":
+        l = line.split()
+        if len(l) < 3: break
+        xpos.append(float(l[2]))
+        ypos.append(float(l[3]))
+        zpos.append(float(l[4]))
     f.close()
   except IOError as e:
     print('IO Error!', e.strerror)
   return xpos,ypos,zpos
 
-def readMsdave(filen):
-  """ readMsdave : String -> float[] float[]
+def readAvgMSD(filen):
+  """ readAvgMsd : String -> float[]
   Read averaged mean square displacement data and return time, msd data
   """
-  time=[]
   msd=[]
   try:
     f = open(filen)
     for line in f:
-      l = line.split()
-      if len(l) < 4: break
-      time.append(float(l[2]))
-      msd.append(float(l[3]))
+      if line[0] != "#":
+        l = line.split()
+        msd.append([ float(l[0]), float(l[1]) ])
+        #msd.append([ float(i) for i in l ])
   except IOError as e:
     print('IO Error!', e.strerror)
   f.close()
-  return time, msd
+  return np.array(msd)
 
 def readGr(filen):
   """ readGr : String -> float[] float[]

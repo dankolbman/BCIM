@@ -7,8 +7,11 @@
 
 module Simulation
 
+using Winston
+
 import DataIO
 import Dynamics
+import Stats
 
 include("Types.jl")
 
@@ -20,31 +23,50 @@ function runSim(conf, simPath="")
   
   # Initialize simulation
   parts = init(conf, simPath)
+  
+  ndata = int(conf["nsteps"]/conf["freq"])
+
+  avgmsd = Array(Float64, ndata, size(conf["npart"],1)+1)
 
   # Run each step
   for s in 1:conf["nsteps"]
+    # Step
     step(conf, parts)
+
     # Collect data
     if(s%conf["freq"] == 0)
+      t = s/conf["dt"]
       #DataIO.writeParts("$(conf["path"])/$(simPath)parts$(int(s))", parts)
-      DataIO.writeParts("$(conf["path"])$(simPath)parts", parts)
+      DataIO.writeParts("$(conf["path"])$(simPath)parts", parts, t)
       println("Done step $s")
+
+      avgmsd[int(s/conf["freq"]), 1] = t
+      avgmsd[int(s/conf["freq"]), 2:end] = Stats.avgMSD(parts, conf["npart"],conf["nsteps"])
 
       #DataIO.log("Write g(r)", conf)
       
       #gr = Stats.gr(parts, conf)
       #writedlm("$(conf["path"])/$(simPath)gr$(int(s)).dat",gr)
+      
+      #p1 = plot(avgmsd[:,1],avgmsd[:,2])
+      #display(p1)
+      #println("Press enter to continue: ")
+      #readline(STDIN)
+      #savefig("awsome.png")
 
       if(conf["plot"] == 1)
+
         #path = "$(conf["path"])$(simPath)parts$(int(s)).dat"
-        path = "$(conf["path"])$(simPath)parts.dat"
-        cnf = "$(conf["path"])sim.cnf"
-        cmd = `python ../scripts/posplot.py $cnf $path`
+        #path = "$(conf["path"])$(simPath)parts.dat"
+        #cnf = "$(conf["path"])sim.cnf"
+        #cmd = `python ../scripts/posplot.py $cnf $path`
         #@spawn run(cmd)
       end
       
     end
   end
+  
+  DataIO.writeMSD("$(conf["path"])$(simPath)avgMSD", avgmsd)
   
 end
 

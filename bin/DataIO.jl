@@ -1,6 +1,9 @@
 ##
 # Functions for file reading and writing
 # 
+# TODO it might be better to pass file streams to these functions rather
+# than open and close inside of the functions.
+#
 # Dan Kolbman 2014
 ##
 
@@ -110,22 +113,37 @@ end
 # Params
 #   filen - the file to write to
 #   parts - particle species array
+#   t - time when data is being recorded
 #   spec - which species to write
-function writeParts(filen, parts, spec=0)
+function writeParts(filen, parts, t=0.0, spec=0)
   # Make file structure if it doesn't exist
   if(!isdir(dirname(filen)))
     mkpath(dirname(filen))
   end
-  
-  if(spec != 0)
-    f = open("$(filen).dat","a+")
-    writedlm(f, parts[spec],' ')
-    close(f)
-  else
-    f = open("$(filen).dat","a+")
-    print(f, parts)
-    close(f)
+  f = open("$(filen).dat","a+")
+  println(f,"### [ time species pos... vel... ang... msd")
+  for p in parts 
+    println(f, "$t $(p)")
   end
+  close(f)
+end
+
+# Write average MSD to file
+# Params
+#   filen - the file to write to
+#   msd - msd data [ time msd... ]
+function writeMSD(filen, msd)
+  if(!isdir(dirname(filen)))
+    mkpath(dirname(filen))
+  end
+
+  f = open("$(filen).dat", "a+")
+  write(f, "# [ time  msd... ]\n")
+  for i in 1:size(msd,1)
+    print(f, "$(msd[i,1]) $(msd[i,2])\n")
+  end
+  #writedlm(f, msd, ' ')
+  close(f)
 end
 
 # Test functions

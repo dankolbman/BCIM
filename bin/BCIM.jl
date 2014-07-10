@@ -83,7 +83,7 @@ function defaultConf()
   conf["eta"] = 1.0e-2    # g / (cm s)
   conf["dt"] = 1.0e-4     # s
   conf["temp"] = 298.0    # K
-  conf["boltz"] = 1.38e16 # erg / K
+  conf["boltz"] = 1.38e-16 # erg / K
   # Diameter of particles
   conf["dia"] = 1.5e-4   # g / (cm s)
   # Radius of boundary (this gets overwritten by Experiment.runExp())
@@ -109,14 +109,13 @@ end
 #   A configuration dict with nondimensional units
 function dedimension(conf)
   # Dimensionless units
+  utime = (conf["dia"])^2/conf["diffus"]
   ulength = conf["dia"]
-  utime = conf["dia"]^2/conf["diffus"]
   uenergy = conf["boltz"]*conf["temp"]
-  
   conf["rotdiffus"] = conf["rotdiffus"]*utime
   conf["diffus"] = conf["diffus"]*utime/(ulength^2)
   conf["dia"] = conf["dia"]./ulength
-  conf["dt"] = conf["dt"]./utime
+  conf["dt"] = conf["dt"]/utime
   conf["rep"] = conf["rep"]./ulength
   conf["contact"] = conf["contact"]./ulength
   conf["adh"] = conf["adh"]./conf["contact"]

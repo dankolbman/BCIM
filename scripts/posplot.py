@@ -65,10 +65,10 @@ def plotBounds(conf, axes):
 """
 if __name__ == '__main__':
   if(len(sys.argv) < 3):
-    print('Correct usage: python posplot.py sysparam.dat pos1.dat pos2.dat ...')
+    print('Correct usage: python posplot.py sysparam.dat out.dat pos1.dat...')
   else:
     # Get the configuration variables
     conf = DataIO.readConf(sys.argv[1])
-    plotSys(conf, sys.argv[2:])
-    plt.show()
+    plotSys(conf, sys.argv[3:])
+    plt.savefig(sys.argv[2])
   
