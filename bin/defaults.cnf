@@ -6,12 +6,14 @@ path ../data/
 autodir 1
 # The verbosity when run, prints everything to stdout if 1
 verbose 1
+# Use OpenCL to compute accross different devices
+ocl 0
 # Number of trials to run per experiment
 ntrials 1
 # How many steps to run for each trial
-nsteps 1e5
+nsteps 1e6
 # How many steps between data recording
-freq 1e3
+freq 1e5
 # Time step size
 dt 1.0e-4
 ################################################################################
@@ -28,7 +30,7 @@ dia 15.0e-4
 ## Species Vars
 ## These are different between species
 # Number of particles
-npart 512 1
+npart 200 200
 # Propulsion
 prop 1.0e3 1.0e3
 # Repulsion

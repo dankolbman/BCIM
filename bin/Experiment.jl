@@ -11,6 +11,7 @@ module Experiment
 
 import DataIO
 import Simulation
+import SimCL
 
 # Run an experiment by runing a group of identical trials
 # Params
@@ -32,7 +33,12 @@ function runExp(conf, expPath="")
     DataIO.log("Begin trial $(int(trial))", conf)
     tic()
 
-    Simulation.runSim(conf, "$(expPath)trial$(int(trial))/")
+    if(conf["ocl"] == 1)
+      SimCL.runSim(conf, "$(expPath)trial$(int(trial))/")
+    else
+      Simulation.runSim(conf, "$(expPath)trial$(int(trial))/")
+    end
+
     #p = @spawn Simulation.runSim(conf, "$(expPath)trial$(int(trial))/")
     #procs[trial] = p
 

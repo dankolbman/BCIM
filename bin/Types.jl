@@ -8,13 +8,13 @@ import Base.show
 
 type Part
   sp::Int8
-  pos::Array{Float64}
-  vel::Array{Float64}
-  ang::Array{Float64}
+  pos::Array{Float32}
+  vel::Array{Float32}
+  ang::Array{Float32}
   # The total square distance, used for msd
   sqd::Float64
   # The starting coordinate
-  org::Array{Float64}
+  org::Array{Float32}
 
   Part(sp, pos, vel, ang, sqd) = new(sp, pos, vel, ang, sqd, pos)
   Part(sp, pos, vel, ang) = new(sp, pos, vel, ang, 0.0, pos)

@@ -9,6 +9,9 @@ module Simulation
 
 using Winston
 
+import OpenCL
+const cl = OpenCL
+
 import DataIO
 import Dynamics
 import Stats
@@ -21,11 +24,10 @@ include("Types.jl")
 #   simPath - the path for the simulation to store files
 function runSim(conf, simPath="")
 
-# Initialize simulation
-parts = init(conf, simPath)
+  # Initialize simulation
+  parts = init(conf, simPath)
 
   ndata = int(conf["nsteps"]/conf["freq"])
-
   avgmsd = zeros(Float64, ndata, size(conf["npart"],1)+1)
 
 
