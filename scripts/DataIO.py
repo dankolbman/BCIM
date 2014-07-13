@@ -5,7 +5,7 @@
   readMsdave - Read average mean squared displacement
   readGr - Read g(r) data
   readConf - Read system configuration data
-  
+  i
   Dan Kolbman 2014
 """
 import sys
@@ -13,8 +13,8 @@ import re
 import numpy as np
 
 def readPos(filen):
-  """ readPos : String -> float[] float[]
-  Read position data from a file and return x and y lists
+  """ readPos : String -> float[] float[] float[]
+  Read position data from a file and return x y and z lists
   """
   xpos=[]
   ypos=[]
@@ -32,6 +32,42 @@ def readPos(filen):
   except IOError as e:
     print('IO Error!', e.strerror)
   return xpos,ypos,zpos
+
+def readPos2D(filen, state=-1):
+  """ readPos2D : String int -> float[] float[]
+  Read position data from a file and return x and y lists
+  Read the last state by default, or a specified state
+  """
+  xpos=[]
+  ypos=[]
+  try:
+    f = open(filen)
+    # Read from bottom if looking for last state
+    lines = reversed(list(f)) if state == -1 else list(f)
+    numstates = -1
+
+    for line in lines:
+      # Bottom up
+      if(state == -1):
+        if(line[0] == "#"): break
+        l = line.split()
+        xpos.append(float(l[2]))
+        ypos.append(float(l[3]))
+
+      # Scan for wanted state
+      if(line[0] == "#"): numstates+=1
+      # If on the wanted state
+      elif( numstates == state ):
+        l = line.split()
+        xpos.append(float(l[2]))
+        ypos.append(float(l[3]))
+      # If we passed the wanted state, get out
+      elif( numstates > state): break
+    f.close()
+  except IOError as e:
+    print('IO Error!', e.strerror)
+
+  return xpos,ypos
 
 def readAvgMSD(filen):
   """ readAvgMsd : String -> float[]

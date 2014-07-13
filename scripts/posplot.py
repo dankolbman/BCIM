@@ -1,5 +1,5 @@
 """
-  Plot positions of a multispecies system.
+  Plot positions of a multispecies spherical system
 
   Dan Kolbman 2014
 """
@@ -71,4 +71,3 @@ if __name__ == '__main__':
     conf = DataIO.readConf(sys.argv[1])
     plotSys(conf, sys.argv[3:])
     plt.savefig(sys.argv[2])
-  
