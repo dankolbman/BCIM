@@ -47,7 +47,7 @@ function runSim(conf, simPath="")
   # Need to turn all the particles into arrays of their parameters
   nparts = int(sum(conf["npart"]))
   h_sp = Array(Int8, nparts)
-  h_pos = Array(Float32, nparts*DIMS)
+  h_pos = rand(Float32, nparts*DIMS)
   h_vel = Array(Float32, nparts*DIMS)
   h_ang = Array(Float32, nparts*(DIMS-1))
 
@@ -69,9 +69,13 @@ function runSim(conf, simPath="")
 
   # Build the program
   DataIO.log("Building the OpenCL kernel functions", conf)
-  prg = cl.Program(ctx, source=buildKernel(conf)) |> cl.build!
+  #prg = cl.Program(ctx, source=buildKernel(conf, ctx)) |> cl.build!
 
+  prg = buildKernel(conf,ctx)
+
+  brownian = cl.Kernel(prg, "brownian")
   move = cl.Kernel(prg, "move")
+
   
   DataIO.log("Starting simulation steps", conf)
 
@@ -80,12 +84,18 @@ function runSim(conf, simPath="")
 
     # Step and pass buffers for particle parameter arrays
     #step(conf, queue, kernals, [ d_sp d_pos d_vel d_ang ], nparts)
-    cl.call(queue, move, (nparts,DIMS) , nothing,
-        int32(nparts), int32(3), d_pos, d_vel)
+    #rand!(h_rand)
+    #cl.call(queue, brownian, (nparts,), nothing, float32(conf["pretrad"]),
+    #    int32(nparts), int32(3), d_vel)
+    #h_vel = cl.read(queue, d_vel)
+    
+    cl.call(queue, move, (nparts,DIMS) , nothing, 
+        int32(nparts), int32(3), d_pos, d_vel,
+         float32(conf["dt"]), float32(conf["pretrad"]) )
 
     # Record data
     if(s%conf["freq"] == 0)
-      #println("Done step $s")
+      println("Done step $s")
       t = s*conf["dt"]
 
       h_sp = cl.read(queue, d_sp)
@@ -167,32 +177,46 @@ function makeRanSphere(conf)
       u = 2*rand()-1
       phi = 2*pi*rand()
       xyz = [ lam*sqrt(1-u^2)*cos(phi), lam*sqrt(1-u^2)*sin(phi), lam*u ]
-      parts[pl+p] = Part(sp, xyz, [0.01, 0.0, 0.0], 2*pi*rand(2))
+      parts[pl+p] = Part(sp, xyz, [0.0, 0.0, 0.0], 2*pi*rand(2))
     end
     pl += int(conf["npart"][sp])
   end
   return parts
 end
 
-# Build kernel source
-function buildKernel(conf)
+# Build kernel source and return Program
+function buildKernel(conf, ctx)
+ # ksrc = open(readall, "Dynamics.cl")
+  err_code = Array(cl.CL_int, 1)
+  # create program
+  kernel_source = open(readall, "Dynamics.cl")
 
-  src = "
-  __kernel void move(
-    const int Mdim,
-    const int Ndim,
-    __global float* pos,
-    __global float* vel)
-  {
-    unsigned int i = get_global_id(0);
-    unsigned int j = get_global_id(1);
-    if(i < Ndim && j < Mdim)
-      pos[i*Ndim+j] += vel[i*Ndim+j];
+  bytesource = bytestring(kernel_source)
+  prg_id = cl.api.clCreateProgramWithSource(ctx.id, 1, [bytesource], C_NULL, err_code)
+  if err_code[1] != cl.CL_SUCCESS
+      error("Failed to create program")
+  end
 
-  }
-  "
+  flags = bytestring("-I ./")
 
-  return src
+  # build program
+  err = cl.api.clBuildProgram(prg_id, 0, C_NULL, flags, C_NULL, C_NULL)
+  if err != cl.CL_SUCCESS
+      println(err)
+      error("Failed to build program")
+  end
+
+  return cl.Program(prg_id)
+end
+
+function test()
+  #ranTest = cl.Kernel(prg, "ranTest")
+  h_rand = zeros(Float32, nparts*(DIMS))
+  println(h_rand)
+  d_rand = cl.Buffer(Float32, ctx, :copy, hostbuf=h_rand)
+  cl.call(queue, ranTest, (25,), nothing, int32(100), d_rand)
+  h_rand = cl.read(queue, d_rand)
+  println(h_rand)
 
 end
 
