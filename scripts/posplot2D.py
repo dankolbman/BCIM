@@ -17,10 +17,10 @@ def plotSys(conf, arg):
   for i in range(0,len(arg)):
     fig = plt.gcf()
     ax = fig.gca()
-    xpos, ypos = DataIO.readPos2D(arg[i], -1)
+    sp, xpos, ypos = DataIO.readPos2D(arg[i], -1)
     circleScatter(xpos, ypos, ax,\
-            radius=conf['dia']/2,\
-            color=colors[i%len(colors)])
+            sp, colors,\
+            radius=conf['dia']/2)
     #s = [conf['diameter']**2/4*3.1415 for i in range(len(xpos))]
     #plt.scatter(xpos, ypos,color=colors[(i)%3])
 
@@ -42,12 +42,13 @@ def plotBounds(conf, axes):
   return True
   
 
-def circleScatter(xpos, ypos, axes, **kwargs):
+def circleScatter(xpos, ypos, axes, sp, colors, **kwargs):
   """ circleScatter : float[] float[] -> True
   Creates a scatter plot of circles
   """
-  for x,y in zip(xpos, ypos):
-    circle = plt.Circle((x,y), **kwargs)
+  #for x,y in zip(xpos, ypos):
+  for i in range(len(xpos)):
+    circle = plt.Circle((xpos[i],ypos[i]), color=colors[int(sp[i]-1)], **kwargs)
     axes.add_patch(circle)
 
   return True

@@ -38,6 +38,7 @@ def readPos2D(filen, state=-1):
   Read position data from a file and return x and y lists
   Read the last state by default, or a specified state
   """
+  sp = []
   xpos=[]
   ypos=[]
   try:
@@ -51,6 +52,7 @@ def readPos2D(filen, state=-1):
       if(state == -1):
         if(line[0] == "#"): break
         l = line.split()
+        sp.append(int(l[1]))
         xpos.append(float(l[2]))
         ypos.append(float(l[3]))
 
@@ -59,6 +61,7 @@ def readPos2D(filen, state=-1):
       # If on the wanted state
       elif( numstates == state ):
         l = line.split()
+        sp.append(int(l[1]))
         xpos.append(float(l[2]))
         ypos.append(float(l[3]))
       # If we passed the wanted state, get out
@@ -67,7 +70,7 @@ def readPos2D(filen, state=-1):
   except IOError as e:
     print('IO Error!', e.strerror)
 
-  return xpos,ypos
+  return sp,xpos,ypos
 
 def readAvgMSD(filen):
   """ readAvgMsd : String -> float[]

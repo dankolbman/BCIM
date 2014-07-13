@@ -27,7 +27,7 @@ def plotMsd(conf, arg):
       slope,intercept=np.polyfit(msd[:,0],msd[:,1],1)
       # Put fit on graph
       plt.text(0.1, 0.9-i*0.06,\
-        'Slope: '+str(int(slope)),\
+        'Slope: '+str(slope),\
         transform = ax.transAxes)
   # Titles
   plt.gcf().gca().set_title('Mean Square Displacement')

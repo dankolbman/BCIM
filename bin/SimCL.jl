@@ -70,29 +70,29 @@ function runSim(conf, simPath="")
   # Build the program
   DataIO.log("Building the OpenCL kernel functions", conf)
   #prg = cl.Program(ctx, source=buildKernel(conf, ctx)) |> cl.build!
-
+  # buildKernel() now constructs a program object and returns it
   prg = buildKernel(conf,ctx)
 
-  #brownian = cl.Kernel(prg, "brownian")
+  # This is faster than a modularized solution
   move2D = cl.Kernel(prg, "move2D")
-
+  #brownian2D = cl.Kernel(prg, "brownian2D")
+  #movePos2D = cl.Kernel(prg, "movePos2D")
   
   DataIO.log("Starting simulation steps", conf)
 
   # Start the steps
   for s in 1:conf["nsteps"]
 
-    #rand!(h_rand)
-    #cl.call(queue, brownian, (nparts,), nothing, float32(conf["pretrad"]),
-    #    int32(nparts), int32(3), d_vel)
-    #h_vel = cl.read(queue, d_vel)
-    
     cl.call(queue, move2D, (nparts,) , nothing, 
         int32(nparts), int32(2), d_pos, d_vel, int32(s),
          float32(conf["dt"]), float32(conf["pretrad"]) )
+
+    # This is slower because of the memory overhead required
+    #cl.call(queue, brownian2D, (nparts,), nothing,
+    #    int32(nparts), int32(DIMS), int32(s), float32(conf["pretrad"]), d_vel)
+    #cl.call(queue, movePos2D, (nparts, DIMS), nothing,
+    #    int32(nparts), int32(DIMS), float32(conf["dt"]), d_pos, d_vel)
     
-    #if(s/conf["freq"] % 50 == 0)
-    #end
 
     # Record data
     if(s%conf["freq"] == 0)
