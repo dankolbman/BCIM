@@ -42,7 +42,7 @@ function runSim(conf, simPath="")
   parts = init(conf, simPath)
 
   # The dimensionality of the system (2 or 3)
-  DIMS = 3
+  DIMS = int(conf["dim"])
 
   # Need to turn all the particles into arrays of their parameters
   nparts = int(sum(conf["npart"]))
@@ -73,8 +73,8 @@ function runSim(conf, simPath="")
 
   prg = buildKernel(conf,ctx)
 
-  brownian = cl.Kernel(prg, "brownian")
-  move = cl.Kernel(prg, "move")
+  #brownian = cl.Kernel(prg, "brownian")
+  move2D = cl.Kernel(prg, "move2D")
 
   
   DataIO.log("Starting simulation steps", conf)
@@ -82,20 +82,26 @@ function runSim(conf, simPath="")
   # Start the steps
   for s in 1:conf["nsteps"]
 
-    # Step and pass buffers for particle parameter arrays
-    #step(conf, queue, kernals, [ d_sp d_pos d_vel d_ang ], nparts)
     #rand!(h_rand)
     #cl.call(queue, brownian, (nparts,), nothing, float32(conf["pretrad"]),
     #    int32(nparts), int32(3), d_vel)
     #h_vel = cl.read(queue, d_vel)
     
-    cl.call(queue, move, (nparts,DIMS) , nothing, 
-        int32(nparts), int32(3), d_pos, d_vel,
+    cl.call(queue, move2D, (nparts,) , nothing, 
+        int32(nparts), int32(2), d_pos, d_vel, int32(s),
          float32(conf["dt"]), float32(conf["pretrad"]) )
+    
+    #if(s/conf["freq"] % 50 == 0)
+    #end
 
     # Record data
     if(s%conf["freq"] == 0)
-      println("Done step $s")
+      # Progress bar (always wanted to do this)
+      print("[")
+      print("#"^int(s/conf["nsteps"]*70))
+      print("-"^(70-int(s/conf["nsteps"]*70)))
+      print("] $(int(s/conf["nsteps"]*100))%\r")
+
       t = s*conf["dt"]
 
       h_sp = cl.read(queue, d_sp)
@@ -126,6 +132,7 @@ function runSim(conf, simPath="")
     end
 
   end
+  println()
   DataIO.writeMSD("$(conf["path"])$(simPath)avgMSD", avgmsd)
 
 end
@@ -142,28 +149,21 @@ end
 function init(conf, simPath="")
   # The length of a side of a cube for the required packing fraction
   #conf["size"] = cbrt(4/3*pi*conf["dia"]^3/2/(conf["phi"]))
-  parts = makeRanSphere(conf)
+  if(conf["dim"] == 3)
+    parts = makeRanSphere(conf)
+  else 
+    parts = makeRanCirc(conf)
+  end
   DataIO.writeParts("$(conf["path"])/$(simPath)init",parts)
 
   return parts
-end
-
-# One simulation step. All forces are calculated, then positions updated
-# Params
-#   conf - the configuration dict with experiment parameters
-function step(conf, queue, kernals, parts,nparts=1)
-  # Update pos
-  #Dynamics.forceCalc(conf, parts)
-  cl.call(queue, kernals["move"], (3, nparts) , nothing,
-        parts[2], parts[3], nparts)
-      
 end
 
 # Generates particles randomly inside a sphere
 # Params
 #   conf - the configuration dict with experiment parameters
 # Returns
-#   A particle species array
+#   An array of particles
 function makeRanSphere(conf)
   # Creates an array for all the particles
   parts = Array(Part, int(sum(conf["npart"])),1)
@@ -178,6 +178,25 @@ function makeRanSphere(conf)
       phi = 2*pi*rand()
       xyz = [ lam*sqrt(1-u^2)*cos(phi), lam*sqrt(1-u^2)*sin(phi), lam*u ]
       parts[pl+p] = Part(sp, xyz, [0.0, 0.0, 0.0], 2*pi*rand(2))
+    end
+    pl += int(conf["npart"][sp])
+  end
+  return parts
+end
+
+# Generate particles randomly in a 2D circle
+#   conf - the configuration dict with experiment parameters
+# Returns
+#   An array of particles
+function makeRanCirc(conf)
+  parts = Array(Part, int(sum(conf["npart"])),1)
+  pl = 0
+  for sp in 1:length(conf["npart"])
+    for p in 1:int(conf["npart"][sp])
+      r = sqrt(rand())
+      thet = 2*pi*rand()
+      xy = (conf["size"] - conf["dia"]/2)*r*[ cos(thet), sin(thet) ]
+      parts[pl+p] = Part(sp, xy, [0.0, 0.0], [2*pi*rand()])
     end
     pl += int(conf["npart"][sp])
   end

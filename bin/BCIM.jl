@@ -69,6 +69,7 @@ function defaultConf()
   conf["autodir"] = 1
   conf["verbose"] = 1
   conf["ocl"] = 0
+  conf["dim"] = 2
   conf["ntrials"] = 1
   conf["nsteps"] = 10000
   conf["freq"] = 100

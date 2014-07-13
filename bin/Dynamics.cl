@@ -24,36 +24,6 @@ __kernel void brownian( const int Mdim, const int Ndim, const float diffus,
   }
 }
 
-
-__kernel void ranTest( const int Mdim, __global float* mat ) {
-  unsigned int i = get_global_id(0);
-  if(i*4+3 < Mdim) {
-    const unsigned int MAXINT = 4294967294;
-    threefry4x32_key_t k = {{i, 0xdecafbad, 0xfacebead, 0x12345678}};
-    threefry4x32_ctr_t c = {{0, 0xf00dcafe, 0xdeadbeef, 0xbeeff00d}};
-    union {
-        threefry4x32_ctr_t c;
-        int4 i;
-    } u;
-    c.v[0]++;
-    u.c = threefry4x32(c, k);
-    long x1 = u.i.x, y1 = u.i.y;
-    long x2 = u.i.z, y2 = u.i.w;
-    mat[i*4] = (float)x1/MAXINT;
-    mat[i*4+1] = (float)x2/MAXINT;
-    mat[i*4+2] = (float)y1/MAXINT;
-    mat[i*4+3] = (float)y2/MAXINT;
-    /*
-    float tmp_bm = sqrt(fmax(pow(-2.0,log(mat[i*4])), 0.0));
-    mat[i*4]  = tmp_bm*cos(2.0*M_PI_F*mat[i*4+1]);
-    mat[i*4+1] = tmp_bm*sin(2.0*M_PI_F*mat[i*4+1]);
-    tmp_bm = sqrt(fmax(pow(-2.0,log(mat[i*4+2])), 0.0));
-    mat[i*4+2]  = tmp_bm*cos(2.0*M_PI_F*mat[i*4+3]);
-    mat[i*4+3] = tmp_bm*sin(2.0*M_PI_F*mat[i*4+3]);
-    */
-  }
-}
-
 __kernel void move( const int Mdim, const int Ndim,
   __global float* pos, __global float* vel, const float dt, const float diffus)
 {
@@ -84,4 +54,74 @@ __kernel void move( const int Mdim, const int Ndim,
   }
 }
 
+
+__kernel void move2D( const int Mdim, const int Ndim,
+  __global float* pos, __global float* vel, const int s, const float dt, const float diffus)
+{
+  unsigned int i = get_global_id(0);
+  if(i < Mdim) {
+    // Used to create floats
+    const unsigned int MAXINT = 4294967294;
+    // Seed the rng
+    threefry4x32_key_t k = {{(s+1)*(i+1), 0xdecafbad, 0xfacebead, 0x12345678}};
+    threefry4x32_ctr_t c = {{0, 0xf00dcafe, 0xdeadbeef, 0xbeeff00d}};
+
+    float w, x1, x2; 
+
+    do {
+      union {
+          threefry4x32_ctr_t c;
+          int4 i;
+      } u;
+      c.v[0]++;
+      u.c = threefry4x32(c, k);
+      // Make floats from rng
+      //x1 = (2.0*(float)(u.i.x)/MAXINT)-1.0;
+      //x2 = (2.0*(float)(u.i.y)/MAXINT)-1.0;
+      x1 = (float)(u.i.x)/MAXINT;
+      x2 = (float)(u.i.y)/MAXINT;
+      w = x1 * x1 + x2 * x2;
+    } while ( w >= 1.0 );
+
+    w = sqrt( (-2.0 * log( w ) ) / w );
+    x1 = x1*w*diffus;
+    x2 = x2*w*diffus;
+    //y1 = x1 * w;
+    //y2 = x2 * w;
+    vel[i*Ndim] = x1;
+    vel[i*Ndim+1] = x2;
+
+    pos[i*Ndim] += x1*dt;
+    pos[i*Ndim+1] += x2*dt;
+  }
+}
+
+__kernel void ranTest( const int Mdim, __global float* mat ) {
+  unsigned int i = get_global_id(0);
+  if(i*4+3 < Mdim) {
+    const unsigned int MAXINT = 4294967294;
+    threefry4x32_key_t k = {{i, 0xdecafbad, 0xfacebead, 0x12345678}};
+    threefry4x32_ctr_t c = {{0, 0xf00dcafe, 0xdeadbeef, 0xbeeff00d}};
+    union {
+        threefry4x32_ctr_t c;
+        int4 i;
+    } u;
+    c.v[0]++;
+    u.c = threefry4x32(c, k);
+    long x1 = u.i.x, y1 = u.i.y;
+    long x2 = u.i.z, y2 = u.i.w;
+    mat[i*4] = (float)x1/MAXINT;
+    mat[i*4+1] = (float)x2/MAXINT;
+    mat[i*4+2] = (float)y1/MAXINT;
+    mat[i*4+3] = (float)y2/MAXINT;
+    /*
+    float tmp_bm = sqrt(fmax(pow(-2.0,log(mat[i*4])), 0.0));
+    mat[i*4]  = tmp_bm*cos(2.0*M_PI_F*mat[i*4+1]);
+    mat[i*4+1] = tmp_bm*sin(2.0*M_PI_F*mat[i*4+1]);
+    tmp_bm = sqrt(fmax(pow(-2.0,log(mat[i*4+2])), 0.0));
+    mat[i*4+2]  = tmp_bm*cos(2.0*M_PI_F*mat[i*4+3]);
+    mat[i*4+3] = tmp_bm*sin(2.0*M_PI_F*mat[i*4+3]);
+    */
+  }
+}
 

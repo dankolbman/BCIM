@@ -47,9 +47,9 @@ function avgMSD(conf, parts)
   sqdtot = zeros(Float64, size(conf["npart"],1))
   
   for p in parts
-    #sqdtot[p.sp] +=  sum((p.pos - p.org).^2)
     d = (p.pos - p.org)
-    sqdtot[p.sp] += d[1]^2 + d[2]^2 + d[3]^2
+    sqdtot[p.sp] +=  sum((d).^2)
+   # sqdtot[p.sp] += d[1]^2 + d[2]^2 + d[3]^2
     #sqdtot[p.sp] += p.sqd
   end
   return  sqdtot ./ float(conf["npart"])

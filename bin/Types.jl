@@ -33,7 +33,7 @@ end
 
 function print_arr(io, X::AbstractArray)
     for i=1:size(X,1)
-      print(io, "$(X[i]) ")
+      print(io, "$(X[i])\t")
     end
 end
 
