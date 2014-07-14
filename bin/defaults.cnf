@@ -12,12 +12,14 @@ ocl 1
 dim 2
 # Number of trials to run per experiment
 ntrials 1
+# How many steps to equilibriate for
+nequil 0.0
 # How many steps to run for each trial
-nsteps 1e5
+nsteps 1.0e7
 # How many steps between data recording
-freq 1e3
+freq 1.0e4
 # Time step size
-dt 1.0e-4
+dt 1.0e-5
 ################################################################################
 ## System Vars
 ## These affect the physical system
@@ -32,15 +34,15 @@ dia 15.0e-4
 ## Species Vars
 ## These are different between species
 # Number of particles
-npart 512 512
+npart 256 256
 # Propulsion
 prop 1.0e3 1.0e3
 # Repulsion
-rep 0.001 0.001
+rep 1.5e4 0.5e4
 # Adhesion
-adh 0.1 0.01
+adh 1.0e4 0.0
 # Contact distance for adhesive force
-contact 0.1 0.0
+contact 0.1
 ################################################################################
 ## Plotting
 # Should the plot script be called?

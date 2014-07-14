@@ -7,7 +7,7 @@
 import Base.show
 
 type Part
-  sp::Int8
+  sp::Int32
   pos::Array{Float32}
   vel::Array{Float32}
   ang::Array{Float32}

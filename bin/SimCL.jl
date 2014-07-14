@@ -46,7 +46,7 @@ function runSim(conf, simPath="")
 
   # Need to turn all the particles into arrays of their parameters
   nparts = int(sum(conf["npart"]))
-  h_sp = Array(Int8, nparts)
+  h_sp = Array(Int32, nparts)
   h_pos = rand(Float32, nparts*DIMS)
   h_vel = Array(Float32, nparts*DIMS)
   h_ang = Array(Float32, nparts*(DIMS-1))
@@ -62,7 +62,7 @@ function runSim(conf, simPath="")
 
   # Create device buffers for the parameter arrays
   DataIO.log("Creating OpenCL device buffers", conf)
-  d_sp = cl.Buffer(Int8, ctx, :copy, hostbuf=h_sp)
+  d_sp = cl.Buffer(Int32, ctx, :copy, hostbuf=h_sp)
   d_pos = cl.Buffer(Float32, ctx, :copy, hostbuf=h_pos)
   d_vel = cl.Buffer(Float32, ctx, :copy, hostbuf=h_vel)
   d_ang = cl.Buffer(Float32, ctx, :copy, hostbuf=h_ang)
@@ -74,19 +74,50 @@ function runSim(conf, simPath="")
   prg = buildKernel(conf,ctx)
 
   # This is faster than a modularized solution
+  dynamics2D = cl.Kernel(prg, "dynamics2D")
   move2D = cl.Kernel(prg, "move2D")
   #brownian2D = cl.Kernel(prg, "brownian2D")
   #movePos2D = cl.Kernel(prg, "movePos2D")
   
-  DataIO.log("Starting simulation steps", conf)
+  DataIO.log("Starting equilibriaton", conf)
+  DataIO.writeParts("$(conf["path"])$(simPath)parts",parts,0.0)
+  tic()
+  for s in 1:int(conf["nequil"])
+    cl.call(queue, dynamics2D, (nparts,) , nothing,
+      int32(nparts), int32(2), int32(s),
+      float32(conf["pretrad"]), float32(conf["prerotd"]),
+      float32(conf["dia"]), float32(conf["contact"]),
+      cl.Buffer(Float32, ctx, :copy, hostbuf=float32(conf["prop"])),
+      cl.Buffer(Float32, ctx, :copy, hostbuf=float32(conf["rep"])),
+      cl.Buffer(Float32, ctx, :copy, hostbuf=float32(conf["adh"])),
+      d_sp, d_pos, d_vel, d_ang )
 
+    cl.call(queue, move2D, (nparts,) , nothing,
+      int32(nparts), int32(2), float32(conf["dt"]),
+      float32(conf["dia"]), float32(conf["size"]),
+      d_pos, d_vel )
+
+  end
+  toc()
+
+  tic()
+  DataIO.log("Starting simulation steps", conf)
   # Start the steps
   for s in 1:conf["nsteps"]
 
-    cl.call(queue, move2D, (nparts,) , nothing, 
-        int32(nparts), int32(2), d_pos, d_vel, int32(s),
-         float32(conf["dt"]), float32(conf["pretrad"]) )
+    cl.call(queue, dynamics2D, (nparts,) , nothing,
+      int32(nparts), int32(2), int32(s),
+      float32(conf["pretrad"]), float32(conf["prerotd"]),
+      float32(conf["dia"]), float32(conf["contact"]),
+      cl.Buffer(Float32, ctx, :copy, hostbuf=float32(conf["prop"])),
+      cl.Buffer(Float32, ctx, :copy, hostbuf=float32(conf["rep"])),
+      cl.Buffer(Float32, ctx, :copy, hostbuf=float32(conf["adh"])),
+      d_sp, d_pos, d_vel, d_ang )
 
+    cl.call(queue, move2D, (nparts,) , nothing,
+      int32(nparts), int32(2), float32(conf["dt"]),
+      float32(conf["dia"]), float32(conf["size"]),
+      d_pos, d_vel )
     # This is slower because of the memory overhead required
     #cl.call(queue, brownian2D, (nparts,), nothing,
     #    int32(nparts), int32(DIMS), int32(s), float32(conf["pretrad"]), d_vel)
@@ -96,13 +127,12 @@ function runSim(conf, simPath="")
 
     # Record data
     if(s%conf["freq"] == 0)
-      # Progress bar (always wanted to do this)
       print("[")
       print("#"^int(s/conf["nsteps"]*70))
       print("-"^(70-int(s/conf["nsteps"]*70)))
       print("] $(int(s/conf["nsteps"]*100))%\r")
 
-      t = s*conf["dt"]
+      t = (s+int(conf["nequil"]))*conf["dt"]
 
       h_sp = cl.read(queue, d_sp)
       h_pos = cl.read(queue, d_pos)
@@ -132,6 +162,7 @@ function runSim(conf, simPath="")
     end
 
   end
+  toc()
   println()
   DataIO.writeMSD("$(conf["path"])$(simPath)avgMSD", avgmsd)
 

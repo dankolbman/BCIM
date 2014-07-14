@@ -68,21 +68,22 @@ function defaultConf()
   conf["path"] = "../data/"
   conf["autodir"] = 1
   conf["verbose"] = 1
-  conf["ocl"] = 0
+  conf["ocl"] = 1
   conf["dim"] = 2
   conf["ntrials"] = 1
-  conf["nsteps"] = 10000
-  conf["freq"] = 100
+  conf["nequil"] = 100000
+  conf["nsteps"] = 100000
+  conf["freq"] = 1000
 
   # Plotting
   conf["plot" ] = 1
-  conf["posplot"] = "../scripts/posplot.py"
+  conf["posplot"] = "../scripts/posplot2D.py"
   conf["msdplot"] = "../scripts/msdplot.py"
 
   conf["numbins"] = 200
 
   # Simulation params
-  conf["npart"] = {400.0,1.0}
+  conf["npart"] = {512,512}
   conf["phi"] = 0.40      # Packing frac
   conf["eta"] = 1.0e-2    # g / (cm s)
   conf["dt"] = 1.0e-4     # s
@@ -98,10 +99,10 @@ function defaultConf()
     pi*conf["eta"]*conf["dia"]^3)
 
   # Coefficients
-  conf["prop"] = [ 0.01, 1.0 ]   # length / difftime
-  conf["rep"] = [ 0.001, 0.001 ] # energy / length
+  conf["prop"] = [ 1.0e3, 1.0e3 ]   # length / difftime
+  conf["rep"] = [ 1.5e4, 0.5e4 ] # energy / length
   conf["adh"] = [ 0.01, 0.01 ]   # energy / length
-  conf["contact"] = [ 0.1, 0.1 ] # length
+  conf["contact"] = 0.1 # length
 
 
   return conf
@@ -113,6 +114,8 @@ end
 # Returns
 #   A configuration dict with nondimensional units
 function dedimension(conf)
+  conf["contact"] = conf["dia"]*conf["contact"]
+  push!(conf["rep"], 2*conf["rep"][1]*conf["rep"][2]/sum(conf["rep"]))
   # Dimensionless units
   conf["utime"] = (conf["dia"])^2/conf["diffus"]
   conf["ulength"] = conf["dia"]
