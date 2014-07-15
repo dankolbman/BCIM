@@ -140,7 +140,11 @@ function writeMSD(filen, msd)
   f = open("$(filen).dat", "a+")
   write(f, "# [ time  msd... ]\n")
   for i in 1:size(msd,1)
-    print(f, "$(msd[i,1]) $(msd[i,2])\n")
+    print(f, "$(msd[i,1])")
+    for j in 2:size(msd,2)
+      print(f, " $(msd[i,j])")
+    end
+    print(f,"\n")
   end
   #writedlm(f, msd, ' ')
   close(f)

@@ -17,7 +17,7 @@ def plotSys(conf, arg):
   for i in range(0,len(arg)):
     fig = plt.gcf()
     ax = fig.gca()
-    sp, xpos, ypos = DataIO.readPos2D(arg[i], -1)
+    sp, xpos, ypos = DataIO.readPos2D(arg[i])
     circleScatter(xpos, ypos, ax,\
             sp, colors,\
             radius=conf['dia']/2)

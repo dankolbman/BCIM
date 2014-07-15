@@ -16,17 +16,17 @@ def plotMsd(conf, arg):
   colors = ['#E82C2C', '#245BFF', 'c', 'm']
   for i in range(len(arg)):
     msd = DataIO.readAvgMSD(arg[i])
-    for j in range(1,len(msd)-1):
+    for j in range(1,len(msd[1,:])):
       # Line
-      plt.loglog(msd[:,0], msd[:,1], color=colors[(i)%3], label=str(i))
+      plt.loglog(msd[:,0], msd[:,j], color=colors[(j-1)%3], label=str(i))
       # Dots
       #plt.plot(t, msd, 'o', color=colors[(i)%3], label=str(i))
       # Current axes
       ax = plt.gcf().gca()
       # Linear fit
-      slope,intercept=np.polyfit(msd[:,0],msd[:,1],1)
+      slope,intercept=np.polyfit(msd[:,0],msd[:,j],1)
       # Put fit on graph
-      plt.text(0.1, 0.9-i*0.06,\
+      plt.text(0.1, 0.9-j*0.06,\
         'Slope: '+str(slope),\
         transform = ax.transAxes)
   # Titles
