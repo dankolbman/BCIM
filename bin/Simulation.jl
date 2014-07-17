@@ -7,10 +7,10 @@
 
 module Simulation
 
-using Winston
+#using Winston
 
-import OpenCL
-const cl = OpenCL
+#import OpenCL
+#const cl = OpenCL
 
 import DataIO
 import Dynamics
@@ -38,11 +38,14 @@ function runSim(conf, simPath="")
 
     # Collect data
     if(s%conf["freq"] == 0)
+      print("[")
+      print("#"^int(s/conf["nsteps"]*70))
+      print("-"^(70-int(s/conf["nsteps"]*70)))
+      print("] $(int(s/conf["nsteps"]*100))%\r")
 
       t = s*conf["dt"]
       #DataIO.writeParts("$(conf["path"])/$(simPath)parts$(int(s))", parts)
       DataIO.writeParts("$(conf["path"])$(simPath)parts", parts, t)
-      println("Done step $s")
 
       # Calculate msd
       avgmsd[int(s/conf["freq"]), 1] = t
@@ -68,6 +71,7 @@ function runSim(conf, simPath="")
   #savefig("awsome.png")
   #println("Press enter to continue: ")
   #readline(STDIN)
+  println()
   DataIO.writeMSD("$(conf["path"])$(simPath)avgMSD", avgmsd)
 
 end

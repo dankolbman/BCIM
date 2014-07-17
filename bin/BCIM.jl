@@ -145,29 +145,36 @@ function main()
   conf = defaultConf()
   # Get the arguements passed to the program
   parsedArgs = parseArgs()
-  # Assign params from the configuration file
-  if(parsedArgs["config"]!=nothing)
-    DataIO.readConf(parsedArgs["config"], conf)
+  # Need a config
+  if(parsedArgs["config"]==nothing)
+    error("Please specifiy a configuration file with the -o flag")
   end
-  # De-dimensionalise parameters
-  dedimension(conf)
   # Override path if specified from cli
   if(parsedArgs["outdir"]!=nothing)
     conf["path"] = parsedArgs["outdir"]
   end
   # Initialize the file sysetm
   initFS(conf)
-  # Log
-  DataIO.log("Experiment starting...", conf)
-  DataIO.log("Experiment path at $(conf["path"])", conf)
 
+  nExperiments = DataIO.getNumExp(parsedArgs["config"])
+  # If no experiment separators present, assume 1 experiment
+  if(nExperiments == 0)
+    nExperiments = 1
+  end
   
-  #addprocs(3)
+  DataIO.log("$nExperiments experiment(s) found", conf)
 
-  #@everywhere include("./Experiment.jl")
-  
-  # TODO add an abstraction to allow several experiments with different params
-  Experiment.runExp(conf)
+  for experiment in 1:nExperiments
+    # Fetch parameters for current experiment
+    DataIO.readConf(parsedArgs["config"], conf, experiment)
+    # De-dimensionalise parameters
+    dedimension(conf)
+    # Log
+    DataIO.log("Experiment $experiment starting...", conf, )
+    DataIO.log("Experiment path at $(conf["path"])experiment$experiment/", conf)
+    
+    Experiment.runExp(conf, "experiment$experiment/")
+  end
 
 end
 

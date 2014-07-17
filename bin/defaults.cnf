@@ -1,13 +1,13 @@
 ## Program Vars
 ## These don't change between experiments (Usually)
 # Path to save all output to
-path ../data/
+#path ../data/
 # If 1, a new unique folder will be created in the path and used as the new path
 autodir 1
 # The verbosity when run, prints everything to stdout if 1
 verbose 1
 # Use OpenCL to compute accross different devices
-ocl 1
+ocl 0
 # Dimensionality of the simulation (2 or 3)
 dim 2
 # Number of trials to run per experiment
@@ -15,9 +15,9 @@ ntrials 1
 # How many steps to equilibriate for
 nequil 0.0
 # How many steps to run for each trial
-nsteps 1.0e7
+nsteps 1.0e3
 # How many steps between data recording
-freq 1.0e4
+freq 1.0e2
 # Time step size
 dt 1.0e-5
 ################################################################################
@@ -50,3 +50,15 @@ plot 1
 # The program to run when we plot
 posplot "../scripts/posplot2D.py"
 msdplot "../scripts/msdplot.py"
+################################################################################
+## Experiment 1
+experiment
+rep 1.5e4 1.5e4
+################################################################################
+## Experiment 2
+experiment
+rep 1.5e4 1.5e3
+################################################################################
+## Experiment 3
+experiment
+rep 1.5e4 1.5e2

@@ -11,7 +11,7 @@ module Experiment
 
 import DataIO
 import Simulation
-import SimCL
+#import SimCL
 
 # Run an experiment by runing a group of identical trials
 # Params
@@ -24,7 +24,7 @@ function runExp(conf, expPath="")
   conf["size"] = sqrt((conf["dia"]/2)^2*sum(conf["npart"]) / conf["phi"])
 
   # Write configuration file for the trial
-  DataIO.writeConf("$(conf["path"])sim", conf)
+  DataIO.writeConf("$(conf["path"])$(expPath)sim", conf)
   
   procs = Array(Any, int(conf["ntrials"]))
   

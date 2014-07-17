@@ -33,7 +33,6 @@ function readConf(filen)
   params = Dict{String, Any}()
   readConf(filen, conf)
   return params
-
 end
 
 # Read a configuration file and assigns values to conf dict.
@@ -41,11 +40,19 @@ end
 # Params:
 #   filen - the path for the configuration file
 #   conf - a configuration dict
-function readConf(filen, conf)
+function readConf(filen, conf, nExp=0)
   # Reads data into an array separated by ' '
   data = readdlm(filen,' ',comments=true)
+  expScanned = 0
   # Each element in the array corresponds to a parameter
   for line in 1:size(data,1)
+    if( nExp > 0 && data[line,1] == "experiment")
+      if(expScanned == nExp+1)
+        break   # Don't scan any more parameters after given experiment
+      else
+        expScanned += 1
+      end
+    end
     # The first element is the parameter name
     key = data[line,1]
     vals = Array(Any,0)
@@ -65,11 +72,30 @@ function readConf(filen, conf)
   end
 end
 
+# Scan a configuration file for the number of experiments it contains
+# Params:
+#   filen - the file path for the configuation file
+function getNumExp(filen)
+  f = open(filen)
+  nExp = 0
+  # Each element in the array corresponds to a parameter
+  for line in eachline(f)
+    if(line == "experiment\n")
+      nExp += 1
+    end
+  end
+  close(f)
+  return nExp
+end
+
 # Write a configuration file
 # Params
 #   filen - the path to write the configuration file to
 #   conf - a Dict of parameters
 function writeConf(filen, conf)
+  if(!isdir(dirname(filen)))
+    mkpath(dirname(filen))
+  end
   f = open("$filen.cnf", "w")
   for key in keys(conf)
     line = key
