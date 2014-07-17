@@ -17,15 +17,21 @@ function initFS(conf)
   path = conf["path"]
   # Create a new folder for this run in the path
   if(conf["autodir"]==1)
-    n = 1
+    #n = 1
     # Find a suitable directory name
     # TODO might want to use temporal naming
-    while(ispath("$(path)experiment$n"))
-      n+=1
-    end
-    mkpath("$(path)experiment$n")
-    conf["path"] = "$(path)experiment$n/"
+    #while(ispath("$(path)experiment$n"))
+    #  n+=1
+    #end
+    #mkpath("$(path)experiment$n")
+    #conf["path"] = "$(path)experiment$n/"
 
+    # Using date-time
+    dir = "$(path)$(strftime("%m-%d-%y-%H%M", time()))"
+    mkpath(dir)
+    conf["path"] = "$dir/"
+
+    
   elseif(!isdir(path))
     mkpath(path)
   # Check for existing data
