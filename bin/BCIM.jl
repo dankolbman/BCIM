@@ -136,6 +136,8 @@ function dedimension(conf)
   conf["pretrad"] = sqrt(2.0/conf["dt"])
   conf["prerotd"] = sqrt(2.0*conf["rotdiffus"]*conf["dt"])
 
+  conf["tpart"] = sum(conf["npart"])
+
   return conf
 end
     

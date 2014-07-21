@@ -74,6 +74,8 @@ function runSim(conf, simPath="")
   println()
   DataIO.writeMSD("$(conf["path"])$(simPath)avgMSD", avgmsd)
 
+  post(conf, parts, simPath)
+
 end
 
 # Initializes the physical environment
@@ -94,6 +96,23 @@ function init(conf, simPath="")
   return parts
 end
 
+# Runs post processing after the simulation has ended
+# Params
+# conf - the configuration dict
+# simPath the path of the simulation
+function post(conf, parts, simPath="")
+
+  gr = Stats.gr(conf, parts)
+  writedlm("$(conf["path"])$(simPath)gr.dat", gr)
+
+  if(conf["postSimPy"] != "")
+    path = "$(conf["path"])$(simPath)"
+    cnf = "$(conf["path"])$(simPath)../sim.cnf"
+    cmd = `python $(conf["postSimPy"]) $cnf $path`
+    run(cmd)
+  end
+end
+
 # One simulation step. All forces are calculated, then positions updated
 # Params
 #   conf - the configuration dict with experiment parameters
@@ -109,7 +128,7 @@ end
 #   A particle species array
 function makeRanSphere(conf)
   # Creates an array for all the particles
-  parts = Array(Part, int(sum(conf["npart"])))
+  parts = Array(Part, int(conf["tpart"]))
   # Number of particles placed
   pl = 0
   # Iterate through each species
@@ -135,7 +154,7 @@ end
 #   A particle array
 function makeBox(conf)
   # Number of particles per side
-  sideNum = cbrt(ceil((conf["npart"])))
+  sideNum = cbrt(ceil((conf["tpart"])))
   # Space between particles
   lc = conf["size"]/sideNum
   # An array of parcicle arrays for each species

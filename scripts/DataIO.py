@@ -84,9 +84,9 @@ def readAvgMSD(filen):
         l = line.split()
         msd.append([ float(l[0]), float(l[1]) ])
         #msd.append([ float(i) for i in l ])
+    f.close()
   except IOError as e:
     print('IO Error!', e.strerror)
-  f.close()
   return np.array(msd)
 
 def readGr(filen):

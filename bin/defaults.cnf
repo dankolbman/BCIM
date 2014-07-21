@@ -46,10 +46,12 @@ contact 0.1
 ################################################################################
 ## Plotting
 # Should the plot script be called?
-plot 1
+plot 0
 # The program to run when we plot
 posplot "../scripts/posplot2D.py"
 msdplot "../scripts/msdplot.py"
+# Python programs to run after a simulation ends
+postSimPy "../scripts/postSim.py"
 ################################################################################
 ## Experiment 1
 experiment

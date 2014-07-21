@@ -21,7 +21,7 @@ function runExp(conf, expPath="")
 
   # The radius for a sphere with the desired packing fraction
   #conf["size"] = cbrt((conf["dia"]/2)^3*conf["npart"][1] / conf["phi"])
-  conf["size"] = sqrt((conf["dia"]/2)^2*sum(conf["npart"]) / conf["phi"])
+  conf["size"] = sqrt((conf["dia"]/2)^2*conf["tpart"] / conf["phi"])
 
   # Write configuration file for the trial
   DataIO.writeConf("$(conf["path"])$(expPath)sim", conf)
