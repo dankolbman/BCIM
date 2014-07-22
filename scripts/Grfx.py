@@ -12,8 +12,8 @@ import DataIO
 ################################################################################
 # Plot the system configuration
 
-def plotConfig2D(conf, path, files, show=False):
-  """ plotConfig2D : Dict String String[] Bool  -> None
+def plotConfig2D(conf, path, files):
+  """ plotConfig2D : Dict String String[]  -> None
   Plots system configuration
   """
   colors = ['#E82C2C', '#245BFF', 'c', 'm']
@@ -32,10 +32,6 @@ def plotConfig2D(conf, path, files, show=False):
     #plt.scatter(xpos, ypos,color=colors[(i)%3])
 
   plotBounds(conf, plt.gcf().gca())
-  plt.savefig('finalConf.png', figsize=(1,1), dpi=100)
-  if(show):
-    plt.show()
-
 
 def plotBounds(conf, axes):
   """ plotBounds : Dict Axes -> True
@@ -64,7 +60,7 @@ def circleScatter(xpos, ypos, axes, sp, colors, **kwargs):
 ################################################################################
 # Plot the msd
 
-def plotMSD(path, files, show=False):
+def plotMSD(path, files):
   """ plotMsd : Dict String[] -> None
   Plots mean square displacement data
   """
@@ -74,7 +70,7 @@ def plotMSD(path, files, show=False):
 
     for j in range(1,len(msd[1,:])):
       # Line
-      plt.loglog(msd[:,0], msd[:,j], color=colors[(j-1)%3], label=str(i))
+      plt.plot(msd[:,0], msd[:,j], color=colors[(j-1)%3], label=str(i))
       # Dots
       #plt.plot(t, msd, 'o', color=colors[(i)%3], label=str(i))
       # Current axes
@@ -89,9 +85,6 @@ def plotMSD(path, files, show=False):
   plt.gcf().gca().set_title('Mean Square Displacement')
   plt.xlabel('Time')
   plt.ylabel('MSD')
-  plt.savefig(path+'msdlog.png')
-  if(show):
-    plt.show()
 
 
 """
