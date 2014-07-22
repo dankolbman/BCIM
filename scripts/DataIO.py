@@ -82,7 +82,7 @@ def readAvgMSD(filen):
     for line in f:
       if line[0] != "#":
         l = line.split()
-        msd.append([ float(l[0]), float(l[1]) ])
+        msd.append([ float(i) for i in l ])
         #msd.append([ float(i) for i in l ])
     f.close()
   except IOError as e:
