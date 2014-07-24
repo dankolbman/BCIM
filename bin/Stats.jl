@@ -14,10 +14,10 @@ include("Types.jl")
 #   conf - the configuration dict
 function gr(conf, parts)
   binsep = 0.5*conf["size"]/conf["numbins"]
-  gofr = Array(Float64, conf["numbins"],1+length(conf["npart"]))
+  gofr = Array(Float64, conf["numbins"],1+size(conf["npart"],1))
 
   # Iterate each species
-  for sp in 1:length(conf["npart"])
+  for sp in 1:size(conf["npart"],1)
     # Iterate each particle
     for p1 in 1:(conf["tpart"]-1)
       for p2 in (p1+1):conf["tpart"]
@@ -25,9 +25,9 @@ function gr(conf, parts)
           # Separations
           dr = parts[p1].pos .- parts[p2].pos
           # Distance
-          d = sqrt(sum(dr.^2))
+          d = sqrt(sum(dr.*dr))
           if(d < 0.5*conf["size"])
-            gofr[ floor(d/binsep), sp+1] += 2
+            gofr[ floor(d/binsep)+1, sp+1] += 2
           end
         end
       end
