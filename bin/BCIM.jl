@@ -30,7 +30,6 @@ function initFS(conf)
     dir = "$(path)$(strftime("%m-%d-%y-%H%M", time()))"
     mkpath(dir)
     conf["path"] = "$dir/"
-
     
   elseif(!isdir(path))
     mkpath(path)
@@ -42,6 +41,7 @@ function initFS(conf)
       exit()
     end
   end
+  
 end
 
 # Parse arguements from the command line
@@ -142,6 +142,10 @@ function dedimension(conf)
 end
     
 # Main function loop
+# First generate a default configuration with defaults for all variables
+# Parse arguements and read user config and save to the directory
+# Create necesarry file structure and figure out how many experiments to run
+# Run each experiment with appropriate params
 function main()
   # Generate default params
   conf = defaultConf()
@@ -157,6 +161,9 @@ function main()
   end
   # Initialize the file sysetm
   initFS(conf)
+
+  # Make a copy of the configuration file
+  cp(parsedArgs["config"], "$(conf["path"])batch.cnf")
 
   nExperiments = DataIO.getNumExp(parsedArgs["config"])
   # If no experiment separators present, assume 1 experiment

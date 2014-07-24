@@ -8,6 +8,13 @@ import time
 import os
 import sys
 
+# File names
+SUMMARY = 'summary.txt'
+NOTES = 'notes.txt'
+LOG = 'log.txt'
+CONF = 'batch.cnf'
+
+# Constructs the head of md file (attributes interpreted by the generator)
 def makeHeader( path, name='Entry'):
   # Contsruct header
   hstr = ''
@@ -19,7 +26,24 @@ def makeHeader( path, name='Entry'):
   hstr += 'Slug: experiment-'+time.strftime('%Y-%m-%d-%H%M',timemod)+'\n'
   return hstr
 
+# Constructs the summary portion of the page
+def makeSummary(path):
+  sumstr = ''
+  with open(path, 'r') as f:
+    sumstr = 'Summary: '
+    sumstr += f.readline()
+    sumstr += '\n'
+  return sumstr
 
+# Construct notes section
+def makeNotes(path):
+  notestr = '### Notes\n'
+  with open(path, 'r') as f:
+    for line in f.readlines():
+      notestr += line
+  return notestr
+
+# Constructs the Log portion of the page
 def makeLog(path):
   outstr = '### Log\n\n\t:::python3\n'
   with open(path, 'r') as f:
@@ -27,6 +51,7 @@ def makeLog(path):
       outstr += '\t'+line
   return outstr
 
+# Constructs the configuration portion of the page
 def makeConf(path):
   outstr = '### Configuration\n\n\t:::python3\n'
   with open(path, 'r') as f:
@@ -34,7 +59,6 @@ def makeConf(path):
       outstr += '\t'+line
   return outstr
   
-
 # Makes a notebook entry from the files in the  specified path
 # Params:
 #   path - the path to save the entry to and to locate data
@@ -42,27 +66,33 @@ def makeConf(path):
 def makeEntry( path, name='entry'):
   f = open(os.path.join(path, name+'.md'), 'w')
   print('Writing to '+os.path.join(path,name+'.md'))
+  sumstr = ''
+  notestr = ''
   logstr = ''
   confstr = ''
-  print(makeHeader(path))
 
   # Contstruct the header
+  headstr = makeHeader(path)
 
-  if(os.path.isfile(os.path.join(path, 'summary.txt'))):
+  if(os.path.isfile(os.path.join(path, SUMMARY))):
     print('Found summary file...')
+    sumstr = makeSummary(os.path.join(path, SUMMARY))
   
-  if(os.path.isfile(os.path.join(path, 'notes.txt'))):
+  if(os.path.isfile(os.path.join(path, NOTES))):
     print('Found note file...')
+    notestr = makeNotes(os.path.join(path, NOTES))
   
-  if(os.path.isfile(os.path.join(path, 'log.txt'))):
+  if(os.path.isfile(os.path.join(path, LOG))):
     print('Found log file...')
-    logstr += makeLog(os.path.join(path, 'log.txt'))
+    logstr += makeLog(os.path.join(path, LOG))
   
-  if(os.path.isfile(os.path.join(path, 'sim.cnf'))):
+  if(os.path.isfile(os.path.join(path, CONF))):
     print('Found configuration file...')
-    confstr += makeConf(os.path.join(path, 'sim.cnf'))
-   
+    confstr += makeConf(os.path.join(path, CONF))
 
+  page = headstr + sumstr + '\n\n' +notestr + '\n\n' + logstr + '\n\n' + confstr
+  f.write(page)
+  f.close()
 
 if __name__ == '__main__':
   if(len(sys.argv) < 2):
