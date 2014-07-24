@@ -11,6 +11,7 @@ module Experiment
 
 import DataIO
 import Simulation
+import Stats
 #import SimCL
 
 # Run an experiment by runing a group of identical trials
@@ -45,6 +46,7 @@ function runExp(conf, expPath="")
 
     DataIO.log("Trial $(int(trial)) ended taking $(toq())", conf)
 
+
     if(conf["plot"] == 1)
       #path = "$(conf["path"])$(expPath)trial$(int(trial))/parts.dat"
       path = "$(conf["path"])$(expPath)trial$(int(trial))/parts.dat"
@@ -57,14 +59,46 @@ function runExp(conf, expPath="")
       out = "$(conf["path"])$(expPath)trial$(int(trial))/msd.png"
       cmd = `python $(conf["msdplot"]) $cnf $out $path`
       run(cmd)
-
     end
   end
+  
+  post(conf, expPath)
   
   # Wait on all processes
   #for p in procs
     #wait(p)
   #end
+end
+
+# Run at the end of every experiment
+function post(conf, expPath)
+
+  # Find all the g(r) data files
+  grfiles::Array{String} = []
+  for i in 1:int(conf["ntrials"])
+      path  = "$(conf["path"])$(expPath)trial$(i)/gr.dat"
+      prepend!(grfiles, [path])
+  end
+  # Average all the g(r) functions
+  gr = Stats.avgGR(conf, grfiles)
+  writedlm("$(conf["path"])$(expPath)avgGR.dat", gr)
+
+  # Find all the msd data files
+  msdfiles::Array{String} = []
+  for i in 1:int(conf["ntrials"])
+      path  = "$(conf["path"])$(expPath)trial$(i)/msd.dat"
+      prepend!(msdfiles, [path])
+  end
+  # Average all msd functions
+  msd = Stats.avgMSD(conf, msdfiles)
+  writedlm("$(conf["path"])$(expPath)avgMSD.dat", msd)
+  
+  if(conf["postExpPy"] != "")
+    path = "$(conf["path"])$(expPath)"
+    cnf = "$(conf["path"])$(expPath)sim.cnf"
+    cmd = `python $(conf["postExpPy"]) $cnf $path`
+    run(cmd)
+  end
 end
 
 end

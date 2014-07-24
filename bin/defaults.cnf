@@ -11,7 +11,7 @@ ocl 0
 # Dimensionality of the simulation (2 or 3)
 dim 2
 # Number of trials to run per experiment
-ntrials 1
+ntrials 2
 # How many steps to equilibriate for
 nequil 0.0
 # How many steps to run for each trial
@@ -47,11 +47,10 @@ contact 0.1
 ## Plotting
 # Should the plot script be called?
 plot 0
-# The program to run when we plot
-posplot "../scripts/posplot2D.py"
-msdplot "../scripts/msdplot.py"
 # Python programs to run after a simulation ends
 postSimPy "../scripts/postSim.py"
+# Python programs to run after an experiment ends
+postExpPy "../scripts/postExp.py"
 ################################################################################
 ## Experiment 1
 experiment
@@ -62,5 +61,5 @@ experiment
 rep 1.5e4 1.5e3
 ################################################################################
 ## Experiment 3
-experiment
-rep 1.5e4 1.5e2
+#experiment
+#rep 1.5e4 1.5e2

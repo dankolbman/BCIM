@@ -72,7 +72,7 @@ function runSim(conf, simPath="")
   #println("Press enter to continue: ")
   #readline(STDIN)
   println()
-  DataIO.writeMSD("$(conf["path"])$(simPath)avgMSD", avgmsd)
+  DataIO.writeMSD("$(conf["path"])$(simPath)msd", avgmsd)
 
   post(conf, parts, simPath)
 
@@ -104,7 +104,6 @@ function post(conf, parts, simPath="")
 
   gr = Stats.gr(conf, parts)
   writedlm("$(conf["path"])$(simPath)gr.dat", gr)
-
   if(conf["postSimPy"] != "")
     path = "$(conf["path"])$(simPath)"
     cnf = "$(conf["path"])$(simPath)../sim.cnf"

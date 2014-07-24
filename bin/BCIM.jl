@@ -83,8 +83,8 @@ function defaultConf()
 
   # Plotting
   conf["plot" ] = 1
-  conf["posplot"] = "../scripts/posplot2D.py"
-  conf["msdplot"] = "../scripts/msdplot.py"
+  conf["postSimPy"] = ""
+  conf["postExpPy"] = ""
 
   conf["numbins"] = 200
 

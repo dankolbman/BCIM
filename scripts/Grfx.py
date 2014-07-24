@@ -86,6 +86,24 @@ def plotMSD(path, files):
   plt.xlabel('Time')
   plt.ylabel('MSD')
 
+################################################################################
+# Plot the g(r)
+
+def plotGR(path, files):
+  """ plotGR : Dict String[] -> None
+  Plots g(r) data
+  """
+  colors = ['#E82C2C', '#245BFF', 'c', 'm']
+  for i in range(len(files)):
+    gr = DataIO.readGr(str(path)+files[i])
+    for j in range(1, len(gr[1,:])):
+      plt.plot(gr[:,0], gr[:,j], color=colors[(j-1)%3], label=str(i))
+      
+  # Titles
+  plt.gcf().gca().set_title('Radial Distribution')
+  plt.xlabel('r (diameters)')
+  plt.ylabel('g(r)')
+
 
 """
   If called directly, only plot msd
