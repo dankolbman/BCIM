@@ -163,16 +163,16 @@ function writeMSD(filen, msd)
     mkpath(dirname(filen))
   end
 
-  f = open("$(filen).dat", "a+")
+  f = open("$(filen).dat", "w")
   write(f, "# [ time  msd... ]\n")
-  for i in 1:size(msd,1)
-    print(f, "$(msd[i,1])")
-    for j in 2:size(msd,2)
-      print(f, " $(msd[i,j])")
-    end
-    print(f,"\n")
-  end
-  #writedlm(f, msd, ' ')
+  #for i in 1:size(msd,1)
+  #  print(f, "$(msd[i,1])")
+  #  for j in 2:size(msd,2)
+  #    print(f, " $(msd[i,j])")
+  #  end
+  #  print(f,"\n")
+  #end
+  writedlm(f, msd, ' ')
   close(f)
 end
 

@@ -48,7 +48,7 @@ function avgGR(conf, files::Array)
   # Read in each file, divide it, and add it
   for i in 1:nfiles
     if(ispath(files[i]))
-      tgr = readdlm(files[i])
+      tgr = readdlm(files[i], '\t', Float64)
       tgr[:,2:end] = tgr[:,2:end] ./ nfiles
       # This only needs to happen once
       gr[:,1] = tgr[:,1]
@@ -60,11 +60,11 @@ end
 
 function avgMSD(conf, files::Array{String})
   nfiles = size(files,1)
-  msd = zeros(Float64, countlines(files[1]),  1+size(conf["npart"],1) )
+  msd = zeros(Float64, countlines(files[1])-1,  1+size(conf["npart"],1) )
   # Read in each file, divide it, and add it
   for i in 1:nfiles
     if(ispath(files[i]))
-      tmsd = readdlm(files[i])
+      tmsd = readdlm(files[i], ' ', Float64, comment_char='#')
       tmsd[:,2:end] = tmsd[:,2:end] ./ nfiles
       # This only needs to happen once
       msd[:,1] = tmsd[:,1]
