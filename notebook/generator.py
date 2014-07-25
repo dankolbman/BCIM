@@ -1,6 +1,11 @@
 ##
 # Handles the generation of notebook entries.
 #
+# Arguments:
+#   path to experiment batch directory
+# Example:
+# python generator.py 01-01-14-1200/
+#
 # Dan Kolbman 2014
 ##
 
@@ -13,6 +18,7 @@ SUMMARY = 'summary.txt'
 NOTES = 'notes.txt'
 LOG = 'log.txt'
 CONF = 'batch.cnf'
+
 
 # Constructs the head of md file (attributes interpreted by the generator)
 def makeHeader( path, name='Entry'):
@@ -96,7 +102,7 @@ def makeEntry( path, name='entry'):
 
 if __name__ == '__main__':
   if(len(sys.argv) < 2):
-    print('Please specify a path')
+    print('Please specify a path to the experiment batch directory')
   elif(len(sys.argv) == 2):
     makeEntry(sys.argv[1])
   elif(len(sys.argv) > 2):
