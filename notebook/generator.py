@@ -37,6 +37,7 @@ def makeSummary(path):
   sumstr = ''
   with open(path, 'r') as f:
     sumstr = 'Summary: '
+    f.readline()
     sumstr += f.readline()
     sumstr += '\n'
   return sumstr
@@ -45,6 +46,7 @@ def makeSummary(path):
 def makeNotes(path):
   notestr = '### Notes\n'
   with open(path, 'r') as f:
+    f.readline()
     for line in f.readlines():
       notestr += line
   return notestr
