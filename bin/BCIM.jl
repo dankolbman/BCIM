@@ -9,6 +9,7 @@ import Experiment
 using ArgParse
 
 require("Types.jl")
+require("Notebook.jl")
 
 # Initialize the file system by creating needed directories and files
 # Params:
@@ -85,6 +86,8 @@ function defaultConf()
   conf["plot" ] = 1
   conf["postSimPy"] = ""
   conf["postExpPy"] = ""
+  conf["editor"] = "vim"
+  conf["ignorenotebook"] = 0
 
   conf["numbins"] = 200
 
@@ -173,6 +176,10 @@ function main()
   
   DataIO.log("$nExperiments experiment(s) found", conf)
 
+  if( conf["ignorenotebook"] == 0 )
+    s = @spawn writeSummary(conf)
+  end
+  # Run each experiment
   for experiment in 1:nExperiments
     # Fetch parameters for current experiment
     DataIO.readConf(parsedArgs["config"], conf, experiment)
@@ -185,18 +192,15 @@ function main()
     Experiment.runExp(conf, "experiment$experiment/")
   end
 
-end
-
-function test()
-  println("Testing particle creation and output:")
-  parts = Array(Part, 3)
-  for i in 1:size(parts,1)
-    parts[i] = Part(1, rand(2), rand(2), rand(1), 0.0)
+  if( conf["ignorenotebook"] == 0 )
+    n = @spawn writeNotes(conf)
   end
-  print(parts)
 
-  Simulation.test()
-  DataIO.test()
+  # Wait for summary and notes entry to end
+  fetch(s)
+  fetch(n)
+
+  run(`python $(conf["notebook"]) $(conf["path"])`)
+
 end
-#test()
 main()
