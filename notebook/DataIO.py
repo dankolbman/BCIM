@@ -1,13 +1,13 @@
-"""
-  Read and write operations for python scripts.
-  
-  readPos - Read position data
-  readMsdave - Read average mean squared displacement
-  readGr - Read g(r) data
-  readConf - Read system configuration data
-  i
-  Dan Kolbman 2014
-"""
+##
+# Read and write operations for python scripts.
+# 
+# readPos - Read position data
+# readMsdave - Read average mean squared displacement
+# readGr - Read g(r) data
+# readConf - Read system configuration data
+#
+# Dan Kolbman 2014
+##
 import sys
 import re
 import numpy as np
@@ -95,19 +95,16 @@ def readGr(filen):
   Expected file format:
   run iteration time r g(r)
   """
-  r=[]
   gr=[]
   try:
     f = open(filen)
     for line in f:
       l = line.split()
-      if(len(l) >= 4):
-        r.append(float(l[3]))
-        gr.append(float(l[4]))
+      r.append([ float(i) for i in l ])
+    f.close()
   except IOError as e:
     print('IO Error!', e.strerror)
-  f.close()
-  return r,gr
+  return np.array(gr)
 
 def readConf(filen):
   """ readConf : String -> Dict

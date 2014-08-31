@@ -66,6 +66,6 @@ if __name__ == '__main__':
     plt.gcf().add_subplot(111, aspect='equal')
     plotSys(conf, sys.argv[3:])
     plt.savefig(sys.argv[2])
-    plt.show()
+    #plt.show()
   
 
