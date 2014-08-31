@@ -25,10 +25,10 @@ end
 function show(io::IO, p::Part)
   #println("$(p.sp) $(p.vel) $(p.ang) $(p.msd)")
   print(io, "$(p.sp) ")
-  print_arr(io, p.pos)
-  print_arr(io, p.vel)
-  print_arr(io, p.ang)
-  print(io, "$(p.sqd)")
+  print_arr(io, float64(p.pos))
+  print_arr(io, float64(p.vel))
+  print_arr(io, float64(p.ang))
+  print(io, "$(float64(p.sqd))")
 end
 
 function print_arr(io, X::AbstractArray)
