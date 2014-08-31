@@ -169,7 +169,7 @@ function main()
   cp(parsedArgs["config"], "$(conf["path"])batch.cnf")
 
   nExperiments = DataIO.getNumExp(parsedArgs["config"])
-  DataIO.readConf(parsedArgs["config"], conf, experiment)
+  DataIO.readConf(parsedArgs["config"], conf, 1)
   # If no experiment separators present, assume 1 experiment
   if(nExperiments == 0)
     nExperiments = 1
