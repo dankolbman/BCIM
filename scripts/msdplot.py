@@ -47,5 +47,5 @@ if __name__ == '__main__':
     conf = DataIO.readConf(sys.argv[1])
     plotMsd(conf, sys.argv[3:])
     plt.savefig(sys.argv[2])
-    plt.show()
+    #plt.show()
   
