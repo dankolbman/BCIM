@@ -1,4 +1,4 @@
-PY=python
+
 PELICAN=pelican
 PELICANOPTS=
 
@@ -79,6 +79,9 @@ stopserver:
 	kill -9 `cat pelican.pid`
 	kill -9 `cat srv.pid`
 	@echo 'Stopped Pelican and SimpleHTTPServer processes running in background.'
+
+ftp_mirror:
+	lftp ftp://$(FTP_USER)@$(FTP_HOST) -e "mirror -n $(FTP_TARGET_DIR) $(OUTPUTDIR); quit"
 
 publish:
 	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)

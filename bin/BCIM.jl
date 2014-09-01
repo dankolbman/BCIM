@@ -65,6 +65,9 @@ function parseArgs()
     "put"
       help = "Put lab book to server"
       action = :command
+    "get"
+      help = "Get all newer files from server (May overwrite old files)"
+      action = :command
   end
   return parse_args(s)
 end
@@ -155,7 +158,15 @@ function putSite(conf)
     run(`make ftp_upload`)
     cd(p)
 end
-    
+
+# Gets all newer files from the server
+function getSite(conf)
+    p = pwd()
+    cd(conf["pelican"])
+    run(`make ftp_mirror`)
+    cd(p)
+end
+
 # Main program
 # First generate a default configuration with defaults for all variables
 # Parse arguements and read user config and save to the directory
@@ -174,9 +185,16 @@ function main()
   if(parsedArgs["outdir"]!=nothing)
     conf["path"] = parsedArgs["outdir"]
   end
+  # Take care of ftp stuff
+  # TODO command actions should be moved outside of main
   if( parsedArgs["%COMMAND%"] == "put" )
     DataIO.readConf(parsedArgs["config"], conf, 1)
     putSite(conf)
+    quit()
+  end
+  if( parsedArgs["%COMMAND%"] == "get" )
+    DataIO.readConf(parsedArgs["config"], conf, 1)
+    getSite(conf)
     quit()
   end
   # Initialize the file sysetm
