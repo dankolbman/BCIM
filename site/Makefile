@@ -1,16 +1,16 @@
-PY=python2
+PY=python
 PELICAN=pelican
 PELICANOPTS=
 
 BASEDIR=$(CURDIR)
 INPUTDIR=$(BASEDIR)/content
-OUTPUTDIR=$(BASEDIR)/output
+OUTPUTDIR=$(BASEDIR)/bcim
 CONFFILE=$(BASEDIR)/pelicanconf.py
-PUBLISHCONF=$(BASEDIR)/publishconf.py
+PUBLISHCONF=$(BASEDIR)/pelicanconf.py
 
-FTP_HOST=localhost
-FTP_USER=anonymous
-FTP_TARGET_DIR=/
+FTP_HOST=kolbman.com
+FTP_USER=alldankc
+FTP_TARGET_DIR=/public_html/bcim
 
 SSH_HOST=localhost
 SSH_PORT=22
