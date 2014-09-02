@@ -167,44 +167,18 @@ function getSite(conf)
     cd(p)
 end
 
-# Main program
-# First generate a default configuration with defaults for all variables
-# Parse arguements and read user config and save to the directory
-# Create necesarry file structure and figure out how many experiments to run
-# Run each experiment with appropriate params
-function main()
-  # Generate default params
-  conf = defaultConf()
-  # Get the arguements passed to the program
-  parsedArgs = parseArgs()
-  # Need a config
-  if(parsedArgs["config"]==nothing)
-    error("Please specifiy a configuration file with the -o flag")
-  end
-  # Override path if specified from cli
-  if(parsedArgs["outdir"]!=nothing)
-    conf["path"] = parsedArgs["outdir"]
-  end
-  # Take care of ftp stuff
-  # TODO command actions should be moved outside of main
-  if( parsedArgs["%COMMAND%"] == "put" )
-    DataIO.readConf(parsedArgs["config"], conf, 1)
-    putSite(conf)
-    quit()
-  end
-  if( parsedArgs["%COMMAND%"] == "get" )
-    DataIO.readConf(parsedArgs["config"], conf, 1)
-    getSite(conf)
-    quit()
-  end
+# Run command
+# Runs a simulation batch
+# Params:
+#   args - parsedArgs dictionary
+function runSim(args, conf)
   # Initialize the file sysetm
   initFS(conf)
-
   # Make a copy of the configuration file
-  cp(parsedArgs["config"], "$(conf["path"])batch.cnf")
-
-  nExperiments = DataIO.getNumExp(parsedArgs["config"])
-  DataIO.readConf(parsedArgs["config"], conf, 1)
+  cp(args["config"], "$(conf["path"])batch.cnf")
+  # Get the number of experiments in the batch
+  nExperiments = DataIO.getNumExp(args["config"])
+  DataIO.readConf(args["config"], conf, 1)
 
   # If no experiment separators present, assume 1 experiment
   if(nExperiments == 0)
@@ -220,7 +194,7 @@ function main()
   # Run each experiment
   for experiment in 1:nExperiments
     # Fetch parameters for current experiment
-    DataIO.readConf(parsedArgs["config"], conf, experiment)
+    DataIO.readConf(args["config"], conf, experiment)
     # De-dimensionalise parameters
     dedimension(conf)
     # Log
@@ -251,6 +225,36 @@ function main()
   if( lowercase(sync) == "y" )
     putSite(conf)
   end
-  
+end
+
+# Main program
+# First generate a default configuration with defaults for all variables
+# Parse arguements and read user config and save to the directory
+# Create necesarry file structure and figure out how many experiments to run
+# Run each experiment with appropriate params
+function main()
+  # Get the arguements passed to the program
+  parsedArgs = parseArgs()
+  # Generate default params
+  conf = defaultConf()
+  # Need a config
+  if(parsedArgs["config"]==nothing)
+    error("Please specifiy a configuration file with the -o flag")
+  end
+  # Override path if specified from cli
+  if(parsedArgs["outdir"]!=nothing)
+    conf["path"] = parsedArgs["outdir"]
+  end
+  # Take care of ftp stuff
+  # TODO command actions should be moved outside of main
+  if( parsedArgs["%COMMAND%"] == "run" )
+    runSim(parsedArgs, conf)
+  elseif( parsedArgs["%COMMAND%"] == "put" )
+    DataIO.readConf(parsedArgs["config"], conf, 1)
+    putSite(conf)
+  elseif( parsedArgs["%COMMAND%"] == "get" )
+    DataIO.readConf(parsedArgs["config"], conf, 1)
+    getSite(conf)
+  end
 end
 main()
