@@ -92,6 +92,7 @@ function defaultConf()
   conf["plot" ] = 1
   conf["postSimPy"] = ""
   conf["postExpPy"] = ""
+  conf["postPy"] = ""
   conf["editor"] = "vim"
   conf["ignorenotebook"] = 0
   conf["notebook"] = "../notebook/generator.py"
@@ -204,6 +205,8 @@ function runSim(args, conf)
     Experiment.runExp(conf, "experiment$experiment/")
   end
 
+  post(conf)
+
   if( conf["ignorenotebook"] == 0 )
     # Wait for summary and notes entry to end
     n = @spawn writeNotes(conf)
@@ -224,6 +227,18 @@ function runSim(args, conf)
   sync = chomp(readline())
   if( lowercase(sync) == "y" )
     putSite(conf)
+  end
+end
+
+# Run post processing for the batch
+# Params
+#   conf - the configuration dict
+function post(conf)
+  if(conf["postPy"] != "")
+    path = "$(conf["path"])"
+    cnf = "$(conf["path"])batch.cnf"
+    cmd = `python $(conf["postPy"]) $cnf $path`
+    run(cmd)
   end
 end
 

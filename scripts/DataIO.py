@@ -111,10 +111,13 @@ def readConf(filen):
   Reads a system parameter file and returns a dictionary with param val keys
   """
   conf=dict() 
+  conf["nexperiments"] = 0
   try:
     f = open(filen)
     for line in f:
       l = line.split()
+      if( l[0].lower() == "experiment"):
+        conf["nexperiments"] += 1
       # Simple one value param
       if(len(l) == 2):
         if(re.fullmatch("[0-9e\.]*",l[1]) != None):
