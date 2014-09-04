@@ -19,6 +19,10 @@ NOTES = 'notes.txt'
 LOG = 'log.txt'
 CONF = 'batch.cnf'
 
+# Figures
+FINALCONF = 'finalConf.png'
+AVGMSD = 'avgMSD.png'
+
 
 # Constructs the head of md file (attributes interpreted by the generator)
 def makeHeader( path, name='Entry', draft=False):
@@ -53,6 +57,16 @@ def makeNotes(path):
       notestr += line
   return notestr
 
+def makeFinalConf(path):
+  confstr = '![Final Configuration]('+os.path.relpath(path,'../')+')\n\n'
+  confstr += '###Final Configurations\n'
+  return confstr
+
+def makeMSD(path):
+  msdstr = '![MSD]('+os.path.relpath(path,'../')+')\n\n'
+  msdstr += '###Average MSD\n\n'
+  return msdstr
+
 # Constructs the Log portion of the page
 def makeLog(path):
   outstr = '### Log\n\n\t:::python3\n'
@@ -78,6 +92,7 @@ def makeEntry( path, name='Entry', draft=False):
   print('Writing to '+os.path.join(path,name+'.md'))
   sumstr = ''
   notestr = ''
+  figstr = ''
   logstr = ''
   confstr = ''
 
@@ -92,15 +107,27 @@ def makeEntry( path, name='Entry', draft=False):
     print('Found note file...')
     notestr = makeNotes(os.path.join(path, NOTES))
   
+  
+  figstr += '## Figures\n\n'
+  
+  if(os.path.isfile(os.path.join(path, FINALCONF))):
+    print('Found final configuration image...')
+    figstr += makeFinalConf(os.path.join(path, FINALCONF))
+  
+  if(os.path.isfile(os.path.join(path, AVGMSD))):
+    print('Found MSD image...')
+    figstr += makeMSD(os.path.join(path, AVGMSD))
+
   if(os.path.isfile(os.path.join(path, LOG))):
     print('Found log file...')
     logstr += makeLog(os.path.join(path, LOG))
-  
+
   if(os.path.isfile(os.path.join(path, CONF))):
     print('Found configuration file...')
     confstr += makeConf(os.path.join(path, CONF))
 
-  page = headstr + sumstr + '\n\n' +notestr + '\n\n' + logstr + '\n\n' + confstr
+
+  page = headstr + sumstr + '\n\n' +notestr + '\n\n' + figstr + '\n\n' + logstr + '\n\n' + confstr
   f.write(page)
   f.close()
 

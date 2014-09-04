@@ -1,4 +1,4 @@
-
+PY=python
 PELICAN=pelican
 PELICANOPTS=
 
@@ -65,7 +65,7 @@ serve:
 ifdef PORT
 	cd $(OUTPUTDIR) && $(PY) -m pelican.server $(PORT)
 else
-	cd $(OUTPUTDIR) && $(PY) -m pelican.server
+	cd $(OUTPUTDIR) && $(PY) -m  pelican.server
 endif
 
 devserver:

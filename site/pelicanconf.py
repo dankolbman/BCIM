@@ -4,7 +4,9 @@ from __future__ import unicode_literals
 
 AUTHOR = 'Daniel Kolbman'
 SITENAME = 'Brownian Colloid Simulator'
-SITEURL = 'http://kolbman.com/bcim'
+SITEURL = ''
+#SITEURL = 'http://kolbman.com/bcim'
+
 
 PATH = 'content'
 PAGE_PATHS = ['pages']
@@ -15,7 +17,6 @@ OUTPUT_PATH = 'bcim/'
 
 THEME = 'theme'
 CSS_FILE = 'main.css'
-
 
 TIMEZONE = 'America/New_York'
 DEFAULT_DATE_FORMAT = '%H:%M - %m/%d'
