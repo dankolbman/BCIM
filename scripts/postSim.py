@@ -19,7 +19,10 @@ def postSim(conf, path):
   fig = plt.figure()
   fig.add_subplot(111)
   Grfx.plotConfig2D(conf, path, ['/parts.dat'])
-  plt.savefig(path+'finalConf.png', figsize=(1,1), dpi=100)
+  plt.subplots_adjust(wspace=0.0, hspace=0.0)
+  plt.tight_layout()
+  fig.set_size_inches(1,1)
+  plt.savefig(path+'finalConf.png', dpi=100, aspect='equal')
   # MSD
   fig = plt.figure()
   fig.add_subplot(111)

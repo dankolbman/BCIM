@@ -46,8 +46,7 @@ function runExp(conf, expPath="")
 
     DataIO.log("Trial $(int(trial)) ended taking $(toq())", conf)
 
-
-    if(conf["plot"] == 1)
+    if(conf["plot"] == 1.0)
       #path = "$(conf["path"])$(expPath)trial$(int(trial))/parts.dat"
       path = "$(conf["path"])$(expPath)trial$(int(trial))/parts.dat"
       out = "$(conf["path"])$(expPath)trial$(int(trial))/pos.png"

@@ -62,6 +62,12 @@ function parseArgs()
     "run"
       help = "Run an experiment"
       action = :command
+    "put"
+      help = "Put lab book to server"
+      action = :command
+    "get"
+      help = "Get all newer files from server (May overwrite old files)"
+      action = :command
   end
   return parse_args(s)
 end
@@ -86,8 +92,11 @@ function defaultConf()
   conf["plot" ] = 1
   conf["postSimPy"] = ""
   conf["postExpPy"] = ""
+  conf["postPy"] = ""
   conf["editor"] = "vim"
   conf["ignorenotebook"] = 0
+  conf["notebook"] = "../notebook/generator.py"
+  conf["pelican"] = "../site/"
 
   conf["numbins"] = 200
 
@@ -112,7 +121,6 @@ function defaultConf()
   conf["rep"] = [ 1.5e4, 0.5e4 ] # energy / length
   conf["adh"] = [ 0.01, 0.01 ]   # energy / length
   conf["contact"] = 0.1 # length
-
 
   return conf
 end
@@ -143,33 +151,36 @@ function dedimension(conf)
 
   return conf
 end
-    
-# Main function loop
-# First generate a default configuration with defaults for all variables
-# Parse arguements and read user config and save to the directory
-# Create necesarry file structure and figure out how many experiments to run
-# Run each experiment with appropriate params
-function main()
-  # Generate default params
-  conf = defaultConf()
-  # Get the arguements passed to the program
-  parsedArgs = parseArgs()
-  # Need a config
-  if(parsedArgs["config"]==nothing)
-    error("Please specifiy a configuration file with the -o flag")
-  end
-  # Override path if specified from cli
-  if(parsedArgs["outdir"]!=nothing)
-    conf["path"] = parsedArgs["outdir"]
-  end
+
+# Syncronize the lab book website
+function putSite(conf)
+    p = pwd()
+    cd(conf["pelican"])
+    run(`make ftp_upload`)
+    cd(p)
+end
+
+# Gets all newer files from the server
+function getSite(conf)
+    p = pwd()
+    cd(conf["pelican"])
+    run(`make ftp_mirror`)
+    cd(p)
+end
+
+# Run command
+# Runs a simulation batch
+# Params:
+#   args - parsedArgs dictionary
+function runSim(args, conf)
   # Initialize the file sysetm
   initFS(conf)
-
   # Make a copy of the configuration file
-  cp(parsedArgs["config"], "$(conf["path"])batch.cnf")
+  cp(args["config"], "$(conf["path"])batch.cnf")
+  # Get the number of experiments in the batch
+  nExperiments = DataIO.getNumExp(args["config"])
+  DataIO.readConf(args["config"], conf, 1)
 
-  nExperiments = DataIO.getNumExp(parsedArgs["config"])
-  DataIO.readConf(parsedArgs["config"], conf, 1)
   # If no experiment separators present, assume 1 experiment
   if(nExperiments == 0)
     nExperiments = 1
@@ -180,10 +191,11 @@ function main()
   if( conf["ignorenotebook"] == 0 )
     s = @spawn writeSummary(conf)
   end
+
   # Run each experiment
   for experiment in 1:nExperiments
     # Fetch parameters for current experiment
-    DataIO.readConf(parsedArgs["config"], conf, experiment)
+    DataIO.readConf(args["config"], conf, experiment)
     # De-dimensionalise parameters
     dedimension(conf)
     # Log
@@ -192,15 +204,72 @@ function main()
     
     Experiment.runExp(conf, "experiment$experiment/")
   end
+
+  post(conf)
+
   if( conf["ignorenotebook"] == 0 )
+    # Wait for summary and notes entry to end
     n = @spawn writeNotes(conf)
     fetch(s)
     fetch(n)
   end
+  
+  println("Would you like to publish the summary to the lab book? (y/N)")
+  publish = chomp(readline())
+  # Generate a markdown file for the notebook
+  if( lowercase(publish) == "y")
+    run(`python $(conf["notebook"]) $(conf["path"])`)
+  else
+    run(`python $(conf["notebook"]) $(conf["path"]) draft`)
+  end
+  
+  println("Would you like to sync with the lab book web server? (y/N)")
+  sync = chomp(readline())
+  if( lowercase(sync) == "y" )
+    putSite(conf)
+  end
+end
 
-  # Wait for summary and notes entry to end
+# Run post processing for the batch
+# Params
+#   conf - the configuration dict
+function post(conf)
+  if(conf["postPy"] != "")
+    path = "$(conf["path"])"
+    cnf = "$(conf["path"])batch.cnf"
+    cmd = `python $(conf["postPy"]) $cnf $path`
+    run(cmd)
+  end
+end
 
-  run(`python $(conf["notebook"]) $(conf["path"])`)
-
+# Main program
+# First generate a default configuration with defaults for all variables
+# Parse arguements and read user config and save to the directory
+# Create necesarry file structure and figure out how many experiments to run
+# Run each experiment with appropriate params
+function main()
+  # Get the arguements passed to the program
+  parsedArgs = parseArgs()
+  # Generate default params
+  conf = defaultConf()
+  # Need a config
+  if(parsedArgs["config"]==nothing)
+    error("Please specifiy a configuration file with the -o flag")
+  end
+  # Override path if specified from cli
+  if(parsedArgs["outdir"]!=nothing)
+    conf["path"] = parsedArgs["outdir"]
+  end
+  # Take care of ftp stuff
+  # TODO command actions should be moved outside of main
+  if( parsedArgs["%COMMAND%"] == "run" )
+    runSim(parsedArgs, conf)
+  elseif( parsedArgs["%COMMAND%"] == "put" )
+    DataIO.readConf(parsedArgs["config"], conf, 1)
+    putSite(conf)
+  elseif( parsedArgs["%COMMAND%"] == "get" )
+    DataIO.readConf(parsedArgs["config"], conf, 1)
+    getSite(conf)
+  end
 end
 main()

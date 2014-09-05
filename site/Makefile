@@ -1,16 +1,16 @@
-PY=python2
+PY=python
 PELICAN=pelican
 PELICANOPTS=
 
 BASEDIR=$(CURDIR)
 INPUTDIR=$(BASEDIR)/content
-OUTPUTDIR=$(BASEDIR)/output
+OUTPUTDIR=$(BASEDIR)/bcim
 CONFFILE=$(BASEDIR)/pelicanconf.py
-PUBLISHCONF=$(BASEDIR)/publishconf.py
+PUBLISHCONF=$(BASEDIR)/pelicanconf.py
 
-FTP_HOST=localhost
-FTP_USER=anonymous
-FTP_TARGET_DIR=/
+FTP_HOST=kolbman.com
+FTP_USER=alldankc
+FTP_TARGET_DIR=/public_html/bcim
 
 SSH_HOST=localhost
 SSH_PORT=22
@@ -65,7 +65,7 @@ serve:
 ifdef PORT
 	cd $(OUTPUTDIR) && $(PY) -m pelican.server $(PORT)
 else
-	cd $(OUTPUTDIR) && $(PY) -m pelican.server
+	cd $(OUTPUTDIR) && $(PY) -m  pelican.server
 endif
 
 devserver:
@@ -79,6 +79,9 @@ stopserver:
 	kill -9 `cat pelican.pid`
 	kill -9 `cat srv.pid`
 	@echo 'Stopped Pelican and SimpleHTTPServer processes running in background.'
+
+ftp_mirror:
+	lftp ftp://$(FTP_USER)@$(FTP_HOST) -e "mirror -n $(FTP_TARGET_DIR) $(OUTPUTDIR); quit"
 
 publish:
 	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR) -s $(PUBLISHCONF) $(PELICANOPTS)

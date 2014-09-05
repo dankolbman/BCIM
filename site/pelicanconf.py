@@ -3,16 +3,20 @@
 from __future__ import unicode_literals
 
 AUTHOR = 'Daniel Kolbman'
-SITENAME = 'Capstone'
+SITENAME = 'Brownian Colloid Simulator'
 SITEURL = ''
+#SITEURL = 'http://kolbman.com/bcim'
+
 
 PATH = 'content'
 PAGE_PATHS = ['pages']
 #ARTICLE_PATHS = ['content']
 STATIC_PATHS = ['images', 'data']
 
-THEME = 'theme'
+OUTPUT_PATH = 'bcim/'
 
+THEME = 'theme'
+CSS_FILE = 'main.css'
 
 TIMEZONE = 'America/New_York'
 DEFAULT_DATE_FORMAT = '%H:%M - %m/%d'

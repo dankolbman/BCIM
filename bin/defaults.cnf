@@ -11,7 +11,7 @@ ocl 0
 # Dimensionality of the simulation (2 or 3)
 dim 2
 # Number of trials to run per experiment
-ntrials 2
+ntrials 1
 # How many steps to equilibriate for
 nequil 0.0
 # How many steps to run for each trial
@@ -51,12 +51,16 @@ plot 0
 postSimPy "../scripts/postSim.py"
 # Python programs to run after an experiment ends
 postExpPy "../scripts/postExp.py"
+# Python programs to run after the batch ends
+postPy "../scripts/post.py"
 # Notebook editor
 editor "vim"
 # Suppress notebook entry requets
 ignorenotebook 0
 # The path to the notebook generator
 notebook "../notebook/generator.py"
+# Path to program to the pelican make file
+pelican "../site/"
 ################################################################################
 ## Experiment 1
 experiment
@@ -69,3 +73,7 @@ rep 1.5e4 1.5e3
 ## Experiment 3
 experiment
 rep 1.5e4 1.5e2
+################################################################################
+## Experiment 4
+experiment
+rep 1.5e4 1.5e1
