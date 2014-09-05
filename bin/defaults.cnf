@@ -9,11 +9,11 @@ verbose 1
 # Use OpenCL to compute accross different devices
 ocl 0
 # Dimensionality of the simulation (2 or 3)
-dim 2
+dim 3
 # Number of trials to run per experiment
-ntrials 1
+ntrials 5
 # How many steps to equilibriate for
-nequil 0.0
+nequil 1.0e3
 # How many steps to run for each trial
 nsteps 1.0e3
 # How many steps between data recording
@@ -36,11 +36,11 @@ dia 15.0e-4
 # Number of particles
 npart 256 256
 # Propulsion
-prop 1.0e3 1.0e3
+prop 0.0 0.0
 # Repulsion
-rep 1.5e4 0.5e4
+rep 0.0 0.0
 # Adhesion
-adh 1.0e4 0.0
+adh 0.0 0.0
 # Contact distance for adhesive force
 contact 0.1
 ################################################################################
@@ -67,13 +67,13 @@ experiment
 rep 1.5e4 1.5e4
 ################################################################################
 ## Experiment 2
-experiment
-rep 1.5e4 1.5e3
+#experiment
+#rep 1.5e4 1.5e3
 ################################################################################
 ## Experiment 3
-experiment
-rep 1.5e4 1.5e2
+#experiment
+#rep 1.5e4 1.5e2
 ################################################################################
 ## Experiment 4
-experiment
-rep 1.5e4 1.5e1
+#experiment
+#rep 1.5e4 1.5e1
