@@ -14,16 +14,16 @@ def postSim(conf, path):
   Plots system configuration, msd
   """
   # g(r)
-  fig = plt.figure()
+  fig = plt.figure(dpi=200)
   fig.add_subplot(111)
   Grfx.plotGR(path, ['/avgGR.dat'] )
-  plt.savefig(path+'gr.png')
+  plt.savefig(path+'gr.png', dpi=200)
 
   # msd
-  fig = plt.figure()
+  fig = plt.figure(dpi=200)
   fig.add_subplot(111)
   Grfx.plotMSD(path, ['/avgMSD.dat'] )
-  plt.savefig(path+'avgMSD.png')
+  plt.savefig(path+'avgMSD.png', dpi=200)
 
 if(__name__ == '__main__'):
   if(len(sys.argv) < 3):

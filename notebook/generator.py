@@ -58,13 +58,13 @@ def makeNotes(path):
   return notestr
 
 def makeFinalConf(path):
-  confstr = '![Final Configuration]('+os.path.relpath(path,'../')+')\n\n'
-  confstr += '###Final Configurations\n'
+  confstr = '###Final Configurations\n'
+  confstr += '![Final Configuration]('+os.path.relpath(path,'../')+')\n\n'
   return confstr
 
 def makeMSD(path):
-  msdstr = '![MSD]('+os.path.relpath(path,'../')+')\n\n'
-  msdstr += '###Average MSD\n\n'
+  msdstr = '###Average MSD\n\n'
+  msdstr += '![MSD]('+os.path.relpath(path,'../')+')\n\n'
   return msdstr
 
 # Constructs the Log portion of the page

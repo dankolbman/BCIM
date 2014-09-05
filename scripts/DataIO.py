@@ -5,7 +5,6 @@
   readMsdave - Read average mean squared displacement
   readGr - Read g(r) data
   readConf - Read system configuration data
-  i
   Dan Kolbman 2014
 """
 import sys
@@ -13,9 +12,10 @@ import re
 import numpy as np
 
 def readPos(filen):
-  """ readPos : String -> float[] float[] float[]
+  """ readPos : String -> float[] float[] float[] float[]
   Read position data from a file and return x y and z lists
   """
+  sp=[]
   xpos=[]
   ypos=[]
   zpos=[]
@@ -25,13 +25,14 @@ def readPos(filen):
       if line[0] != "#":
         l = line.split()
         if len(l) < 3: break
+        sp.append(int(l[1]))
         xpos.append(float(l[2]))
         ypos.append(float(l[3]))
         zpos.append(float(l[4]))
     f.close()
   except IOError as e:
     print('IO Error!', e.strerror)
-  return xpos,ypos,zpos
+  return sp, xpos,ypos,zpos
 
 def readPos2D(filen, state=-1):
   """ readPos2D : String int -> float[] float[]

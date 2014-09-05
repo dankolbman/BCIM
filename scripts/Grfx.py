@@ -3,6 +3,7 @@
   
   Dan Kolbman 2014
 """
+from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
@@ -31,9 +32,9 @@ def plotConfig2D(conf, path, files):
     #s = [conf['diameter']**2/4*3.1415 for i in range(len(xpos))]
     #plt.scatter(xpos, ypos,color=colors[(i)%3])
 
-  plotBounds(conf, plt.gcf().gca())
+  plotBounds2D(conf, plt.gcf().gca())
 
-def plotBounds(conf, axes):
+def plotBounds2D(conf, axes):
   """ plotBounds : Dict Axes -> True
   Makes a rectangle or circle depending on the geometry of the boundary
   """
@@ -55,6 +56,37 @@ def circleScatter(xpos, ypos, axes, sp, colors, **kwargs):
     circle = plt.Circle((xpos[i],ypos[i]), color=colors[int(sp[i]-1)], **kwargs)
     axes.add_patch(circle)
 
+  return True
+
+def plotConfig3D(conf, path, files):
+  """ plotPos : Dict -> None
+  Plots position data
+  """
+  colors = ['r', 'b', 'c', 'm']
+  fig = plt.figure()
+  ax = fig.gca(projection='3d')
+  for i in range(0,len(files)):
+    sp, xpos, ypos, zpos = DataIO.readPos(path+files[i])
+    clrs = [ colors[j-1] for j in sp ]
+    ax.scatter(xpos,ypos,zpos,c=clrs, s=200/conf['size'], lw=0)
+
+  plotBounds3D(conf, plt.gcf().gca())
+  ax.set_xlim3d(-conf["size"], conf["size"])
+  ax.set_ylim3d(-conf["size"], conf["size"])
+  ax.set_zlim3d(-conf["size"], conf["size"])
+
+def plotBounds3D(conf, axes):
+  """ plotBounds : Dict Axes -> True
+  Draws a sphere with a radius of the system size
+  """
+  u = np.linspace(0, 2*np.pi, 100)
+  v = np.linspace(0, np.pi, 100)
+
+  x = conf["size"]*np.outer(np.cos(u), np.sin(v))
+  y = conf["size"]*np.outer(np.sin(u), np.sin(v))
+  z = conf["size"]*np.outer(np.ones(np.size(u)), np.cos(v))
+  axes.plot_surface(x, y, z, rstride=4, cstride=4, color='b', alpha = 0.05,\
+    linewidth=0)
   return True
 
 ################################################################################
