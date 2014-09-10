@@ -19,17 +19,17 @@ function forceCalc(conf, parts)
   # Apply propulsion to particles
   prop(conf, parts)
   # Repulsive force
-  #repF(conf, parts)
+  repF(conf, parts)
 
   for p in parts
     newpos = p.pos + p.vel*conf["dt"]
-    dist = sqrt(newpos[1]^2 + newpos[2]^2 + newpos[3]^2)
+    dist2 = newpos[1]^2 + newpos[2]^2 + newpos[3]^2
     # Within the sphere bounds
-    if(dist <= conf["size"] - conf["dia"]/2.0)
+    if(dist2 <= (conf["size"] - conf["dia"]/2.0)^2)
       p.pos = newpos
     else
     # Place on the edge of the sphere
-      thet = acos(newpos[3]/dist)
+      thet = acos(newpos[3]/sqrt(dist))
       phi = atan2(newpos[2],newpos[1])
       r = conf["size"]-conf["dia"]/2.0
       p.pos = r*[ sin(thet)*cos(phi), sin(thet)*sin(phi), cos(thet) ]
@@ -70,12 +70,11 @@ function prop(conf, parts)
   end
 end
 
-# Calculates the repulsive force between two particles
+# Calculates the repulsive force between particles
 # Params
-#   p1 - the first particle array
-#   p2 - the second particl array
+#   conf - the configuration dict
+#   parts - an array of particle arrays for each species
 function repF(conf, parts)
-  # TODO need to add tensor for interactions with diff species
   for p1 in parts
     for p2 in parts
       if(p1 != p2)
@@ -85,11 +84,16 @@ function repF(conf, parts)
         thet = acos(dr[3]/d)
         phi = atan2(dr[2],dr[1])
         # Magnitude of force (linear)
-        f = 1-conf["dia"]/d
+        f = 1.0-conf["dia"]/d
         f = (abs(f)-f)/2.0
         # Force vector
-        f = f * [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
-        f = conf["rep"][p1.sp] * f
+        f *= [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
+        if( p1.sp != p2.sp)   # Different species interacting
+          f *= 2*(conf["rep"][p1.sp]*conf["rep"][p2.sp] / 
+              (conf["rep"][p1.sp]+conf["rep"][p2.sp]))
+        else
+          f *= conf["rep"][p1.sp]
+        end
         # Add forces
         p1.vel += f
         p2.vel -= f
@@ -98,12 +102,38 @@ function repF(conf, parts)
   end
 end
 
-# Calculates the adhesive force between two particles
+# Calculates the adhesive force between particles
 # Params
-#   p1 - the first particle array
-#   p2 - the second particl array
+#   conf - the configuration dict
+#   parts - an array of particle arrays for each species
 function adhF(p1, p2, conf)
-  r = dist(p1,p2)
+  for p1 in parts
+    for p2 in parts
+      if(p1 != p2)
+        dr = p1.pos - p2.pos
+        d = sqrt(sum(dr.^2))
+        # Direction
+        thet = acos(dr[3]/d)
+        phi = atan2(dr[2],dr[1])
+        # Magnitude of force (linear)
+        x = d-conf["dia"]/d
+        y = x - 2*conf["contact"]
+        f = (abs(f)-f)/2.0
+        # Force vector
+        f *= [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
+        if( p1.sp != p2.sp)   # Different species interacting
+          f *= 2*(conf["rep"][p1.sp]*conf["rep"][p2.sp] / 
+              (conf["rep"][p1.sp]+conf["rep"][p2.sp]))
+        else
+          f *= conf["rep"][p1.sp]
+        end
+        # Add forces
+        p1.vel += f
+        p2.vel -= f
+      end
+    end
+  end
+
   return r
 end
 
