@@ -29,7 +29,7 @@ function forceCalc(conf, parts)
       p.pos = newpos
     else
     # Place on the edge of the sphere
-      thet = acos(newpos[3]/sqrt(dist))
+      thet = acos(newpos[3]/sqrt(dist2))
       phi = atan2(newpos[2],newpos[1])
       r = conf["size"]-conf["dia"]/2.0
       p.pos = r*[ sin(thet)*cos(phi), sin(thet)*sin(phi), cos(thet) ]
