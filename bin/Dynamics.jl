@@ -9,30 +9,30 @@ module Dynamics
 include("Types.jl")
 
 # Calculate and apply all forces between particles
-function forceCalc(conf, parts)
+function forceCalc(conf, parts, cells)
 
   for p in parts
-    p.vel = [ 0, 0, 0 ]
+    p.vel = [ 0.0f0, 0.0f0, 0.0f0 ]
   end
   # Apply a brownian force to all particle
   brownian(conf, parts)
   # Apply propulsion to particles
   prop(conf, parts)
   # Repulsive force
-  repF(conf, parts)
+  collisionCheck(conf, cells)
 
+  bound = (conf["size"] - conf["dia"]/2.0)
   for p in parts
     newpos = p.pos + p.vel*conf["dt"]
     dist2 = newpos[1]^2 + newpos[2]^2 + newpos[3]^2
     # Within the sphere bounds
-    if(dist2 <= (conf["size"] - conf["dia"]/2.0)^2)
+    if(dist2 <= bound^2)
       p.pos = newpos
     else
     # Place on the edge of the sphere
       thet = acos(newpos[3]/sqrt(dist2))
       phi = atan2(newpos[2],newpos[1])
-      r = conf["size"]-conf["dia"]/2.0
-      p.pos = r*[ sin(thet)*cos(phi), sin(thet)*sin(phi), cos(thet) ]
+      p.pos = bound*[ sin(thet)*cos(phi), sin(thet)*sin(phi), cos(thet) ]
     end
   end
 end
@@ -70,15 +70,43 @@ function prop(conf, parts)
   end
 end
 
+function collisionCheck(conf, cellGrid)
+  for c1 in cellGrid
+    # Collide own particles
+    for p1 in c1.parts
+      for p2 in c1.parts
+        repF(conf, p1, p2)
+        #adhF(conf, p1, p2)
+      end
+    end
+    # Collide neighbors
+    for c2 in c1.neighbors
+      collideCells(conf, c1, c2)
+    end
+  end
+end
+
+# Collide the particles within two cells with one another
+# Params
+#   conf - the configuration dict
+#   c1 - the first cell
+#   c2 - the second cell
+function collideCells(conf, c1, c2)
+  for p1 in c1.parts
+    for p2 in c2.parts
+      repF(conf, p1, p2)
+      #adhF(conf, p1, p2)
+    end
+  end
+end
+
 # Calculates the repulsive force between particles
 # Params
 #   conf - the configuration dict
-#   parts - an array of particle arrays for each species
-function repF(conf, parts)
-  for i1 in 1:(size(parts,1)-1)
-    for i2 in (p1+1):size(parts,1)
-      p1 = parts[i1]
-      p2 = parts[i2]
+#   p1 - the first particle
+#   p2 - the second particle
+function repF(conf, p1, p2)
+  if(p1.id < p2.id)
       dr = p1.pos - p2.pos
       d = sqrt(sum(dr.^2))
       # Direction
@@ -90,8 +118,15 @@ function repF(conf, parts)
       # Force vector
       f *= [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
       if( p1.sp != p2.sp)   # Different species interacting
-        f *= 2*(conf["rep"][p1.sp]*conf["rep"][p2.sp] / 
-            (conf["rep"][p1.sp]+conf["rep"][p2.sp]))
+        # Avoid division by 0
+        a = conf["rep"][p1.sp]*conf["rep"][p2.sp]
+        b = conf["rep"][p1.sp]+conf["rep"][p2.sp]
+        if(b == 0.0)
+          f *= 0.0
+        else
+          f *= 2*a/b
+        end
+        #print("$(f)\n")
       else
         f *= conf["rep"][p1.sp]
       end
@@ -150,4 +185,3 @@ function dist(p1, p2)
   return sqrt(x^2 + y^2 + z^2)
 end
 
-end

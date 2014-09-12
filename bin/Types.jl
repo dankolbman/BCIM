@@ -7,6 +7,7 @@
 import Base.show
 
 type Part
+  id::Int
   sp::Int32
   pos::Array{Float32}
   vel::Array{Float32}
@@ -15,9 +16,19 @@ type Part
   sqd::Float64
   # The starting coordinate
   org::Array{Float32}
+  # Contsructors
+  Part(id, sp, pos, vel, ang, sqd) = new(id, sp, pos, vel, ang, sqd, pos)
+  Part(id, sp, pos, vel, ang) = new(id, sp, pos, vel, ang, 0.0, pos)
+end
 
-  Part(sp, pos, vel, ang, sqd) = new(sp, pos, vel, ang, sqd, pos)
-  Part(sp, pos, vel, ang) = new(sp, pos, vel, ang, 0.0, pos)
+type Cell
+  id::Int
+  parts::Array{Part}
+  neighbors::Array{Cell}
+end
+
+function show(io::IO, c::Cell)
+  print(io, "$(c.id)")
 end
 
 # The following formats the output of particle data
