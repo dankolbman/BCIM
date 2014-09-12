@@ -46,19 +46,6 @@ function runExp(conf, expPath="")
 
     DataIO.log("Trial $(int(trial)) ended taking $(toq())", conf)
 
-    if(conf["plot"] == 1.0)
-      #path = "$(conf["path"])$(expPath)trial$(int(trial))/parts.dat"
-      path = "$(conf["path"])$(expPath)trial$(int(trial))/parts.dat"
-      out = "$(conf["path"])$(expPath)trial$(int(trial))/pos.png"
-      cnf = "$(conf["path"])$(expPath)sim.cnf"
-      cmd = `python $(conf["posplot"]) $cnf $out $path`
-      println(cmd)
-      run(cmd)
-      path = "$(conf["path"])$(expPath)trial$(int(trial))/avgMSD.dat"
-      out = "$(conf["path"])$(expPath)trial$(int(trial))/msd.png"
-      cmd = `python $(conf["msdplot"]) $cnf $out $path`
-      run(cmd)
-    end
   end
   
   post(conf, expPath)

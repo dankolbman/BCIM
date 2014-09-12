@@ -89,7 +89,6 @@ function defaultConf()
   conf["freq"] = 1000
 
   # Plotting
-  conf["plot" ] = 1
   conf["postSimPy"] = ""
   conf["postExpPy"] = ""
   conf["postPy"] = ""

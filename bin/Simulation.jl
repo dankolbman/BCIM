@@ -47,14 +47,6 @@ function runSim(conf, simPath="")
       avgmsd[int(s/conf["freq"]), 1] = t
       # avgMSD() updates sq displacements and returns avg msd for all species
       avgmsd[int(s/conf["freq"]), 2:end] = Stats.avgMSD(conf,parts)
-
-      if(false)#conf["plot"] == 1)
-        path = "$(conf["path"])$(simPath)parts$(int(s)).dat"
-        #path = "$(conf["path"])$(simPath)parts.dat"
-        cnf = "$(conf["path"])sim.cnf"
-        cmd = `python ../scripts/posplot.py $cnf $path`
-        #@spawn run(cmd)
-      end
     end
   end
   println()

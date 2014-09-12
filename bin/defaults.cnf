@@ -45,8 +45,6 @@ adh 0.0 0.0
 contact 0.1
 ################################################################################
 ## Plotting
-# Should the plot script be called?
-plot 0
 # Python programs to run after a simulation ends
 postSimPy "../scripts/postSim.py"
 # Python programs to run after an experiment ends
