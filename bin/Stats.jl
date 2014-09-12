@@ -48,7 +48,7 @@ function avgGR(conf, files::Array)
   # Read in each file, divide it, and add it
   for i in 1:nfiles
     if(ispath(files[i]))
-      tgr = readdlm(files[i])
+      tgr = readdlm(files[i], '\t', Float64)
       tgr[:,2:end] = tgr[:,2:end] ./ nfiles
       # This only needs to happen once
       gr[:,1] = tgr[:,1]
@@ -82,7 +82,7 @@ function avgMSD(conf, parts::Array)
   for p in parts
     d = (p.pos - p.org)
     sqdtot[p.sp] +=  sum((d).^2)
-   # sqdtot[p.sp] += d[1]^2 + d[2]^2 + d[3]^2
+    #sqdtot[p.sp] += d[1]^2 + d[2]^2 + d[3]^2
     #sqdtot[p.sp] += p.sqd
   end
   return  sqdtot ./ float(conf["npart"])

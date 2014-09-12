@@ -16,18 +16,18 @@ def postSim(conf, path):
   Plots system configuration, msd
   """
   # Configuration
-  fig = plt.figure()
+  fig =  plt.figure(dpi=200)
   fig.add_subplot(111)
-  Grfx.plotConfig2D(conf, path, ['/parts.dat'])
+  Grfx.plotConfig3D(conf, path, ['/parts.dat'])
   plt.subplots_adjust(wspace=0.0, hspace=0.0)
   plt.tight_layout()
-  fig.set_size_inches(1,1)
-  plt.savefig(path+'finalConf.png', dpi=100, aspect='equal')
+  #fig.set_size_inches(10,10)
+  plt.savefig(path+'finalConf.png', dpi=200)
   # MSD
-  fig = plt.figure()
+  fig =  plt.figure(dpi=200)
   fig.add_subplot(111)
   Grfx.plotMSD(path, ['/msd.dat'] )
-  plt.savefig(path+'msd.png')
+  plt.savefig(path+'msd.png', dpi=200)
   # g(r)
   fig = plt.figure()
   fig.add_subplot(111)

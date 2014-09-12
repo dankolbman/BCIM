@@ -44,11 +44,11 @@ h1, h2, h3, h4, h5 {
   height: 50px;
 }
 
-#header-bar h1 {
+#header-bar h1, #header-bar h3 {
   margin: 0px;
   float: left;
 }
-#header-bar h1 a {
+#header-bar h1 a, #header-bar h3 a {
   color: #FFF;
   display: block;
   text-decoration: none;

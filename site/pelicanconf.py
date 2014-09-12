@@ -3,7 +3,8 @@
 from __future__ import unicode_literals
 
 AUTHOR = 'Daniel Kolbman'
-SITENAME = 'Brownian Colloid Simulator'
+SITENAME = 'BCIM'
+SITESUBTITLE = 'Brownian Colloid Simulator'
 SITEURL = ''
 #SITEURL = 'http://kolbman.com/bcim'
 
@@ -30,8 +31,6 @@ TRANSLATION_FEED_ATOM = None
 
 # Blogroll
 #LINKS =  (('Pelican', 'http://getpelican.com/'),
-#          ('Python.org', 'http://python.org/'),
-#          ('Jinja2', 'http://jinja.pocoo.org/'),
 #          ('You can modify those links in your config file', '#'),)
 
 # Social widget

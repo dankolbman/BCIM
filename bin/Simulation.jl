@@ -7,8 +7,6 @@
 
 module Simulation
 
-#using Winston
-
 #import OpenCL
 #const cl = OpenCL
 
@@ -30,12 +28,11 @@ function runSim(conf, simPath="")
   ndata = int(conf["nsteps"]/conf["freq"])
   avgmsd = zeros(Float64, ndata, size(conf["npart"],1)+1)
 
-
   # Run each step
   for s in 1:conf["nsteps"]
     # Step
     step(conf, parts)
-
+    
     # Collect data
     if(s%conf["freq"] == 0)
       print("[")
@@ -44,20 +41,12 @@ function runSim(conf, simPath="")
       print("] $(int(s/conf["nsteps"]*100))%\r")
 
       t = s*conf["dt"]
-      #DataIO.writeParts("$(conf["path"])/$(simPath)parts$(int(s))", parts)
       DataIO.writeParts("$(conf["path"])$(simPath)parts", parts, t)
 
       # Calculate msd
       avgmsd[int(s/conf["freq"]), 1] = t
       # avgMSD() updates sq displacements and returns avg msd for all species
       avgmsd[int(s/conf["freq"]), 2:end] = Stats.avgMSD(conf,parts)
-
-      #DataIO.log("Write g(r)", conf)
-      #gr = Stats.gr(parts, conf)
-      #writedlm("$(conf["path"])/$(simPath)gr$(int(s)).dat",gr)
-
-      #p1 = plot(avgmsd[:,1],avgmsd[:,2])
-      #display(p1)
 
       if(false)#conf["plot"] == 1)
         path = "$(conf["path"])$(simPath)parts$(int(s)).dat"
@@ -68,9 +57,6 @@ function runSim(conf, simPath="")
       end
     end
   end
-  #savefig("awsome.png")
-  #println("Press enter to continue: ")
-  #readline(STDIN)
   println()
   DataIO.writeMSD("$(conf["path"])$(simPath)msd", avgmsd)
 
@@ -88,8 +74,6 @@ end
 # Returns
 #   A particle array
 function init(conf, simPath="")
-  # The length of a side of a cube for the required packing fraction
-  #conf["size"] = cbrt(4/3*pi*conf["dia"]^3/2/(conf["phi"]))
   parts = makeRanSphere(conf)
   DataIO.writeParts("$(conf["path"])/$(simPath)init",parts)
 
@@ -108,7 +92,7 @@ function post(conf, parts, simPath="")
     path = "$(conf["path"])$(simPath)"
     cnf = "$(conf["path"])$(simPath)../sim.cnf"
     cmd = `python $(conf["postSimPy"]) $cnf $path`
-    run(cmd)
+    @spawn run(cmd)
   end
 end
 
