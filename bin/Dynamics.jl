@@ -19,7 +19,7 @@ function forceCalc(conf, parts, cells)
   # Apply propulsion to particles
   prop(conf, parts)
   # Repulsive force
-  collisionCheck(conf, cells)
+  #collisionCheck(conf, cells)
 
   bound = (conf["size"] - conf["dia"]/2.0)
   for p in parts
@@ -70,16 +70,13 @@ function prop(conf, parts)
   end
 end
 
+# Checks cells for collision pairs with their neighbors
+# Params
+#   conf - the configuration dict
+#   cellGrid - a N dimensional array of cells
 function collisionCheck(conf, cellGrid)
   for c1 in cellGrid
-    # Collide own particles
-    for p1 in c1.parts
-      for p2 in c1.parts
-        repF(conf, p1, p2)
-        #adhF(conf, p1, p2)
-      end
-    end
-    # Collide neighbors
+    # Collide neighbors of c1
     for c2 in c1.neighbors
       collideCells(conf, c1, c2)
     end
@@ -121,12 +118,11 @@ function repF(conf, p1, p2)
         # Avoid division by 0
         a = conf["rep"][p1.sp]*conf["rep"][p2.sp]
         b = conf["rep"][p1.sp]+conf["rep"][p2.sp]
-        if(b == 0.0)
-          f *= 0.0
+        if(b == 0.0f0)
+          f *= 0.0f0
         else
-          f *= 2*a/b
+          f *= 2.0f0*a/b
         end
-        #print("$(f)\n")
       else
         f *= conf["rep"][p1.sp]
       end

@@ -33,7 +33,9 @@ function runSim(conf, simPath="")
   for s in 1:conf["nsteps"]
 
     # Update cells
-    assignParts(conf, parts, cells)
+    if(s%10 == 1)
+      assignParts(conf, parts, cells)
+    end
     # Step
     step(conf, parts, cells)
     
@@ -72,11 +74,12 @@ end
 function initParts(conf, simPath="")
   parts = makeRanSphere(conf)
   DataIO.writeParts("$(conf["path"])/$(simPath)init",parts)
-
   return parts
 end
 
 # Initialize neighbor cells
+# Params
+#   conf - the configuration dict
 function initCells(conf)
   # Determine number of cells along a dimension
   conf["D"] = conf["dia"]*(2*conf["contact"]+1)
@@ -93,7 +96,7 @@ function initCells(conf)
   for dep in 1:D
     for col in 1:D
       for row in 1:D
-        n = Array(Cell,0)
+        n = [cellGrid[row,col,dep]]         # Add self reference
         for d in -1:1
           for c in -1:1
             for r in -1:1
@@ -105,7 +108,7 @@ function initCells(conf)
             end
           end
         end
-        cellGrid[row,col,dep].neighbors = n # Neigbor list update
+        cellGrid[row,col,dep].neighbors = n # Neighbor list update
       end
     end
   end
@@ -130,6 +133,10 @@ function getNeighbor( cellGrid, row, col, dep, D )
 end
 
 # Assign particles to cells
+# Params
+#   conf - the configuration dict
+#   parts - the particle array
+#   cellGrid - an N dimensional array of cells
 function assignParts(conf, parts, cellGrid)
   cSize = conf["size"]*2 / conf["D"]
   D = conf["D"]
@@ -148,8 +155,8 @@ end
 
 # Runs post processing after the simulation has ended
 # Params
-# conf - the configuration dict
-# simPath the path of the simulation
+#   conf - the configuration dict
+#   simPath the path of the simulation
 function post(conf, parts, simPath="")
   gr = Stats.gr(conf, parts)
   writedlm("$(conf["path"])$(simPath)gr.dat", gr)
@@ -164,6 +171,8 @@ end
 # One simulation step. All forces are calculated, then positions updated
 # Params
 #   conf - the configuration dict with experiment parameters
+#   parts - the particle array
+#   cellGrid - an N dimensional array of cells
 function step(conf, parts, cells)
   # Update pos
   Dynamics.forceCalc(conf, parts, cells)

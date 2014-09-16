@@ -25,7 +25,7 @@ AVGMSD = 'avgMSD.png'
 
 
 # Constructs the head of md file (attributes interpreted by the generator)
-def makeHeader( path, name='Entry', draft=False):
+def makeHeader( path, name='Experiment', draft=False):
   # Contsruct header
   hstr = ''
   timemod = time.localtime(os.path.getctime(path)) 
@@ -87,7 +87,7 @@ def makeConf(path):
 # Params:
 #   path - the path to save the entry to and to locate data
 #   name - the name of the entry file to create
-def makeEntry( path, name='Entry', draft=False):
+def makeEntry( path, name='Experiment', draft=False):
   f = open(os.path.join(path, name+'.md'), 'w')
   print('Writing to '+os.path.join(path,name+'.md'))
   sumstr = ''
