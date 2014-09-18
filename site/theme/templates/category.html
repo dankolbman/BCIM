@@ -10,7 +10,7 @@
             {% endif %}
             <li><article class="hentry">
               <h4><a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark"
-                         title="Permalink to {{ article.title|striptags }}">{{ article.title }} - {{article.locale_date }}</a></h4>
+                         title="Permalink to {{ article.title|striptags }}">{{article.locale_date }}</a></h4>
               - {{ article.summary }}
               - {% include 'taglist.html' %}
             </article></li>

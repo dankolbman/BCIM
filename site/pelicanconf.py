@@ -20,7 +20,7 @@ THEME = 'theme'
 CSS_FILE = 'main.css'
 
 TIMEZONE = 'America/New_York'
-DEFAULT_DATE_FORMAT = '%H:%M - %m/%d'
+DEFAULT_DATE_FORMAT = '%m/%d - %H:%M'
 
 #DEFAULT_LANG = 'en'
 
