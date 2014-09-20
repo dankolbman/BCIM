@@ -10,10 +10,11 @@ import matplotlib.pyplot as plt
 import Grfx
 import DataIO
 
-def postSim(conf, path):
-  """ postSim : Dict String -> None
+def post(conf, path):
+  """ post : Dict String -> None
   Plots system configuration, msd
   """
+  plt.close()
   numPerRow = math.ceil(math.sqrt(conf['nexperiments']))
   fig = plt.figure()
   fig.gca().get_xaxis().set_visible(False)
@@ -81,4 +82,4 @@ if(__name__ == '__main__'):
     print("Correct useage: python postSim.py path/to/sim.cnf path/to/sim/dir/")
   else:
     conf = DataIO.readConf(sys.argv[1])
-    postSim(conf, sys.argv[2])
+    post(conf, sys.argv[2])

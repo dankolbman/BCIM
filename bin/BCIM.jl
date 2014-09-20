@@ -87,6 +87,7 @@ function defaultConf()
   conf["nequil"] = 100000
   conf["nsteps"] = 100000
   conf["freq"] = 1000
+  conf["expName"] = ""
 
   # Plotting
   conf["postSimPy"] = ""
@@ -259,8 +260,6 @@ function main()
   if(parsedArgs["outdir"]!=nothing)
     conf["path"] = parsedArgs["outdir"]
   end
-  # Take care of ftp stuff
-  # TODO command actions should be moved outside of main
   if( parsedArgs["%COMMAND%"] == "run" )
     runSim(parsedArgs, conf)
   elseif( parsedArgs["%COMMAND%"] == "put" )

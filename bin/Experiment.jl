@@ -82,7 +82,7 @@ function post(conf, expPath)
   if(conf["postExpPy"] != "")
     path = "$(conf["path"])$(expPath)"
     cnf = "$(conf["path"])$(expPath)sim.cnf"
-    cmd = `python $(conf["postExpPy"]) $cnf $path`
+    cmd = `python $(conf["postExpPy"]) $cnf $path "$(conf["expName"])"`
     run(cmd)
   end
 end

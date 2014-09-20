@@ -21,7 +21,8 @@ def readPos(filen):
   zpos=[]
   try:
     f = open(filen)
-    for line in f:
+    lines = reversed(list(f))
+    for line in lines:
       if line[0] != "#":
         l = line.split()
         if len(l) < 3: break

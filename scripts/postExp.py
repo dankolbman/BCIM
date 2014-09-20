@@ -9,10 +9,11 @@ import matplotlib.pyplot as plt
 import Grfx
 import DataIO
 
-def postSim(conf, path):
+def postSim(conf, path, title=""):
   """ postSim : Dict String -> None
   Plots system configuration, msd
   """
+  plt.close()
   # g(r)
   fig = plt.figure(dpi=200)
   fig.add_subplot(111)
@@ -23,6 +24,8 @@ def postSim(conf, path):
   fig = plt.figure(dpi=200)
   fig.add_subplot(111)
   Grfx.plotMSD(path, ['/avgMSD.dat'] )
+  if(title != ""):
+    plt.title(title)
   plt.savefig(path+'avgMSD.png', dpi=200)
 
 if(__name__ == '__main__'):
@@ -30,4 +33,7 @@ if(__name__ == '__main__'):
     print("Correct useage: python postSim.py path/to/sim.cnf path/to/sim/dir/")
   else:
     conf = DataIO.readConf(sys.argv[1])
-    postSim(conf, sys.argv[2])
+    if(len(sys.argv) > 3):
+      postSim(conf, sys.argv[2], title=sys.argv[3])
+    else:
+      postSim(conf, sys.argv[2])

@@ -11,15 +11,15 @@ ocl 0
 # Dimensionality of the simulation (2 or 3)
 dim 3
 # Number of trials to run per experiment
-ntrials 5
+ntrials 1
 # How many steps to equilibriate for
 nequil 1.0e3
 # How many steps to run for each trial
 nsteps 1.0e3
 # How many steps between data recording
-freq 1.0e2
+freq 1.0e1
 # Time step size
-dt 1.0e-5
+dt 1.0e-4
 ################################################################################
 ## System Vars
 ## These affect the physical system
@@ -34,9 +34,9 @@ dia 15.0e-4
 ## Species Vars
 ## These are different between species
 # Number of particles
-npart 256 256
+npart 2 2
 # Propulsion
-prop 0.0 0.0
+prop 100.0 100.0
 # Repulsion
 rep 0.0 0.0
 # Adhesion
@@ -62,16 +62,24 @@ pelican "../site/"
 ################################################################################
 ## Experiment 1
 experiment
-rep 1.5e4 1.5e4
+expName "Sp1 1.5e4 adh, 1.5e4:1.5e3 rep"
+adh 1.5e4 0.0
+rep 1.5e4 1.5e3
 ################################################################################
 ## Experiment 2
-#experiment
-#rep 1.5e4 1.5e3
+experiment
+expName "Sp1 1.5e4 adh, 1.5e4:1.5e4 rep"
+adh 1.5e4 0.0
+rep 1.5e4 1.5e4
 ################################################################################
 ## Experiment 3
-#experiment
-#rep 1.5e4 1.5e2
+experiment
+expName "Sp1 1.5e3 adh, 1.5e4:1.5e3 rep"
+adh 1.5e3 0.0
+rep 1.5e4 1.5e3
 ################################################################################
 ## Experiment 4
-#experiment
-#rep 1.5e4 1.5e1
+experiment
+expName "Sp1 1.5e3 adh, 1.5e4:1.5e4 rep"
+adh 1.5e3 0.0
+rep 1.5e4 1.5e4
