@@ -78,7 +78,7 @@ end
 function defaultConf()
   conf = Dict{String, Any}()
   # Program params
-  conf["path"] = "../data/"
+  #conf["path"] = "../data/"
   conf["autodir"] = 1
   conf["verbose"] = 1
   conf["ocl"] = 1
@@ -173,7 +173,7 @@ end
 # Params:
 #   args - parsedArgs dictionary
 function runSim(args, conf)
-  # Initialize the file sysetm
+  # Initialize the file sysetem
   initFS(conf)
   # Make a copy of the configuration file
   cp(args["config"], "$(conf["path"])batch.cnf")
@@ -191,9 +191,13 @@ function runSim(args, conf)
   if( conf["ignorenotebook"] == 0 )
     s = @spawn writeSummary(conf)
   end
-
+  path = conf["path"]
   # Run each experiment
   for experiment in 1:nExperiments
+    # TODO Temp fix for config load errors between experiments
+    # Clean up/get rid of initFS function
+    conf = defaultConf()   
+    conf["path"] = path
     # Fetch parameters for current experiment
     DataIO.readConf(args["config"], conf, experiment)
     # De-dimensionalise parameters

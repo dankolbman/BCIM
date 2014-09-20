@@ -22,6 +22,7 @@ CONF = 'batch.cnf'
 # Figures
 FINALCONF = 'finalConf.png'
 AVGMSD = 'avgMSD.png'
+AVGMSDLOG = 'avgMSDlog.png'
 
 
 # Constructs the head of md file (attributes interpreted by the generator)
@@ -67,6 +68,11 @@ def makeMSD(path):
   msdstr += '![MSD]('+os.path.relpath(path,'../')+')\n\n'
   return msdstr
 
+def makeMSDlog(path):
+  msdstr = '###Average MSD (log of)\n\n'
+  msdstr += '![MSD Log]('+os.path.relpath(path,'../')+')\n\n'
+  return msdstr
+
 # Constructs the Log portion of the page
 def makeLog(path):
   outstr = '### Log\n\n\t:::python3\n'
@@ -107,6 +113,7 @@ def makeEntry( path, name='Experiment', draft=False):
     print('Found note file...')
     notestr = makeNotes(os.path.join(path, NOTES))
   
+  # Figures
   
   figstr += '## Figures\n\n'
   
@@ -117,6 +124,10 @@ def makeEntry( path, name='Experiment', draft=False):
   if(os.path.isfile(os.path.join(path, AVGMSD))):
     print('Found MSD image...')
     figstr += makeMSD(os.path.join(path, AVGMSD))
+
+  if(os.path.isfile(os.path.join(path, AVGMSD))):
+    print('Found MSD log image...')
+    figstr += makeMSDlog(os.path.join(path, AVGMSDLOG))
 
   if(os.path.isfile(os.path.join(path, LOG))):
     print('Found log file...')

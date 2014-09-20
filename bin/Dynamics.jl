@@ -92,7 +92,7 @@ function collideCells(conf, c1, c2)
   for p1 in c1.parts
     for p2 in c2.parts
       repF(conf, p1, p2)
-      #adhF(conf, p1, p2)
+      adhF(conf, p1, p2)
     end
   end
 end
@@ -116,13 +116,14 @@ function repF(conf, p1, p2)
     f *= [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
     if( p1.sp != p2.sp)   # Different species interacting
       # Avoid division by 0
-      a = conf["rep"][p1.sp]*conf["rep"][p2.sp]
-      b = conf["rep"][p1.sp]+conf["rep"][p2.sp]
-      if(b == 0.0f0)
-        f *= 0.0f0
-      else
-        f *= 2.0f0*a/b
-      end
+      #a = conf["rep"][p1.sp]*conf["rep"][p2.sp]
+      #b = conf["rep"][p1.sp]+conf["rep"][p2.sp]
+      #if(b == 0.0)
+      #  f *= 0.0
+      #else
+      #  f *= 2.0*a/b
+      #end
+      f *= conf["rep"][3]
     else
       f *= conf["rep"][p1.sp]
     end
@@ -136,7 +137,7 @@ end
 # Params
 #   conf - the configuration dict
 #   parts - an array of particle arrays for each species
-function adhF(p1, p2, conf)
+function adhF(conf, p1, p2)
   if(p1.id < p2.id)
     dr = p1.pos - p2.pos
     d = sqrt(sum(dr.^2))
@@ -153,9 +154,15 @@ function adhF(p1, p2, conf)
       end
       # Force vector
       f *= [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
-      if( p1.sp != p2.sp)   # Different species interacting
-        f *= 2*(conf["adh"][p1.sp]*conf["adh"][p2.sp] / 
-            (conf["rep"][p1.sp]+conf["adh"][p2.sp]))
+      if( false ) #p1.sp != p2.sp)   # Different species interacting
+        # Avoid division by 0
+        a = conf["adh"][p1.sp]*conf["adh"][p2.sp]
+        b = conf["adh"][p1.sp]+conf["adh"][p2.sp]
+        if(b == 0.0)
+          f *= 0.0
+        else
+          f *= 2.0*a/b
+        end
       else
         f *= conf["adh"][p1.sp]
       end

@@ -11,6 +11,10 @@ import matplotlib.pyplot as plt
 import Grfx
 import DataIO
 
+from matplotlib import rc
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+rc('text', usetex=True)
+
 def postSim(conf, path):
   """ postSim : Dict String -> None
   Plots system configuration, msd
@@ -28,6 +32,13 @@ def postSim(conf, path):
   fig.add_subplot(111)
   Grfx.plotMSD(path, ['/msd.dat'] )
   plt.savefig(path+'msd.png', dpi=200)
+  # MSD log
+  fig =  plt.figure(dpi=200)
+  fig.add_subplot(111)
+  Grfx.plotMSD(path, ['/msd.dat'] )
+  plt.gca().set_yscale('log')
+  plt.gca().set_xscale('log')
+  plt.savefig(path+'msdlog.png', dpi=200)
   # g(r)
   fig = plt.figure()
   fig.add_subplot(111)
