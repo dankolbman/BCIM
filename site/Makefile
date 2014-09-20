@@ -8,9 +8,9 @@ OUTPUTDIR=$(BASEDIR)/bcim
 CONFFILE=$(BASEDIR)/pelicanconf.py
 PUBLISHCONF=$(BASEDIR)/pelicanconf.py
 
-FTP_HOST=kolbman.com
-FTP_USER=alldankc
-FTP_TARGET_DIR=/public_html/bcim
+FTP_HOST=quasar.student.rit.edu
+FTP_USER=dan
+FTP_TARGET_DIR=/www/bcim
 
 SSH_HOST=localhost
 SSH_PORT=22
