@@ -192,6 +192,7 @@ function runSim(args, conf)
     s = @spawn writeSummary(conf)
   end
   path = conf["path"]
+  procs = Array(Any)
   # Run each experiment
   for experiment in 1:nExperiments
     # TODO Temp fix for config load errors between experiments
@@ -206,7 +207,13 @@ function runSim(args, conf)
     DataIO.log("Experiment $experiment starting...", conf, )
     DataIO.log("Experiment path at $(conf["path"])experiment$experiment/", conf)
     
-    Experiment.runExp(conf, "experiment$experiment/")
+    p = @spawn Experiment.runExp(conf, "experiment$experiment/")
+    procs.push!(p, procs)
+  end
+
+  # Sync on the experiments
+  for p in procs
+    wait(p)
   end
 
   post(conf)

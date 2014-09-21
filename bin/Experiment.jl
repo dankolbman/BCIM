@@ -27,7 +27,7 @@ function runExp(conf, expPath="")
   # Write configuration file for the trial
   DataIO.writeConf("$(conf["path"])$(expPath)sim", conf)
   
-  procs = Array(Any, int(conf["ntrials"]))
+  procs = Array(Any)
   
   # Run each trial
   # TODO Spawn each trial on a different worker
@@ -38,7 +38,8 @@ function runExp(conf, expPath="")
     if(conf["ocl"] == 1)
       SimCL.runSim(conf, "$(expPath)trial$(int(trial))/")
     else
-      Simulation.runSim(conf, "$(expPath)trial$(int(trial))/")
+      p = @spawn Simulation.runSim(conf, "$(expPath)trial$(int(trial))/")
+      procs.push!(p,procs)
     end
 
     #p = @spawn Simulation.runSim(conf, "$(expPath)trial$(int(trial))/")
@@ -51,9 +52,9 @@ function runExp(conf, expPath="")
   post(conf, expPath)
   
   # Wait on all processes
-  #for p in procs
-    #wait(p)
-  #end
+  for p in procs
+    wait(p)
+  end
 end
 
 # Run at the end of every experiment
