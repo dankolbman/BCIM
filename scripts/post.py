@@ -39,7 +39,7 @@ def post(conf, path):
   #fig.set_size_inches( 6, 6 )
   #plt.subplots_adjust(wspace=-0.3, hspace=-0.3)
   plt.tight_layout()
-  plt.savefig(path+'/finalConf.png', transparant=True, frameon=False, dpi=200,bbox_inches='tight')
+  plt.savefig(path+'/finalConf.png', transparant=True, frameon=False, dpi=100*numPerRow,bbox_inches='tight')
   plt.show()
 
   # MSD
@@ -60,7 +60,7 @@ def post(conf, path):
     fig.gca().set_frame_on(False)
 
   plt.tight_layout()
-  plt.savefig(path+'/avgMSD.png', transparant=True, frameon=False, dpi=200,bbox_inches='tight')
+  plt.savefig(path+'/avgMSD.png', transparant=True, frameon=False, dpi=100*numPerRow,bbox_inches='tight')
   plt.show()
 
   # MSD log
@@ -83,7 +83,7 @@ def post(conf, path):
   #fig.set_size_inches( 6, 6 )
   #plt.subplots_adjust(wspace=-0.3, hspace=-0.3)
   plt.tight_layout()
-  plt.savefig(path+'/avgMSDlog.png', transparant=True, frameon=False, dpi=200,bbox_inches='tight')
+  plt.savefig(path+'/avgMSDlog.png', transparant=True, frameon=False, dpi=100*numPerRow,bbox_inches='tight')
   plt.show()
 
   # Configuration
