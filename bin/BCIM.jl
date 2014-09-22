@@ -90,6 +90,7 @@ function defaultConf()
   conf["expName"] = ""
 
   # Plotting
+  conf["serverMode"] = 0
   conf["postSimPy"] = ""
   conf["postExpPy"] = ""
   conf["postPy"] = ""
@@ -188,11 +189,11 @@ function runSim(args, conf)
   
   DataIO.log("$nExperiments experiment(s) found", conf)
 
-  if( conf["ignorenotebook"] == 0 )
+  if( conf["ignorenotebook"] == 0 && conf["serverMode"] == 0)
     s = @spawn writeSummary(conf)
   end
   path = conf["path"]
-  procs = Array(Any)
+  procs = Array(Any, nExperiments)
   # Run each experiment
   for experiment in 1:nExperiments
     # TODO Temp fix for config load errors between experiments
@@ -208,7 +209,7 @@ function runSim(args, conf)
     DataIO.log("Experiment path at $(conf["path"])experiment$experiment/", conf)
     
     p = @spawn Experiment.runExp(conf, "experiment$experiment/")
-    procs.push!(p, procs)
+    procs[experiment] = p
   end
 
   # Sync on the experiments
@@ -218,7 +219,7 @@ function runSim(args, conf)
 
   post(conf)
 
-  if( conf["ignorenotebook"] == 0 )
+  if( conf["ignorenotebook"] == 0 && conf["serverMode"] == 0)
     # Wait for summary and notes entry to end
     n = @spawn writeNotes(conf)
     fetch(s)

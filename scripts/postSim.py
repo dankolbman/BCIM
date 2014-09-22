@@ -5,6 +5,8 @@
 
   Dan Kolbman 2014
 """
+import matplotlib
+matplotlib.use('Agg')
 import sys
 import matplotlib.pyplot as plt
 
@@ -12,8 +14,10 @@ import Grfx
 import DataIO
 
 from matplotlib import rc
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
-rc('text', usetex=True)
+#rc('font',**{'family':'sans-serif','sans-serif':['dejavu']})
+#rc('text', usetex=True)
+
+plt.ioff()
 
 def postSim(conf, path):
   """ postSim : Dict String -> None
