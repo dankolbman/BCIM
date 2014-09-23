@@ -41,10 +41,12 @@ function runSim(conf, simPath="")
     
     # Collect data
     if(s%conf["freq"] == 0)
-      print("[")
-      print("#"^int(s/conf["nsteps"]*70))
-      print("-"^(70-int(s/conf["nsteps"]*70)))
-      print("] $(int(s/conf["nsteps"]*100))%\r")
+      #print("[")
+      #print("#"^int(s/conf["nsteps"]*70))
+      #print("-"^(70-int(s/conf["nsteps"]*70)))
+      #print("] $(int(s/conf["nsteps"]*100))%\r")
+      #print("\r\t"^(myid()*3))
+      #print("$(myid()): $(int(s/conf["nsteps"]*100))%   ")
 
       t = s*conf["dt"]
       DataIO.writeParts("$(conf["path"])$(simPath)parts", parts, t)
@@ -55,7 +57,6 @@ function runSim(conf, simPath="")
       avgmsd[int(s/conf["freq"]), 2:end] = Stats.avgMSD(conf,parts)
     end
   end
-  println()
   DataIO.writeMSD("$(conf["path"])$(simPath)msd", avgmsd)
 
   post(conf, parts, simPath)

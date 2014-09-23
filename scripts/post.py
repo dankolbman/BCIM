@@ -3,6 +3,8 @@
 
   Dan Kolbman 2014
 """
+import matplotlib
+matplotlib.use('Agg')
 import sys
 import math
 import matplotlib.pyplot as plt
@@ -11,8 +13,10 @@ import Grfx
 import DataIO
 
 from matplotlib import rc
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
-rc('text', usetex=True)
+#rc('font',**{'family':'sans-serif','sans-serif':['dejavu']})
+#rc('text', usetex=True)
+
+plt.ioff()
 
 def post(conf, path):
   """ post : Dict String -> None
@@ -40,7 +44,7 @@ def post(conf, path):
   #plt.subplots_adjust(wspace=-0.3, hspace=-0.3)
   plt.tight_layout()
   plt.savefig(path+'/finalConf.png', transparant=True, frameon=False, dpi=100*numPerRow,bbox_inches='tight')
-  plt.show()
+  if(conf["serverMode"] == 0): plt.show()
 
   # MSD
   fig = plt.figure()
@@ -61,7 +65,7 @@ def post(conf, path):
 
   plt.tight_layout()
   plt.savefig(path+'/avgMSD.png', transparant=True, frameon=False, dpi=100*numPerRow,bbox_inches='tight')
-  plt.show()
+  if(conf["serverMode"] == 0): plt.show()
 
   # MSD log
   fig = plt.figure()
@@ -84,7 +88,7 @@ def post(conf, path):
   #plt.subplots_adjust(wspace=-0.3, hspace=-0.3)
   plt.tight_layout()
   plt.savefig(path+'/avgMSDlog.png', transparant=True, frameon=False, dpi=100*numPerRow,bbox_inches='tight')
-  plt.show()
+  if(conf["serverMode"] == 0): plt.show()
 
   # Configuration
   #fig = plt.figure()

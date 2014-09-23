@@ -11,7 +11,7 @@ ocl 0
 # Dimensionality of the simulation (2 or 3)
 dim 3
 # Number of trials to run per experiment
-ntrials 1
+ntrials 3
 # How many steps to equilibriate for
 nequil 1.0e3
 # How many steps to run for each trial
@@ -34,7 +34,7 @@ dia 15.0e-4
 ## Species Vars
 ## These are different between species
 # Number of particles
-npart 2 2
+npart 256 256
 # Propulsion
 prop 100.0 100.0
 # Repulsion
@@ -45,6 +45,8 @@ adh 0.0 0.0
 contact 0.1
 ################################################################################
 ## Plotting
+# Disable graphical applications for running on servers without xorg
+serverMode 1
 # Python programs to run after a simulation ends
 postSimPy "../scripts/postSim.py"
 # Python programs to run after an experiment ends
@@ -54,7 +56,7 @@ postPy "../scripts/post.py"
 # Notebook editor
 editor "vim"
 # Suppress notebook entry requets
-ignorenotebook 0
+ignorenotebook 1
 # The path to the notebook generator
 notebook "../notebook/generator.py"
 # Path to program to the pelican make file

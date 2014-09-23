@@ -10,6 +10,8 @@ import sys
 
 import DataIO
 
+plt.ioff()
+
 ################################################################################
 # Plot the system configuration
 

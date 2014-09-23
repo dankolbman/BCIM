@@ -38,7 +38,8 @@ function runExp(conf, expPath="")
     if(conf["ocl"] == 1)
       SimCL.runSim(conf, "$(expPath)trial$(int(trial))/")
     else
-      Simulation.runSim(conf, "$(expPath)trial$(int(trial))/")
+      p = @spawn Simulation.runSim(conf, "$(expPath)trial$(int(trial))/")
+      procs[trial] = p
     end
 
     #p = @spawn Simulation.runSim(conf, "$(expPath)trial$(int(trial))/")
@@ -47,13 +48,14 @@ function runExp(conf, expPath="")
     DataIO.log("Trial $(int(trial)) ended taking $(toq())", conf)
 
   end
+
+  # Wait on all processes
+  for p in procs
+    wait(p)
+  end
   
   post(conf, expPath)
   
-  # Wait on all processes
-  #for p in procs
-    #wait(p)
-  #end
 end
 
 # Run at the end of every experiment
