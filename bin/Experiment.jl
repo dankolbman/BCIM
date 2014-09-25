@@ -33,7 +33,6 @@ function runExp(conf, expPath="")
   # TODO Spawn each trial on a different worker
   for trial in 1:conf["ntrials"]
     DataIO.log("Begin trial $(int(trial))", conf)
-    tic()
 
     if(conf["ocl"] == 1)
       SimCL.runSim(conf, "$(expPath)trial$(int(trial))/")
@@ -44,9 +43,6 @@ function runExp(conf, expPath="")
 
     #p = @spawn Simulation.runSim(conf, "$(expPath)trial$(int(trial))/")
     #procs[trial] = p
-
-    DataIO.log("Trial $(int(trial)) ended taking $(toq())", conf)
-
   end
 
   # Wait on all processes

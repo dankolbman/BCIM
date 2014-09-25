@@ -28,7 +28,7 @@ function runSim(conf, simPath="")
 
   ndata = int(conf["nsteps"]/conf["freq"])
   avgmsd = zeros(Float64, ndata, size(conf["npart"],1)+1)
-
+  tic()
   # Run each step
   for s in 1:conf["nsteps"]
 
@@ -60,6 +60,8 @@ function runSim(conf, simPath="")
   DataIO.writeMSD("$(conf["path"])$(simPath)msd", avgmsd)
 
   post(conf, parts, simPath)
+  
+  DataIO.log("Trial ended taking $(toq()) seconds", conf)
 
 end
 

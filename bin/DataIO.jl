@@ -19,7 +19,12 @@ function log(str,conf)
   path = string(conf["path"],"log.txt")
   f = open(path,"a")
   t = TmStruct(time())
-  str = string("[",t.hour,":",t.min,":",t.sec,"]: ",str,"\n")
+  tstr = string("[",t.hour,":",t.min,":",t.sec,"]:")
+  if(nprocs() > 1)
+    str = string(tstr, "{Worker ", myid(), "} ", str, " \n")
+  else
+    str = string(tstr,str," \n")
+  end
   write(f,str)
   if(conf["verbose"] == 1) print(str) end
   close(f)

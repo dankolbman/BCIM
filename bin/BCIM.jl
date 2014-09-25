@@ -194,6 +194,7 @@ function runSim(args, conf)
   end
   path = conf["path"]
   procs = Array(Any, nExperiments)
+  tic()
   # Run each experiment
   for experiment in 1:nExperiments
     # TODO Temp fix for config load errors between experiments
@@ -225,6 +226,8 @@ function runSim(args, conf)
     fetch(s)
     fetch(n)
   end
+  
+  DataIO.log("Batch ended taking $(toq()) seconds", conf)
   
   println("Would you like to publish the summary to the lab book? (y/N)")
   publish = chomp(readline())
