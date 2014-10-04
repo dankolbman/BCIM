@@ -6,6 +6,7 @@
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import numpy as np
+import pylab as P
 import sys
 
 import DataIO
@@ -90,6 +91,41 @@ def plotBounds3D(conf, axes):
   axes.plot_surface(x, y, z, rstride=4, cstride=4, color='b', alpha = 0.05,\
     linewidth=0)
   return True
+
+################################################################################
+# Plot histogram of neighbor velocities
+def plotNeighborVel(path, files, rad):
+  rad2 = rad*rad
+  for i in range(len(files)):
+    parts = DataIO.readParts(str(path)+files[i])
+    # Look at each particle
+    for p1 in parts:
+      neigh = 0
+      # Store the difference in v^2 from the mean for its neighbors
+      v2diffs1 = []
+      v2diffs2 = []
+      # Look at each of the particle's neighbors
+      for p2 in parts:
+        d2 = (p1.x[0]-p2.x[0])**2 + (p1.x[1]-p2.x[1])**2 + (p1.x[2]-p2.x[2])**2
+        if p2!=p1:
+          if d2 < rad2:
+            neigh += 1
+            if p2.sp == 1.0:
+              v2diffs1.append(p2.v2() - p1.v2())
+            else:
+              v2diffs2.append(p2.v2() - p1.v2())
+
+      # Create a histogram for diffs
+      bins = [ int(x*30) for x in range(-5,5) ]
+      if (len(v2diffs1) > 0):
+        n1, bins1, patches1 = P.hist(v2diffs1, bins, histtype='bar')
+        P.setp(patches1, 'facecolor', 'r', 'alpha', 0.5)
+      if (len(v2diffs2) > 0):
+        n2, bins2, patches2 = P.hist(v2diffs2, bins, histtype='bar')
+        P.setp(patches2, 'facecolor', 'b', 'alpha', 0.5)
+      P.xlim([-150,150])
+      #P.ylim([0,1.5])
+      P.show()
 
 ################################################################################
 # Plot the msd

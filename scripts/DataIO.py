@@ -11,6 +11,36 @@ import sys
 import re
 import numpy as np
 
+
+class Part:
+  def __init__(self, sp, x, v, ang):
+    self.sp = sp
+    self.x = x
+    self.v = v
+    self.ang = ang
+
+  def v2(self):
+    return self.x[0]**2 + self.x[1]**2 + self.x[2]**2
+
+def readParts(filen):
+  """ readParts : String -> Part[]
+  Read particles in from the last state in the file
+  """
+  parts = []
+  try:
+    f = open(filen)
+    lines = reversed(list(f))
+    for line in lines:
+      if line[0] != "#":
+        l = line.split()
+        vals = [ float(x) for x in l ]
+        p = Part(vals[1], vals[2:5], vals[5:8], vals[8:10])
+        parts.append(p)
+  except IOError as e:
+    print('IO Error!', e.strerror)
+  return parts
+        
+
 def readPos(filen):
   """ readPos : String -> float[] float[] float[] float[]
   Read position data from a file and return x y and z lists

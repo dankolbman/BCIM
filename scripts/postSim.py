@@ -6,7 +6,7 @@
   Dan Kolbman 2014
 """
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 import sys
 import matplotlib.pyplot as plt
 
@@ -23,6 +23,8 @@ def postSim(conf, path):
   """ postSim : Dict String -> None
   Plots system configuration, msd
   """
+  #fig = plt.figure(dpi=200)
+  #Grfx.plotNeighborVel(path, ['/parts.dat'], 10)
   # Configuration
   fig =  plt.figure(dpi=200)
   fig.add_subplot(111)
