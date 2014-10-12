@@ -110,7 +110,7 @@ function repF(conf, p1, p2)
     thet = acos(dr[3]/d)
     phi = atan2(dr[2],dr[1])
     # Magnitude of force (linear)
-    f = 1.0-conf["dia"]/d
+    f = 1.0-d/conf["dia"]
     f = (abs(f)-f)/2.0
     # Force vector
     f *= [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
