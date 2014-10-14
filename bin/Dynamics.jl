@@ -57,8 +57,8 @@ end
 function prop(conf, parts)
   # Iterate each particle
   for p in parts
-    p.ang[1] += conf["rotdiffus"]*randn()
-    p.ang[2] += conf["rotdiffus"]*randn()
+    p.ang[1] += conf["rotdiffus"]*randn() % (2*pi)
+    p.ang[2] += conf["rotdiffus"]*randn() % (2*pi)
     # Determine velocity components
     v = conf["prop"][p.sp]*randn()
     u = cos(p.ang[1])
@@ -111,7 +111,10 @@ function repF(conf, p1, p2)
     phi = atan2(dr[2],dr[1])
     # Magnitude of force (linear)
     f = 1.0-d/conf["dia"]
-    f = (abs(f)-f)/2.0
+    #f = (abs(f)+f)/2.0
+    if d > conf["dia"]
+      f = 0
+    end
     # Force vector
     f *= [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
     if( p1.sp != p2.sp)   # Different species interacting
