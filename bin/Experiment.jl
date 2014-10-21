@@ -76,6 +76,8 @@ function post(conf, expPath)
   # Average all msd functions
   msd = Stats.avgMSD(conf, msdfiles)
   writedlm("$(conf["path"])$(expPath)avgMSD.dat", msd)
+
+  #println("Process $(conf["expName"]) with $(conf["rep"]) rep, $(conf["adh"]) adh")
   
   if(conf["postExpPy"] != "")
     path = "$(conf["path"])$(expPath)"

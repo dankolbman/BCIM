@@ -202,7 +202,7 @@ function runSim(args, conf)
     conf = defaultConf()   
     conf["path"] = path
     # Fetch parameters for current experiment
-    DataIO.readConf(args["config"], conf, experiment)
+    DataIO.readConf(args["config"], conf, experiment-1)
     # De-dimensionalise parameters
     dedimension(conf)
     # Log

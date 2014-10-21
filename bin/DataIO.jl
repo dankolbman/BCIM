@@ -3,8 +3,7 @@
 # 
 # TODO it might be better to pass file streams to these functions rather
 # than open and close inside of the functions.
-#
-# Dan Kolbman 2014
+# # Dan Kolbman 2014
 ##
 
 module DataIO

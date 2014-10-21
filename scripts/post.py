@@ -4,7 +4,7 @@
   Dan Kolbman 2014
 """
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 import sys
 import math
 import matplotlib.pyplot as plt
@@ -22,6 +22,8 @@ def post(conf, path):
   """ post : Dict String -> None
   Plots system configuration, msd
   """
+  if(not "serverMode" in conf):
+    conf["serverMode"] = 0
   plt.close()
   numPerRow = math.ceil(math.sqrt(conf['nexperiments']))
   fig = plt.figure()
@@ -44,7 +46,7 @@ def post(conf, path):
   #plt.subplots_adjust(wspace=-0.3, hspace=-0.3)
   plt.tight_layout()
   plt.savefig(path+'/finalConf.png', transparant=True, frameon=False, dpi=100*numPerRow,bbox_inches='tight')
-  if(conf["serverMode"] == 0): plt.show()
+  if(int(conf["serverMode"]) == 0): plt.show()
 
   # MSD
   fig = plt.figure()
@@ -65,7 +67,7 @@ def post(conf, path):
 
   plt.tight_layout()
   plt.savefig(path+'/avgMSD.png', transparant=True, frameon=False, dpi=100*numPerRow,bbox_inches='tight')
-  if(conf["serverMode"] == 0): plt.show()
+  if(int(conf["serverMode"]) == 0): plt.show()
 
   # MSD log
   fig = plt.figure()
@@ -88,7 +90,7 @@ def post(conf, path):
   #plt.subplots_adjust(wspace=-0.3, hspace=-0.3)
   plt.tight_layout()
   plt.savefig(path+'/avgMSDlog.png', transparant=True, frameon=False, dpi=100*numPerRow,bbox_inches='tight')
-  if(conf["serverMode"] == 0): plt.show()
+  if(int(conf["serverMode"]) == 0): plt.show()
 
   # Configuration
   #fig = plt.figure()
