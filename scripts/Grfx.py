@@ -69,7 +69,7 @@ def plotConfig3D(conf, path, files):
   fig = plt.figure()
   ax = fig.gca(projection='3d')
   for i in range(0,len(files)):
-    sp, xpos, ypos, zpos = DataIO.readPos(path+files[i])
+    t, sp, xpos, ypos, zpos = DataIO.readPos(path+files[i])
     clrs = [ colors[j-1] for j in sp ]
     ax.scatter(xpos,ypos,zpos,c=clrs, s=200/conf['size'], lw=0)
 
