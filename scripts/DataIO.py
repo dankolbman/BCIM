@@ -22,14 +22,26 @@ class Part:
   def v2(self):
     return self.x[0]**2 + self.x[1]**2 + self.x[2]**2
 
-def readParts(filen):
-  """ readParts : String -> Part[]
-  Read particles in from the last state in the file
+def readParts(filen, state=1):
+  """ readParts : String Int -> Part[]
+  Read particles in from the state specified from the last state
+  ie state = 1 will read the last state
+     state = 2 will read the second to last state...
   """
   parts = []
   try:
     f = open(filen)
-    lines = reversed(list(f))
+    lines = list(f)
+    # get rid of the unwanted states
+    if(state-1 > 0):
+      curr_state = 0
+      while (curr_state < state):
+        line = lines.pop()
+        if(line[0] == "#"):
+          curr_state += 1
+
+    lines = reversed(lines)
+
     for line in lines:
       if line[0] != "#":
         l = line.split()
@@ -41,29 +53,44 @@ def readParts(filen):
   return parts
         
 
-def readPos(filen):
+def readPos(filen, state=1):
   """ readPos : String -> float[] float[] float[] float[]
   Read position data from a file and return x y and z lists
   """
+  t = []
   sp=[]
   xpos=[]
   ypos=[]
   zpos=[]
   try:
     f = open(filen)
-    lines = reversed(list(f))
-    for line in lines:
-      if line[0] != "#":
+    lines = list(f)
+    if( state > 0):
+      curr_state = 0
+      while (curr_state < state):
+        line = lines.pop()
         l = line.split()
+        if(l[0][0] == '#'):
+          curr_state += 1
+    # We've been popping them off the end of the file so now we should reverse
+    # So we can use an iterator from the end
+    lines = reversed(lines)
+
+    for line in lines:
+      l = line.split()
+      if l[0][0] != '#':
         if len(l) < 3: break
+        t.append(float(l[0]))
         sp.append(int(l[1]))
         xpos.append(float(l[2]))
         ypos.append(float(l[3]))
         zpos.append(float(l[4]))
+      else:
+        break
     f.close()
   except IOError as e:
     print('IO Error!', e.strerror)
-  return sp, xpos,ypos,zpos
+  return t, sp, xpos,ypos,zpos
 
 def readPos2D(filen, state=-1):
   """ readPos2D : String int -> float[] float[]
