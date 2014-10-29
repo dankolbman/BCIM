@@ -71,7 +71,7 @@ def plotConfig3D(conf, path, files):
   for i in range(0,len(files)):
     t, sp, xpos, ypos, zpos = DataIO.readPos(path+files[i])
     clrs = [ colors[j-1] for j in sp ]
-    ax.scatter(xpos,ypos,zpos,c=clrs, s=200/conf['size'], lw=0)
+    ax.scatter(xpos,ypos,zpos,c=clrs, s=2000/conf['size'], lw=0)
 
   plotBounds3D(conf, plt.gcf().gca())
   ax.set_xlim3d(-conf["size"], conf["size"])
