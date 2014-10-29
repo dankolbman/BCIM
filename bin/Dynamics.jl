@@ -12,7 +12,7 @@ include("Types.jl")
 function forceCalc(conf, parts, cells)
 
   for p in parts
-    p.vel = [ 0.0f0, 0.0f0, 0.0f0 ]
+    p.vel = [ 0.0, 0.0, 0.0 ]
   end
   # Apply a brownian force to all particle
   brownian(conf, parts)
@@ -60,7 +60,7 @@ function prop(conf, parts)
     p.ang[1] += conf["rotdiffus"]*randn() % (2*pi)
     p.ang[2] += conf["rotdiffus"]*randn() % (2*pi)
     # Determine velocity components
-    v = conf["prop"][p.sp]*randn()
+    v = abs(conf["prop"][p.sp]*randn())
     u = cos(p.ang[1])
     vx = v*sqrt(1-u^2)*cos(p.ang[2])
     vy = v*sqrt(1-u^2)*sin(p.ang[2])

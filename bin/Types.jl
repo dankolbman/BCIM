@@ -9,13 +9,13 @@ import Base.show
 type Part
   id::Int
   sp::Int32
-  pos::Array{Float32}
-  vel::Array{Float32}
-  ang::Array{Float32}
+  pos::Array{Float64}
+  vel::Array{Float64}
+  ang::Array{Float64}
   # The total square distance, used for msd
   sqd::Float64
   # The starting coordinate
-  org::Array{Float32}
+  org::Array{Float64}
   # Contsructors
   Part(id, sp, pos, vel, ang, sqd) = new(id, sp, pos, vel, ang, sqd, pos)
   Part(id, sp, pos, vel, ang) = new(id, sp, pos, vel, ang, 0.0, pos)
