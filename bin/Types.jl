@@ -1,5 +1,5 @@
 ##
-# Type for particle representation
+# Types for particle and cell representation
 #
 # Dan Kolbman
 ##
@@ -16,9 +16,16 @@ type Part
   sqd::Float64
   # The starting coordinate
   org::Array{Float64}
-  # Contsructors
-  Part(id, sp, pos, vel, ang, sqd) = new(id, sp, pos, vel, ang, sqd, pos)
-  Part(id, sp, pos, vel, ang) = new(id, sp, pos, vel, ang, 0.0, pos)
+  # Force contributions
+  brn::Array{Float64}
+  prp::Array{Float64}
+  adh::Array{Float64}
+  rep::Array{Float64}
+  # Constructures
+  Part(id, sp, pos, vel, ang, sqd) = new(id, sp, pos, vel, ang, sqd, pos,
+       [0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0])
+  Part(id, sp, pos, vel, ang) = new(id, sp, pos, vel, ang, 0.0, pos,
+       [0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0])
 end
 
 type Cell
@@ -36,10 +43,22 @@ end
 function show(io::IO, p::Part)
   #println("$(p.sp) $(p.vel) $(p.ang) $(p.msd)")
   print(io, "$(p.sp) ")
-  print_arr(io, float64(p.pos))
-  print_arr(io, float64(p.vel))
-  print_arr(io, float64(p.ang))
-  print(io, "$(float64(p.sqd))")
+  print_arr(io, p.pos)
+  print_arr(io, p.vel)
+  print_arr(io, p.ang)
+  print(io, "$(p.sqd)")
+  if io == STDOUT
+    forces(p)
+  end
+end
+
+# Print the force contributions for the particle
+function forces(p)
+  print("FORCES FOR PARTICLE $(p.id)\n")
+  print("BRN: $(p.brn)\n")
+  print("PRP: $(p.prp)\n")
+  print("ADH: $(p.adh)\n")
+  print("REP: $(p.rep)\n")
 end
 
 function print_arr(io, X::AbstractArray)

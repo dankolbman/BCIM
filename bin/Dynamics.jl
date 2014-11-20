@@ -12,8 +12,13 @@ include("Types.jl")
 function forceCalc(conf, parts, cells)
 
   for p in parts
-    p.vel = [ 0.0, 0.0, 0.0 ]
+    #p.vel = [ 0.0, 0.0, 0.0 ]
+    p.brn = [ 0.0, 0.0, 0.0 ]
+    p.prp = [ 0.0, 0.0, 0.0 ]
+    p.adh = [ 0.0, 0.0, 0.0 ]
+    p.rep = [ 0.0, 0.0, 0.0 ]
   end
+
   # Apply a brownian force to all particle
   brownian(conf, parts)
   # Apply propulsion to particles
@@ -23,6 +28,13 @@ function forceCalc(conf, parts, cells)
 
   bound = (conf["size"] - conf["dia"]/2.0)
   for p in parts
+    # Update velocities from components
+    p.vel = p.brn + p.prp + p.adh + p.rep
+    # Print for any obnormal interactions
+    if( norm(p.vel) > 1000000)
+      forces(p)
+    end
+
     newpos = p.pos + p.vel*conf["dt"]
     dist2 = newpos[1]^2 + newpos[2]^2 + newpos[3]^2
     # Within the sphere bounds
@@ -46,7 +58,7 @@ function brownian(conf, parts)
   # Iterate each particle
   for p in parts 
     # Add some normal velocity
-    p.vel += conf["pretrad"] * randn(3)
+    p.brn += conf["pretrad"] * randn(3)
   end
 end
 
@@ -60,13 +72,13 @@ function prop(conf, parts)
     p.ang[1] += conf["rotdiffus"]*randn() % (2*pi)
     p.ang[2] += conf["rotdiffus"]*randn() % (2*pi)
     # Determine velocity components
-    v = abs(conf["prop"][p.sp]*randn())
+    v = abs(conf["prop"][p.sp])
     u = cos(p.ang[1])
     vx = v*sqrt(1-u^2)*cos(p.ang[2])
     vy = v*sqrt(1-u^2)*sin(p.ang[2])
     vz = v*u
     # Update particle velocity
-    p.vel += [ vx, vy, vz ]
+    p.prp += [ vx, vy, vz ]
   end
 end
 
@@ -131,8 +143,12 @@ function repF(conf, p1, p2)
       f *= conf["rep"][p1.sp]
     end
     # Add forces
-    p1.vel += f
-    p2.vel -= f
+    p1.rep += f
+    p2.rep -= f
+    # Only prints if there is some repulsive force
+    #if(norm(f) > 1000.0)
+    #  forces(p1)
+    #end
   end
 end
 
@@ -169,9 +185,8 @@ function adhF(conf, p1, p2)
       else
         f *= conf["adh"][p1.sp]
       end
-      # Add forces
-      p1.vel += f
-      p2.vel -= f
+      p1.adh += f
+      p2.adh -= f
     end
   end
 end
