@@ -55,10 +55,10 @@ end
 # Print the force contributions for the particle
 function forces(p)
   print("FORCES FOR PARTICLE $(p.id)\n")
-  print("BRN: $(p.brn)\n")
-  print("PRP: $(p.prp)\n")
-  print("ADH: $(p.adh)\n")
-  print("REP: $(p.rep)\n")
+  print("BRN: $(norm(p.brn))\n")
+  print("PRP: $(norm(p.prp))\n")
+  print("ADH: $(norm(p.adh))\n")
+  print("REP: $(norm(p.rep))\n")
 end
 
 function print_arr(io, X::AbstractArray)

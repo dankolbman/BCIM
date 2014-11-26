@@ -41,7 +41,7 @@ function forceCalc(conf, parts, cells)
     if(dist2 <= bound^2)
       p.pos = newpos
     else
-    # Place on the edge of the sphere
+      # Place on the edge of the sphere
       thet = acos(newpos[3]/sqrt(dist2))
       phi = atan2(newpos[2],newpos[1])
       p.pos = bound*[ sin(thet)*cos(phi), sin(thet)*sin(phi), cos(thet) ]
@@ -117,38 +117,25 @@ end
 function repF(conf, p1, p2)
   if(p1.id < p2.id)
     dr = p1.pos - p2.pos
-    d = sqrt(sum(dr.^2))
-    # Direction
-    thet = acos(dr[3]/d)
-    phi = atan2(dr[2],dr[1])
-    # Magnitude of force (linear)
-    f = 1.0-d/conf["dia"]
-    #f = (abs(f)+f)/2.0
-    if d > conf["dia"]
-      f = 0
+    d = norm(dr)
+    # Check that they are touching
+    if( d < conf["dia"])
+      # Direction
+      thet = acos(dr[3]/d)
+      phi = atan2(dr[2],dr[1])
+      # Magnitude of force (linear)
+      f = 1.0-d/conf["dia"]
+      # Force vector
+      f *= [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
+      if( p1.sp != p2.sp)   # Different species interacting
+        f *= conf["rep"][p1.sp]
+      else
+        f *= conf["rep"][p1.sp]
+      end
+      # Add forces
+      p1.rep += f
+      p2.rep -= f
     end
-    # Force vector
-    f *= [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
-    if( p1.sp != p2.sp)   # Different species interacting
-      # Avoid division by 0
-      #a = conf["rep"][p1.sp]*conf["rep"][p2.sp]
-      #b = conf["rep"][p1.sp]+conf["rep"][p2.sp]
-      #if(b == 0.0)
-      #  f *= 0.0
-      #else
-      #  f *= 2.0*a/b
-      #end
-      f *= conf["rep"][3]
-    else
-      f *= conf["rep"][p1.sp]
-    end
-    # Add forces
-    p1.rep += f
-    p2.rep -= f
-    # Only prints if there is some repulsive force
-    #if(norm(f) > 1000.0)
-    #  forces(p1)
-    #end
   end
 end
 
@@ -159,30 +146,19 @@ end
 function adhF(conf, p1, p2)
   if(p1.id < p2.id)
     dr = p1.pos - p2.pos
-    d = sqrt(sum(dr.^2))
+    d = norm(dr)
     if( d < conf["dia"]*(1+conf["contact"]) )
       # Direction
       thet = acos(dr[3]/d)
       phi = atan2(dr[2],dr[1])
       # Magnitude of force normalized to 1
       f = 0.0
-      d = d/conf["dia"]
-      if(d >= 1.0 && d <= 1.0+conf["contact"])
-        f = abs(2*d/conf["contact"]
-            - 2*(1+conf["contact"])/(conf["dia"]*conf["contact"]) - 1)
+      if( conf["dia"] < d < conf["dia"] + 2*conf["contact"])
+        f = abs(d - (conf["dia"] + conf["contact"]))/conf["contact"] - 1
       end
       # Force vector
       f *= [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
-      if( false ) #p1.sp != p2.sp)   # Different species interacting
-        # Avoid division by 0
-        a = conf["adh"][p1.sp]*conf["adh"][p2.sp]
-        b = conf["adh"][p1.sp]+conf["adh"][p2.sp]
-        if(b == 0.0)
-          f *= 0.0
-        else
-          f *= 2.0*a/b
-        end
-      else
+      if( p1.sp == p2.sp == 1)
         f *= conf["adh"][p1.sp]
       end
       p1.adh += f
@@ -201,7 +177,8 @@ function dist(p1, p2)
   x = p1[1] - p2[1]
   y = p1[2] - p2[2]
   z = p1[3] - p2[3]
-  return sqrt(x^2 + y^2 + z^2)
+  #return sqrt(x^2 + y^2 + z^2)
+  return norm([x,y,z])
 end
 
 end
