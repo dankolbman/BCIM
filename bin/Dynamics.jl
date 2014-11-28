@@ -31,9 +31,9 @@ function forceCalc(conf, parts, cells)
     # Update velocities from components
     p.vel = p.brn + p.prp + p.adh + p.rep
     # Print for any obnormal interactions
-    if( norm(p.vel) > 1000000)
-      forces(p)
-    end
+    #if( norm(p.vel) > 1000000)
+    #  forces(p)
+    #end
 
     newpos = p.pos + p.vel*conf["dt"]
     dist2 = newpos[1]^2 + newpos[2]^2 + newpos[3]^2
@@ -147,13 +147,13 @@ function adhF(conf, p1, p2)
   if(p1.id < p2.id)
     dr = p1.pos - p2.pos
     d = norm(dr)
-    if( d < conf["dia"]*(1+conf["contact"]) )
+    if( d < conf["dia"]*(1+2*conf["contact"]) )
       # Direction
       thet = acos(dr[3]/d)
       phi = atan2(dr[2],dr[1])
       # Magnitude of force normalized to 1
       f = 0.0
-      if( conf["dia"] < d < conf["dia"] + 2*conf["contact"])
+      if( conf["dia"] < d < conf["dia"]*(1 + 2*conf["contact"]))
         f = abs(d - (conf["dia"] + conf["contact"]))/conf["contact"] - 1
       end
       # Force vector
