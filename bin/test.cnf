@@ -1,7 +1,6 @@
 ## Program Vars
 ## These don't change between experiments (Usually)
-# Path to save all output to
-#path ../data/
+# Path to save all output to #path ../data/
 # If 1, a new unique folder will be created in the path and used as the new path
 autodir 1
 # The verbosity when run, prints everything to stdout if 1
@@ -13,13 +12,13 @@ dim 3
 # Number of trials to run per experiment
 ntrials 1
 # How many steps to equilibriate for
-nequil 1.0e0
+nequil 1.0e3
 # How many steps to run for each trial
 nsteps 1.0e3
 # How many steps between data recording
 freq 1.0e2
 # Time step size
-dt 1.0e-4
+dt 1.0e-6
 ################################################################################
 ## System Vars
 ## These affect the physical system
@@ -28,21 +27,21 @@ phi 0.4
 # The diameter of one particle
 dia 15.0e-4
 # Diffusions
-#diffus
-rotdiffus 0.0001
+diffus 0.0000001
+rotdiffus 0.00001
 ################################################################################
 ## Species Vars
 ## These are different between species
 # Number of particles
-npart 512 512
+npart 256 256
 # Propulsion
-prop 0.0 1000.0
+prop 0.0 0.0 #200.0
 # Repulsion
 rep 0.0 0.0
 # Adhesion
 adh 0.0 0.0
 # Contact distance for adhesive force
-contact 0.4
+contact 0.1
 ################################################################################
 ## Plotting
 # Disable graphical applications for running on servers without xorg
@@ -64,24 +63,7 @@ pelican "../site/"
 ################################################################################
 ## Experiment 1
 experiment
-expName "Sp1 1.5e4 adh, 1.5e4:1.5e3 rep"
-adh 1.5e4 0.0
-rep 1.5e4 1.5e3
-################################################################################
-## Experiment 2
-#experiment
-#expName "Sp1 1.5e4 adh, 1.5e4:1.5e4 rep"
-#adh 1.5e4 0.0
-#rep 1.5e4 1.5e4
-################################################################################
-## Experiment 3
-#experiment
-#expName "Sp1 1.5e3 adh, 1.5e4:1.5e3 rep"
-#adh 1.5e3 0.0
-#rep 1.5e4 1.5e3
-################################################################################
-## Experiment 4
-#experiment
-#expName "Sp1 1.5e3 adh, 1.5e4:1.5e4 rep"
-#adh 1.5e3 0.0
-#rep 1.5e4 1.5e4
+expName "Interaction"
+prop 0.0 0.0
+adh 0.0 0.0 #1.5e4 0.0
+rep 0.0 0.0 #1.5e4 1.5e2

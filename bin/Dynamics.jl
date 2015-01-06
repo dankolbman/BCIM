@@ -31,7 +31,7 @@ function forceCalc(conf, parts, cells)
     # Update velocities from components
     p.vel = p.brn + p.prp + p.adh + p.rep
     # Print for any obnormal interactions
-    #if( norm(p.vel) > 1000000)
+    #if( norm(p.rep) > 0.0)
     #  forces(p)
     #end
 
@@ -165,20 +165,6 @@ function adhF(conf, p1, p2)
       p2.adh -= f
     end
   end
-end
-
-# Calculate the distance between two particles
-# Params
-#   p1 - the first particle array
-#   p2 - the second particl array
-# Returns
-#   The cartesian distance between the particles
-function dist(p1, p2)
-  x = p1[1] - p2[1]
-  y = p1[2] - p2[2]
-  z = p1[3] - p2[3]
-  #return sqrt(x^2 + y^2 + z^2)
-  return norm([x,y,z])
 end
 
 end

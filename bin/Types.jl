@@ -53,7 +53,7 @@ function show(io::IO, p::Part)
 end
 
 # Print the force contributions for the particle
-function forces(p)
+function forces(p::Part)
   print("FORCES FOR PARTICLE $(p.id)\n")
   print("BRN: $(norm(p.brn))\n")
   print("PRP: $(norm(p.prp))\n")
