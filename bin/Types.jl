@@ -6,6 +6,82 @@
 
 import Base.show
 
+# Holds dimensional physical parameters
+type PhysicalConst
+  dt::Float64
+  phi::Float64
+  eta::Float64
+  temp::Float64
+  boltz::Float64
+
+  prop::Array{Float64,1}
+  rep::Array{Float64,1}
+  adh::Array{Float64,1}
+  contact::Float64
+  dia::Float64
+  
+  rotdiffus::Float64
+  diffus::Float64
+end
+
+# Holds dimensionless parameters
+type DimensionlessConst
+  dt::Float64
+  phi::Float64
+  eta::Float64
+  temp::Float64
+  boltz::Float64
+
+  prop::Array{Float64,1}
+  rep::Array{Float64,1}
+  adh::Array{Float64,1}
+  contact::Float64
+  dia::Float64
+
+  utime::Float64
+  ulength::Float64
+  uenergy::Float64
+
+  rotdiffus::Float64
+  diffus::Float64
+  pretrad::Float64
+  prerotd::Float64
+end
+
+# Converts physical parameters to dimensionless parameters
+function DimensionlessConst(pc::PhysicalConst)
+  utime = pc.dia^2/pc.diffus
+  ulength = pc.dia
+  uenergy = pc.boltz*pc.temp
+  rotdiffus = pc.rotdiffus*utime
+  diffus = pc.diffus*utime/(ulength^2)
+  dia = pc.dia./ulength
+  dt = pc.dt/utime
+  rep = pc.rep./ulength
+  contact = pc.contact./ulength
+  adh = pc.adh./contact
+  pretrad = sqrt(2.0/dt)
+  prerotd = sqrt(2.0*rotdiffus*dt)
+
+  return DimensionlessConst( dt,
+                            pc.phi,
+                            pc.eta,
+                            pc.temp,
+                            pc.boltz,
+                            pc.prop,
+                            rep,
+                            adh,
+                            contact,
+                            dia,
+                            utime,
+                            ulength,
+                            uenergy,
+                            rotdiffus,
+                            diffus,
+                            pretrad,
+                            prerotd)
+end
+
 type Part
   id::Int
   sp::Int32

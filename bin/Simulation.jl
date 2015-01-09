@@ -5,10 +5,21 @@
 # Dan Kolbman 2014
 ##
 
+type ExpConst
+  nequil::Int
+  nstep::Int
+  freq::Int
+end
+
+
 type Simulation
-  conf::Dict
   path::ASCIIString
-  parts::Array{Part}
+  exp::Experiment
+  system::System
+end
+
+function Simulation(path::ASCIIString, exp::Experiment)
+
   
 end
 
@@ -18,9 +29,10 @@ end
 #   simPath - the path for the simulation to store files
 function run(sim::Simulation)
 
-  # Initialize simulation
-  sim.parts = initParts(conf, simPath)
+  # Initialize system
+  parts = initParts(conf, simPath)
   cells = initCells(conf)
+  sim.system = System(parts, cells)
 
   ndata = int(conf["nsteps"]/conf["freq"])
   avgmsd = zeros(Float64, ndata, size(conf["npart"],1)+1)
