@@ -21,6 +21,7 @@ module BCIM
 
   
   # Simulations and experiments
+  include("CellGrid.jl")
   include("System.jl")
   include("Simulation.jl")
   include("Experiment.jl")

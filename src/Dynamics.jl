@@ -1,10 +1,6 @@
-##
-# Function for calculating inter-particle forces.
-#
-# Dan Kolbman 2014
-##
-
 # Calculate and apply all forces between particles
+# Params
+#   s - The physical system
 function forceCalc(s::System)
 
   for p in s.parts
@@ -19,17 +15,13 @@ function forceCalc(s::System)
   brownian(s)
   # Apply propulsion to particles
   prop(s)
-  # Repulsive force
-  collisionCheck(s::System)
+  # Repulsive/adhesive force
+  collisionCheck(s)
 
   bound = (s.dimConst.size - s.dimConst.dia/2.0)
   for p in s.parts
     # Update velocities from components
     p.vel = p.brn + p.prp + p.adh + p.rep
-    # Print for any obnormal interactions
-    #if( norm(p.rep) > 0.0)
-    #  forces(p)
-    #end
 
     newpos = p.pos + p.vel*s.dimConst.dt
     dist2 = newpos[1]^2 + newpos[2]^2 + newpos[3]^2
@@ -48,8 +40,7 @@ end
 # Applies a brownian force on all particles
 # ie rotate earch particle then apply a random force in that direction
 # Params
-#   conf - the configuration dict
-#   parts - an array of particle arrays for each species
+#   s - The physical system
 function brownian(s::System)
   # Iterate each particle
   for p in s.parts 
@@ -60,13 +51,12 @@ end
 
 # Applies a propulsion to all particles
 # Params
-#   conf - the configuration dict
-#   parts - an array of particle arrays for each species
+#   s - The physical system
 function prop(s::System)
   # Iterate each particle
   for p in s.parts
-    p.ang[1] += s.dimConst.rotdiffus*randn() % (2.0*pi)
-    p.ang[2] += s.dimConst.rotdiffus*randn() % (2.0*pi)
+    p.ang[1] += s.dimConst.rotdiffus*randn() % (2*pi)
+    p.ang[2] += s.dimConst.rotdiffus*randn() % (2*pi)
     # Determine velocity components
     v = abs(s.dimConst.prop[p.sp])
     u = cos(p.ang[1])
@@ -80,10 +70,9 @@ end
 
 # Checks cells for collision pairs with their neighbors
 # Params
-#   conf - the configuration dict
-#   cellGrid - a N dimensional array of cells
+#   s - The physical system
 function collisionCheck(s::System)
-  for c1 in s.cellGrid
+  for c1 in s.cellGrid.cells
     # Collide neighbors of c1
     for c2 in c1.neighbors
       collideCells(s.dimConst, c1, c2)
@@ -93,7 +82,7 @@ end
 
 # Collide the particles within two cells with one another
 # Params
-#   conf - the configuration dict
+#   dc - The physical parameters
 #   c1 - the first cell
 #   c2 - the second cell
 function collideCells(dc::DimensionlessConst, c1::Cell, c2::Cell)
@@ -106,10 +95,10 @@ function collideCells(dc::DimensionlessConst, c1::Cell, c2::Cell)
 end
 
 # Calculates the repulsive force between particles
-# Params
-#   conf - the configuration dict
-#   p1 - the first particle
-#   p2 - the second particle
+# Params:
+#   dc - The physical parameters
+#   p1 - The first particle
+#   p2 - The second particle
 function repF(dc::DimensionlessConst, p1::Part, p2::Part)
   if(p1.id < p2.id)
     dr = p1.pos - p2.pos
@@ -136,9 +125,10 @@ function repF(dc::DimensionlessConst, p1::Part, p2::Part)
 end
 
 # Calculates the adhesive force between particles
-# Params
-#   conf - the configuration dict
-#   parts - an array of particle arrays for each species
+# Params:
+#   dc - The physical parameters
+#   p1 - The first particle
+#   p2 - The second particle
 function adhF(dc::DimensionlessConst, p1::Part, p2::Part)
   if(p1.id < p2.id)
     dr = p1.pos - p2.pos
@@ -162,4 +152,3 @@ function adhF(dc::DimensionlessConst, p1::Part, p2::Part)
     end
   end
 end
-
