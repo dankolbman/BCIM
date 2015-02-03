@@ -8,16 +8,8 @@ module BCIM
   # Types
   include("Types.jl")
 
-  # Saving particle data and configurations
-  #include("DataIO.jl")
-  
-  #require("Notebook.jl")
-
-  # For loading configs
-  #include("Configuration.jl")
-
   # Statistics
-  #include("Stats.jl")
+  include("Stats.jl")
 
   
   # Simulations and experiments
@@ -25,6 +17,9 @@ module BCIM
   include("System.jl")
   include("Simulation.jl")
   include("Experiment.jl")
+
+  # Saving particle data and configurations
+  include("DataIO.jl")
 
   # Dynamics and physics
   include("Dynamics.jl")

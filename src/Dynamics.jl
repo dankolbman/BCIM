@@ -27,12 +27,15 @@ function forceCalc(s::System)
     dist2 = newpos[1]^2 + newpos[2]^2 + newpos[3]^2
     # Within the sphere bounds
     if(dist2 <= bound^2)
+      p.sqd += norm(newpos-p.pos)^2
       p.pos = newpos
     else
       # Place on the edge of the sphere
       thet = acos(newpos[3]/sqrt(dist2))
       phi = atan2(newpos[2],newpos[1])
-      p.pos = bound*[ sin(thet)*cos(phi), sin(thet)*sin(phi), cos(thet) ]
+      newpos = bound*[ sin(thet)*cos(phi), sin(thet)*sin(phi), cos(thet) ]
+      p.sqd += norm(newpos-p.pos)^2
+      p.pos = newpos
     end
   end
 end
