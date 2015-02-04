@@ -11,6 +11,7 @@ module BCIM
   # Statistics
   include("Stats.jl")
 
+  include("Logger.jl")
   
   # Simulations and experiments
   include("CellGrid.jl")

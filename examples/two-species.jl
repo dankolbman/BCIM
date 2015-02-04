@@ -1,8 +1,8 @@
 include("../src/BCIM.jl")
 
 # Our physical constants
-pc = BCIM.PhysicalConst( 1.0e-4,          # dt
-                         0.40,            # phi
+pc = BCIM.PhysicalConst(1.0e-4,          # dt
+                        0.40,            # phi
                         0.01,             # eta
                         298.0,            # temp
                         1.38e-16,         # boltzmann
@@ -12,9 +12,7 @@ pc = BCIM.PhysicalConst( 1.0e-4,          # dt
                         15.0e-4,          # contact
                         1.5e-3,           # dia
                         [512,512] )       # npart
-# Make them dimensionless
-dc = BCIM.DimensionlessConst(pc)
 
-exp = BCIM.Experiment("two-species", 3, dc)
+exp = BCIM.Experiment("two-species", 3, pc)
 
 BCIM.run(exp, 100:100:1000)

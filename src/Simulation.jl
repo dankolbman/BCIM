@@ -1,12 +1,14 @@
 type Simulation
+  id::Int64
   path::ASCIIString
   s::System
   dimConst::DimensionlessConst
+  l::Log
 end
 
-function Simulation(path::ASCIIString, dc::DimensionlessConst)
+function Simulation(id::Int64, path::ASCIIString, dc::DimensionlessConst, l::Log)
   s = System(dc)
-  return Simulation(path, s, dc)
+  return Simulation(id, path, s, dc, l)
 end
 
 # Runs the simulation for the desired time
@@ -57,5 +59,7 @@ function run(sim::Simulation, r::Range{Int})
 
     end
   end
+
+  log(sim.l, "Finished trial $(sim.id) in $(toq()) seconds")
 
 end
