@@ -116,7 +116,7 @@ function repF(dc::DimensionlessConst, p1::Part, p2::Part)
       # Force vector
       f *= [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
       if( p1.sp != p2.sp)   # Different species interacting
-        f *= dc.rep[p1.sp]
+        f *= 2*dc.rep[p1.sp]*dc.rep[p2.sp]/(dc.rep[p1.sp]+dc.rep[p2.sp])
       else
         f *= dc.rep[p1.sp]
       end
