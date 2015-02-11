@@ -7,7 +7,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import numpy as np
 import pylab as P
-import sys
+import sys, os
 
 import DataIO
 
@@ -135,12 +135,14 @@ def plotMSD(path, files):
   Plots mean square displacement data
   """
   colors = ['#E82C2C', '#245BFF', 'c', 'm']
+  styles = [ '--', '-' ]
+  labels = [ 'Cancerous', 'Healthy' ]
   for i in range(len(files)):
     msd = DataIO.readAvgMSD(str(path)+files[i])
 
     for j in range(1,len(msd[1,:])):
       # Line
-      plt.plot(msd[:,0], msd[:,j], color=colors[(j-1)%3], label=str(i))
+      plt.plot(msd[:,0], msd[:,j], ls=styles[j%2], color=colors[(j-1)%3], label=labels[j%2], lw=8)
       # Dots
       #plt.plot(t, msd, 'o', color=colors[(i)%3], label=str(i))
       # Current axes
@@ -149,10 +151,11 @@ def plotMSD(path, files):
       slope,intercept=np.polyfit(msd[:,0],msd[:,j],1)
       # Put fit on graph
       plt.text(0.1, 0.9-j*0.06,\
-        'Slope: '+str(slope),\
+        '{0} Slope: {1}'.format(labels[j%2], slope),\
         transform = ax.transAxes)
   # Titles
   plt.gcf().gca().set_title('Mean Square Displacement')
+  plt.legend()
   plt.xlabel('Time')
   plt.ylabel('MSD')
 

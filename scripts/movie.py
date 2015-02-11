@@ -5,6 +5,7 @@
 """
 import matplotlib
 matplotlib.use('Agg')
+import os
 import sys
 import math
 import matplotlib.pyplot as plt
@@ -75,5 +76,12 @@ if(__name__ == '__main__'):
   elif(len(sys.argv) == 3): # Use default output name
     conf = DataIO.readConf(sys.argv[1])
     movie(conf, sys.argv[2])
-  elif(len(sys.argv) < 3):
+  elif(len(sys.argv) == 2):
+    conf_path = os.path.join(sys.argv[1], 'sim.cnf')
+    parts_path = os.path.join(sys.argv[1], 'trial1/parts.dat')
+    print(conf_path)
+    print(parts_path)
+    conf = DataIO.readConf(conf_path)
+    movie(conf, parts_path)
+  elif(len(sys.argv) < 2):
     print("Correct useage: python movie.py path/to/sim.cnf path/to/part.dat [path/to/output.mp4]")

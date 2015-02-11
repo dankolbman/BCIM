@@ -5,8 +5,7 @@
 """
 import matplotlib
 #matplotlib.use('Agg')
-import sys
-import math
+import sys, os, math
 import matplotlib.pyplot as plt
 
 import Grfx
@@ -91,6 +90,32 @@ def post(conf, path):
   plt.tight_layout()
   plt.savefig(path+'/avgMSDlog.png', transparant=True, frameon=False, dpi=100*numPerRow,bbox_inches='tight')
   if(int(conf["serverMode"]) == 0): plt.show()
+
+  # Print for lab book
+  #fig = plt.figure(dpi=72, figsize=( 8.5,3))
+  fig = plt.figure(dpi=72, figsize=( 10, 4))
+  
+  ax = plt.subplot2grid((1,6), (0,0), colspan=4)
+  im = plt.imread(path+'/experiment1/avgMSDlog.png')
+  plt.imshow(im)
+  fig.gca().get_xaxis().set_visible(False)
+  fig.gca().get_yaxis().set_visible(False)
+  fig.gca().set_frame_on(False)
+
+  #ax = plt.subplot2grid((4,1), (0,3))
+  plt.axis('off')
+  pstr = '{0}\n'.format(os.path.dirname(path))
+  pstr += 'nsteps: {0}\n'.format(conf['nsteps'])
+  pstr += 'npart: {0}\n'.format(conf['npart'])
+  pstr += 'Rep: {0}\n'.format(conf['rep'])
+  pstr += 'Adh: {0}\n'.format(conf['adh'])
+  pstr += 'Prop: {0}\n'.format(conf['prop'])
+  pstr += 'Phi: {0}\n'.format(conf['phi'])
+  
+  plt.text(1600, 800, pstr, fontsize=18)
+  plt.tight_layout()
+  plt.savefig(path+'/print.png', transparant=True, frameon=False)
+  
 
   # Configuration
   #fig = plt.figure()

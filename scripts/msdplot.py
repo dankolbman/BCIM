@@ -5,7 +5,7 @@
 """
 import matplotlib.pyplot as plt
 import numpy as np
-import sys
+import sys, os
 
 import DataIO
 
@@ -14,11 +14,13 @@ def plotMsd(conf, arg):
   Plots mean square displacement data
   """
   colors = ['#E82C2C', '#245BFF', 'c', 'm']
+  styles = [ '-', '--' ]
+  labels = [ 'Healthy', 'Cancerous' ]
   for i in range(len(arg)):
     msd = DataIO.readAvgMSD(arg[i])
     for j in range(1,len(msd[1,:])):
       # Line
-      plt.loglog(msd[:,0], msd[:,j], color=colors[(j-1)%3], label=str(i))
+      plt.loglog(msd[:,0], msd[:,j], linestyle=styles[j%2], color=colors[(j-1)%3], label=labels[j%2])
       # Dots
       #plt.plot(t, msd, 'o', color=colors[(i)%3], label=str(i))
       # Current axes
@@ -29,6 +31,7 @@ def plotMsd(conf, arg):
       plt.text(0.1, 0.9-j*0.06,\
         'Slope: '+str(slope),\
         transform = ax.transAxes)
+      plt.text(0.01, 0.1, os.path.dirname(arg[i]))
   # Titles
   plt.gcf().gca().set_title('Mean Square Displacement')
   plt.xlabel('Time')
