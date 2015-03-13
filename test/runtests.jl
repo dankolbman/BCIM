@@ -1,5 +1,5 @@
 using Base.Test
-include("../src/BCIM.jl")
+include("../src/julia/BCIM.jl")
 
 my_tests = ["myTest.jl"]
 
