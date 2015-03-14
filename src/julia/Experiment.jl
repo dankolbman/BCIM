@@ -14,18 +14,20 @@ function Experiment(path::ASCIIString, ntrials::Int64, pc::PhysicalConst, timest
   if timestamp
     path = "$path-$(strftime("%m-%d-%y-%H%M", time()))"
   end
-  # Set up log
-  l = Log(joinpath(path, "log.txt"))
   # Check if this is a new experiment
+  n = 0
   if !ispath(path)
     mkpath(path)
   else
-    n = 0
     for f in readdir(path)
       if isdir(joinpath(path, f))
         n+=1
       end
     end
+  end
+  # Set up log
+  l = Log(joinpath(path, "log.txt"))
+  if n > 0
     log(l, "Found $n pre-existing trials in experiment directory.")
   end
   # Write out parameters
