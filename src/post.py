@@ -5,7 +5,6 @@ import re
 
 import matplotlib.pyplot as plt
 import numpy as np
-import python.DataIO as DataIO
 import python.graphics as graphics
 
 # Format settings
