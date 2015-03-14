@@ -14,16 +14,29 @@ function Experiment(path::ASCIIString, ntrials::Int64, pc::PhysicalConst, timest
   if timestamp
     path = "$path-$(strftime("%m-%d-%y-%H%M", time()))"
   end
+  # Set up log
+  l = Log(joinpath(path, "log.txt"))
+  # Check if this is a new experiment
   if !ispath(path)
     mkpath(path)
+  else
+    n = 0
+    for f in readdir(path)
+      if isdir(joinpath(path, f))
+        n+=1
+      end
+    end
+    log(l, "Found $n pre-existing trials in experiment directory.")
   end
+  # Write out parameters
   writeConstants(joinpath(path,"param.dat"), pc)
   writeConstants(joinpath(path,"param_dim.dat"),dc)
-  l = Log(joinpath(path, "log.txt"))
   # Initialize simulation trials
   trials = Array(Simulation, ntrials)
   for tr = 1:ntrials
-    trials[tr] = Simulation(tr, joinpath(path, "trial$tr"), dc, l)
+    # Let the simulation find an id and trial directory
+    trials[tr] = Simulation(path, dc, l)
+    #trials[tr] = Simulation(tr, joinpath(path, "trial$tr"), dc, l)
   end
   log(l, "Initialize experiment at $(path)")
   return Experiment(path, trials, dc, l)

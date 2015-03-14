@@ -6,6 +6,22 @@ type Simulation
   l::Log
 end
 
+# Initialize a simulation with given parameters and log file
+# Uses default folder names of 'trial{id}' inside the given dir
+# Finds the next available id in the given dir
+function Simulation(dir::ASCIIString, dc::DimensionlessConst, l::Log)
+  id = 1
+  # Find next available id
+  while ispath(joinpath(dir, "trial$id"))
+    id += 1
+  end
+  path = joinpath(dir, "trial$id")
+  mkdir(path)
+
+  return Simulation(id, path, dc, l)
+  
+end
+
 function Simulation(id::Int64, path::ASCIIString, dc::DimensionlessConst, l::Log)
   s = System(dc)
   return Simulation(id, path, s, dc, l)
