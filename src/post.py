@@ -5,6 +5,7 @@ import re
 
 import matplotlib.pyplot as plt
 import numpy as np
+import python.DataIO as DataIO
 import python.graphics as graphics
 
 # Format settings
@@ -52,62 +53,44 @@ def averageMSD(path, out_path=None):
   np.savetxt( out_path, avg_msd, header='# [ time msd ... ]')
   return avg_msd
 
-# Read parameters into dict
-def read_params(path):
-  """
-  Reads a parameter file into a python dictionary
 
+def param_str1(params):
+  """
+  Creates a text box description of a system parameter dictionary
+  
   Parameters
   ----------
-  path : string
-    the path of the parameter file
+  params : Dict
+      The parameter dictionary (usually dimensionless parameters)
   
   Returns
   -------
-  A python dictionary keyed on the parameter name.
+  A string of the parameters formatted for a textbox summary
   """
 
-  params=dict() 
-  try:
-    f = open(path)
-    for line in f:
-      if line[0] == '#':
-        continue
-      l = line.split()
-      # Simple one value param
-      if(len(l) == 2):
-        if(re.fullmatch("[0-9e\.]*",l[1]) != None):
-          params[l[0]] = float(l[1])
-      # If there is more than one value for the param
-        else:
-          params[l[0]] = l[1]
-      # If there is more than one value for the param
-      elif(len(l) > 2):
-        val = []
-        # Iterate through values
-        for i in range(1,len(l)):
-          # Is it a string
-          if(re.fullmatch("[0-9e\.]*",l[i]) != None):
-            val.append(float(l[i]))
-          else:
-            val.append(l[i])
-        params[l[0]] = val
-  except IOError as e:
-    print('Could not process file', e.strerror)
-  return params
-
-def param_str(params):
   pstr = ''
+  pstr += 'Particles: {0}\n'.format(params['npart'])
+  pstr += 'Packing Frac: {0}\n'.format(params['phi'])
   pstr += 'Repulsion: {0}\n'.format(params['rep'])
   pstr += 'Adhesion: {0}\n'.format(params['adh'])
   pstr += 'Propulsion: {0}\n'.format(params['prop'])
   return pstr
 
+def param_str2(params):
+  pstr = ''
+  pstr += 'Time unit: {0}\n'.format(params['utime'])
+  pstr += 'pretrad: {0}\n'.format(params['pretrad'])
+  pstr += 'prerotd: {0}\n'.format(params['prerotd'])
+  return pstr
 
 # Do all the post processing
 def main(args):
   """
   Does all post processing for an experiment
+  Computes the average MSD from msd files in experiment directory
+  Then plots the average MSD on log-log
+  Reads the parameter file and puts a textbox under the MSD with the experiment
+  parameters.
 
   Parameters
   ----------
@@ -115,8 +98,12 @@ def main(args):
     a path of an experiment directory
   """
   path = args[1]
+  # Check for that the experiment exists
   if not os.path.exists(path):
     raise IOError('The specified experiment path does not exist')
+  elif not os.path.exists(os.path.join(path, 'param_dim.dat')):
+    raise IOError('There is no dimensionless parameter file in the specified \
+                    directory')
   # Compute average msd
   avg_msd = averageMSD(path)
 
@@ -131,11 +118,16 @@ def main(args):
   ax = plt.subplot2grid((4,1), (3,0))
   plt.axis('off')
   params = dict()
+  # Read parameters
   for f in os.listdir(path):
     if f == 'param_dim.dat':
-      params = read_params(os.path.join(path, f))
+      params = DataIO.read_params(os.path.join(path, f))
       break
-  fig.text(0.1, 0.0, param_str(params), fontsize=18)
+  # Plot parameter in textbox below MSD plot
+  fig.text(0.1, 0.0, param_str1(params), fontsize=18)
+  fig.text(0.4, 0.0, param_str2(params), fontsize=18)
+
+  # Save
   plt.savefig(os.path.join(path, 'overview.png'))
   plt.show()
      
