@@ -4,6 +4,7 @@ import sys
 import re
 
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 import numpy as np
 import python.DataIO as DataIO
 import python.graphics as graphics
@@ -107,22 +108,28 @@ def main(args):
   # Compute average msd
   avg_msd = averageMSD(path)
 
+  # 2 X 3 grid
+  gs = gridspec.GridSpec(5,2)
+
+  # Read parameters
+  params = dict()
+  for f in os.listdir(path):
+    if f == 'param_dim.dat':
+      params = DataIO.read_params(os.path.join(path, f))
+      break
+
   fig = plt.figure(dpi=72, figsize=( 10,8))
 
-  ax = plt.subplot2grid((4,1), (0,0), rowspan=3)
+  ax = plt.subplot(gs[0:4, :])
   # MSD plot
   graphics.plot_msd(avg_msd)
   plt.gca().set_yscale('log')
   plt.gca().set_xscale('log')
   
-  ax = plt.subplot2grid((4,1), (3,0))
+  # Parameters 
+  ax = plt.subplot(gs[-1,0:1])
   plt.axis('off')
-  params = dict()
-  # Read parameters
-  for f in os.listdir(path):
-    if f == 'param_dim.dat':
-      params = DataIO.read_params(os.path.join(path, f))
-      break
+  
   # Plot parameter in textbox below MSD plot
   fig.text(0.1, 0.0, param_str1(params), fontsize=18)
   fig.text(0.4, 0.0, param_str2(params), fontsize=18)
@@ -131,7 +138,13 @@ def main(args):
   plt.savefig(os.path.join(path, 'overview.png'))
   plt.show()
      
-
+  # Final conf plot
+  parts = DataIO.read_parts(os.path.join(path, 'trial1/parts.dat'))
+  ax = plt.subplot(gs[:], projection='3d')
+  plt.title('Final System Configuration')
+  graphics.plot_config(parts, params)
+  plt.savefig(os.path.join(path, 'configuration.png'))
+  plt.show()
 
 if __name__ == "__main__":
   if(len(sys.argv) < 2):

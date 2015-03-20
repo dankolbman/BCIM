@@ -14,7 +14,7 @@ import numpy as np
 
 class Part:
   def __init__(self, sp, x, v, ang):
-    self.sp = sp
+    self.sp = int(sp)
     self.x = x
     self.v = v
     self.ang = ang
@@ -22,11 +22,20 @@ class Part:
   def v2(self):
     return self.x[0]**2 + self.x[1]**2 + self.x[2]**2
 
-def readParts(filen, state=1):
+def read_parts(filen, state=1):
   """ readParts : String Int -> Part[]
   Read particles in from the state specified from the last state
   ie state = 1 will read the last state
      state = 2 will read the second to last state...
+
+  Parameters
+  ----------
+  filen - The path to the file containing particle data output
+  state=1 - What state of the system to read in, from the bottom of the file.
+          state=1 corresponds to the last state in the file
+  Returns
+  -------
+    A list of particle types
   """
   parts = []
   try:
@@ -48,6 +57,8 @@ def readParts(filen, state=1):
         vals = [ float(x) for x in l ]
         p = Part(vals[1], vals[2:5], vals[5:8], vals[8:10])
         parts.append(p)
+      else:
+        break
   except IOError as e:
     print('IO Error!', e.strerror)
   return parts
@@ -165,25 +176,34 @@ def readGr(filen):
     print('IO Error!', e.strerror)
   return np.array(gr)
 
-def readConf(filen):
-  """ readConf : String -> Dict
-  Reads a system parameter file and returns a dictionary with param val keys
+def read_params(path):
   """
-  conf=dict() 
-  conf["nexperiments"] = 0
+  Reads a parameter file into a python dictionary
+
+  Parameters
+  ----------
+  path : string
+    the path of the parameter file
+  
+  Returns
+  -------
+  A python dictionary keyed on the parameter name.
+  """
+
+  params=dict() 
   try:
-    f = open(filen)
+    f = open(path)
     for line in f:
+      if line[0] == '#':
+        continue
       l = line.split()
-      if( l[0].lower() == "experiment"):
-        conf["nexperiments"] += 1
       # Simple one value param
       if(len(l) == 2):
         if(re.fullmatch("[0-9e\.]*",l[1]) != None):
-          conf[l[0]] = float(l[1])
+          params[l[0]] = float(l[1])
       # If there is more than one value for the param
         else:
-          conf[l[0]] = l[1]
+          params[l[0]] = l[1]
       # If there is more than one value for the param
       elif(len(l) > 2):
         val = []
@@ -194,10 +214,10 @@ def readConf(filen):
             val.append(float(l[i]))
           else:
             val.append(l[i])
-        conf[l[0]] = val
+        params[l[0]] = val
   except IOError as e:
     print('Could not process file', e.strerror)
-  return conf
+  return params
 
 if __name__ == '__main__':
   print('This is a file containing only helper functions. See source')
