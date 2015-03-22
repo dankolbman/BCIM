@@ -6,3 +6,4 @@ site/output/
 site/develop_server.sh
 *.png
 *.dat
+*.swp
