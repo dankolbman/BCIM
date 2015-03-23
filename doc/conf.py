@@ -19,7 +19,6 @@ import shlex
 
 # For Julia
 import juliadoc
-import sphinx_rtd_theme
 
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -129,8 +128,7 @@ html_theme = 'julia'
 
 # Add any paths that contain custom themes here, relative to this directory.
 ## Julia
-html_theme_path = [juliadoc.get_theme_dir(),
-                   sphinx_rtd_theme.get_html_theme_path()]
+html_theme_path = [juliadoc.get_theme_dir()]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
