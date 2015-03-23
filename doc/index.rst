@@ -6,17 +6,10 @@
 Welcome to BCIM's documentation!
 ================================
 
-Examples:
+Contents:
 
 .. toctree::
   :maxdepth: 1
   
-  quick
-
-Types:
-
-.. toctree::
-  :maxdepth: 1
-  
-  simulations
-  experiments  
+  examples
+  types

@@ -1,6 +1,9 @@
-.. man-quick:
+.. man-examples
 
 **************
+Examples
+**************
+
 Quick Example
 **************
 
