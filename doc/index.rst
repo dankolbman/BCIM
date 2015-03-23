@@ -6,17 +6,17 @@
 Welcome to BCIM's documentation!
 ================================
 
-Contents:
+Examples:
 
 .. toctree::
-   :maxdepth: 2
+  :maxdepth: 1
+  
+  quick
 
+Types:
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+.. toctree::
+  :maxdepth: 1
+  
+  simulations
+  experiments  
