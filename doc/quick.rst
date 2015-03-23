@@ -11,6 +11,8 @@ of particles. It repeats this three times for three different experiments each
 with three identical trials.
 
 
+.. doctest::
+
     include("../src/julia/BCIM.jl")
     #using BCIM
     # Our physical constants
