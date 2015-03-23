@@ -17,6 +17,10 @@ import sys
 import os
 import shlex
 
+# For Julia
+import juliadoc
+
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -32,6 +36,8 @@ import shlex
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'juliadoc.julia',
+    'juliadoc.jlhelp']
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -119,7 +125,8 @@ todo_include_todos = False
 #html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
+## Julia
+html_theme_path = [juliadoc.get_theme_dir()]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -140,6 +147,7 @@ todo_include_todos = False
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
+## Julia
 html_static_path = ['_static']
 
 # Add any extra paths that contain custom files (such as robots.txt or
@@ -156,7 +164,7 @@ html_static_path = ['_static']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+html_sidebars = juliadoc.default_sidebars()
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
