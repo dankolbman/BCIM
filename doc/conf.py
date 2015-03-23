@@ -40,9 +40,11 @@ import juliadoc
 extensions = [
     'sphinx.ext.autodoc',
     'juliadoc.julia',
-    'juliadoc.jldoctest',
     'juliadoc.jlhelp'
 ]
+
+if on_rtd:
+  extensions.append('juliadoc.jldoctest')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
