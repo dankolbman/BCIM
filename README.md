@@ -1,11 +1,6 @@
 BCIM
 ====
-
-## Installing
-
-BCIM is in a state of rapid development so the installation and stability of 
-some features may not be reliable at all times. Nevertheless, here is the
-general method of installation.
+[![Documentation Status](https://readthedocs.org/projects/bcim/badge/?version=latest)](https://readthedocs.org/projects/bcim/?badge=latest)
 
 ### Dependencies
 
@@ -29,14 +24,3 @@ Numpy and matplotlib can be installed through pip:
 
     sudo pip install numpy
     sudo pip install matplotlib
-
-#### Pelican
-
-BCIM includes note book functionality to keep track of simulation results and
-notes. Note book scripts are written in python and parsed to html by 
-[Pelican](http://blog.getpelican.com/). These features can also be disabled
-by modifying the relevant parameters in a BCIM configuration file.
-
-Pelican can be installed throug pip:
-
-    sudo pip install pelican 
