@@ -16,4 +16,3 @@ with three identical trials.
 .. literalinclude:: ../examples/num_parts.jl
     :linenos:
     :language: julia
-    :caption: examples/num_parts.jl
