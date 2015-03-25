@@ -6,11 +6,19 @@ type Experiment
 end
 
 function Experiment(path::ASCIIString, ntrials::Int64, pc::PhysicalConst)
-  Experiment(path, ntrials, pc, true)
+  dc = DimensionlessConst(pc)
+  Experiment(path, ntrials, dc, true)
 end
 
+# Experiment from physical constant
 function Experiment(path::ASCIIString, ntrials::Int64, pc::PhysicalConst, timestamp::Bool)
   dc = DimensionlessConst(pc)
+  writeConstants(joinpath(path,"param.dat"), pc)
+  return Experiment(path, ntrials, dc, timestamp)
+end
+
+# Experiment from dimensionless constant
+function Experiment(path::ASCIIString, ntrials::Int64, dc::DimensionlessConst, timestamp::Bool)
   if timestamp
     path = "$path-$(strftime("%m-%d-%y-%H%M", time()))"
   end
@@ -31,7 +39,6 @@ function Experiment(path::ASCIIString, ntrials::Int64, pc::PhysicalConst, timest
     log(l, "Found $n pre-existing trials in experiment directory.")
   end
   # Write out parameters
-  writeConstants(joinpath(path,"param.dat"), pc)
   writeConstants(joinpath(path,"param_dim.dat"),dc)
   # Initialize simulation trials
   trials = Array(Simulation, ntrials)
