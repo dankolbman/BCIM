@@ -78,45 +78,45 @@ type DimensionlessConst
   diffus::Float64
   pretrad::Float64
   prerotd::Float64
-end
+  end
 
 # Converts physical parameters to dimensionless parameters
 function DimensionlessConst(pc::PhysicalConst)
-  contact = pc.dia*pc.contact
+  contact = pc.contact
   utime = pc.dia*pc.dia/pc.diffus
   ulength = pc.dia
   uenergy = pc.boltz*pc.temp
-  rotdiffus = pc.rotdiffus*utime
   diffus = pc.diffus*utime/(ulength^2)
+  rotdiffus = 3*diffus
   dia = pc.dia./ulength
   size = sqrt((dia/2.0)^2*sum(pc.npart)/pc.phi)
-  dt = pc.dt/utime
-  rep = pc.rep./ulength
-  contact = contact/ulength
-  adh = pc.adh./contact
-  pretrad = sqrt(2.0/dt)
+  dt = pc.dt
+  rep = pc.rep
+  contact = contact
+  adh = pc.adh
+  pretrad = sqrt(2.0*diffus/dt)
   prerotd = sqrt(2.0*rotdiffus*dt)
 
-  return DimensionlessConst( dt,
-                            pc.phi,
-                            pc.eta,
-                            pc.temp,
-                            pc.boltz,
-                            pc.prop,
-                            rep,
-                            adh,
-                            contact,
-                            dia,
-                            pc.npart,
-                            size,
-                            utime,
-                            ulength,
-                            uenergy,
-                            rotdiffus,
-                            diffus,
-                            pretrad,
-                            prerotd)
-end
+return DimensionlessConst( dt,
+    pc.phi,
+    pc.eta,
+    pc.temp,
+    pc.boltz,
+    pc.prop,
+    rep,
+    adh,
+    contact,
+    dia,
+    pc.npart,
+    size,
+    utime,
+    ulength,
+    uenergy,
+    rotdiffus,
+    diffus,
+    pretrad,
+    prerotd)
+  end
 
 type Part
   id::Int
