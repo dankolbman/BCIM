@@ -2,7 +2,7 @@
 # Each experiment consists of three trials
 # Saves data to data/numparts/ relative to run path
 
-include("..//src/julia/BCIM.jl")
+include("../src/julia/BCIM.jl")
 #using BCIM
 
 while rand() > 0.05
