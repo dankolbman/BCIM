@@ -51,12 +51,12 @@ def plot_config(parts, params):
     zpos.append(part.x[2])
 
   ax.scatter(xpos,ypos,zpos,c=cl, s=200, lw=0)
-  plotBounds3D(params, plt.gca())
+  plot_bounds(params, plt.gca())
   ax.set_xlim3d(-params["size"], params["size"])
   ax.set_ylim3d(-params["size"], params["size"])
   ax.set_zlim3d(-params["size"], params["size"])
 
-def plotBounds3D(params, axes):
+def plot_bounds(params, axes):
   """ plotBounds : Dict Axes -> True
   Draws a sphere with a radius of the system size
   """
