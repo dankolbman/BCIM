@@ -2,25 +2,54 @@ BCIM
 ====
 [![Documentation Status](https://readthedocs.org/projects/bcim/badge/?version=latest)](https://readthedocs.org/projects/bcim/?badge=latest)
 
-### Dependencies
+Install
+=======
 
-#### Julia
+(From documentation)
 
-The simulation functionality relies on [Julia](http://julialang.org/) which is
-itself under constant release. BCIM is developed on the latest versions of
-Julia, though release 0.3 and later should be sufficient to run BCIM.
+BCIM's simulation portion is written in the `Julia`_ programming language.
+It is built using a relatively recent release of the development build (``0.4``).
+It may work on the current stable release (``0.3.6``), though it has not been tested.
 
-See the [downloads page](http://julialang.org/downloads/) for the latest
-Julia releases.
+.. _Julia: http://julialang.org/
 
-#### Numpy and Matplotlib
+Intstalling Julia
+=================
 
-Post processing in done in python (3.4) and [numpy](www.numpy.org) with 
-plotting in [matplotlib](http://matplotlib.org/). If post processing is not
-required, the appropriate python scripts can be removed from the configuration
-file for simulations.
+The nightly build is recommended as development on BCIM is done on the developmental
+release branch. Nightlies can be found on the `Julia download page`_. Better yet, 
+build julia from source using the directions on the `Julia github`_.
 
-Numpy and matplotlib can be installed through pip:
+.. _Julia download page: http://julialang.org/downloads/
 
-    sudo pip install numpy
-    sudo pip install matplotlib
+.. _Julia github: https://github.com/JuliaLang/julia#source-download-and-compilation
+
+Python
+======
+
+Post processing is done in ``python 3.6``, though any release of ``python 3``
+should work.
+Follow a guide online on how to install ``python 3`` for your environment.
+
+Matplotlib and Numpy
+====================
+
+BCIM uses ``Matplotlib`` for graphics and ``Numpy`` for numerical work.
+Both can be installed using ``pip``::
+
+    pip install numpy matplotlib
+
+
+BCIM
+====
+
+BCIM can be installed by cloning into the git repository on github::
+
+    git clone https://github.com/dankolbman/BCIM
+    cd BCIM
+
+The ``src`` directory will have to be added to your shell path or the
+``src/julia/BCIM.jl`` module can be inculeded by absolute reference inside
+your run files.
+
+
