@@ -4,6 +4,7 @@
 function forceCalc(s::System)
 
   for p in s.parts
+    
     #p.vel = [ 0.0, 0.0, 0.0 ]
     p.brn = [ 0.0, 0.0, 0.0 ]
     p.prp = [ 0.0, 0.0, 0.0 ]
@@ -113,6 +114,7 @@ function repF(dc::DimensionlessConst, p1::Part, p2::Part)
       phi = atan2(dr[2],dr[1])
       # Magnitude of force (linear)
       f = 1.0-d/dc.dia
+      f = f^(3/2)
       # Force vector
       f *= [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
       if( p1.sp != p2.sp)   # Different species interacting
