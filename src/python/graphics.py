@@ -68,3 +68,12 @@ def plot_bounds(params, axes):
   z = params["size"]*np.outer(np.ones(np.size(u)), np.cos(v))
   axes.plot_surface(x, y, z, rstride=4, cstride=4, color='b', alpha = 0.05,\
     linewidth=0)
+
+def plot_cluster_hist(hist, params, color=''):
+  plt.bar(range(len(hist)) , hist, color=color)
+  plt.title('Cluster Sizes')
+  plt.xlabel('Size of Cluster (Cells)')
+  plt.ylabel('Number of Clusters')
+  plt.xlim(0,len(hist)+1)
+  plt.gcf().text( 0.7,0.8, '$\epsilon$ = {0}'.format(1.1), fontsize=18)
+  

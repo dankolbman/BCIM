@@ -3,11 +3,13 @@ import os
 import sys
 import re
 
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import numpy as np
 import python.DataIO as DataIO
 import python.graphics as graphics
+import python.clusters as clusters
 
 # Format settings
 from matplotlib import rc
@@ -79,6 +81,7 @@ def param_str1(params):
 
 def param_str2(params):
   pstr = ''
+  pstr += 'Contact: {0}\n'.format(params['contact'])
   pstr += 'Time unit: {0}\n'.format(params['utime'])
   pstr += 'pretrad: {0}\n'.format(params['pretrad'])
   pstr += 'prerotd: {0}\n'.format(params['prerotd'])
@@ -145,6 +148,34 @@ def main(args):
   graphics.plot_config(parts, params)
   plt.savefig(os.path.join(path, 'configuration.png'))
   plt.show()
+
+  size_hist = clusters.cluster_scan(parts, params, eps=1.1)
+  graphics.plot_cluster_hist( size_hist, params )
+  plt.tight_layout()
+  plt.savefig(os.path.join(path, 'clusters.png'))
+  plt.show()
+
+  # Species clustering
+  sp_hist = clusters.specie_scan(parts, params, 1.1)
+
+  f = plt.figure( figsize=( 12,6 ) )
+  f.text(0.5, 0.04, 'Cluster Size (Cells)', ha='center', va='center')
+
+  ax = f.add_subplot( 1, 2, 1)
+  graphics.plot_cluster_hist( sp_hist[0], params, color='#E82C2C' )
+  ax.set_title('Healthy')
+  ax.set_xlabel('')
+
+  ax = f.add_subplot( 1, 2, 2)
+  graphics.plot_cluster_hist( sp_hist[1], params, color='#245BFF' )
+  ax.set_title('Cancerous')
+  ax.set_xlabel('')
+  ax.set_ylabel('')
+  plt.suptitle('Cluster Sizes')
+  plt.tight_layout()
+  plt.savefig(os.path.join(path, 'specie_clusters.png'))
+  plt.show()
+  
 
 if __name__ == "__main__":
   if(len(sys.argv) < 2):
