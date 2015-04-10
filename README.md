@@ -1,17 +1,21 @@
+[![Documentation Status](https://readthedocs.org/projects/bcim/badge/?version=latest)](https://readthedocs.org/projects/bcim/?badge=latest)
+
 BCIM
 ====
-[![Documentation Status](https://readthedocs.org/projects/bcim/badge/?version=latest)](https://readthedocs.org/projects/bcim/?badge=latest)
+A brownian colloid simulator.
+
+BCIM is currently being developed to study the dynamics of coculture colloidal systems (namely cancerous-healthy cell systems).
+BCIM is designed to also address systems of many species where species have varying interactions between them. 
 
 Install
 =======
 
 (From documentation)
 
-BCIM's simulation portion is written in the `Julia`_ programming language.
+BCIM's simulation portion is written in the Julia programming language.
 It is built using a relatively recent release of the development build (``0.4``).
 It may work on the current stable release (``0.3.6``), though it has not been tested.
 
-.. _Julia: http://julialang.org/
 
 Intstalling Julia
 =================
@@ -20,9 +24,6 @@ The nightly build is recommended as development on BCIM is done on the developme
 release branch. Nightlies can be found on the `Julia download page`_. Better yet, 
 build julia from source using the directions on the `Julia github`_.
 
-.. _Julia download page: http://julialang.org/downloads/
-
-.. _Julia github: https://github.com/JuliaLang/julia#source-download-and-compilation
 
 Python
 ======
