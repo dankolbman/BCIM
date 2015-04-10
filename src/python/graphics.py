@@ -50,7 +50,7 @@ def plot_config(parts, params):
     ypos.append(part.x[1])
     zpos.append(part.x[2])
 
-  ax.scatter(xpos,ypos,zpos,c=cl, s=200, lw=0)
+  ax.scatter(xpos,ypos,zpos,c=cl, s=100, lw=0)
   plot_bounds(params, plt.gca())
   ax.set_xlim3d(-params["size"], params["size"])
   ax.set_ylim3d(-params["size"], params["size"])
@@ -69,11 +69,11 @@ def plot_bounds(params, axes):
   axes.plot_surface(x, y, z, rstride=4, cstride=4, color='b', alpha = 0.05,\
     linewidth=0)
 
-def plot_cluster_hist(hist, params, color=''):
+def plot_cluster_hist(hist, params, color='r'):
   plt.bar(range(len(hist)) , hist, color=color)
   plt.title('Cluster Sizes')
   plt.xlabel('Size of Cluster (Cells)')
   plt.ylabel('Number of Clusters')
-  plt.xlim(0,len(hist)+1)
+  plt.xlim(0,len(hist))
   plt.gcf().text( 0.7,0.8, '$\epsilon$ = {0}'.format(1.1), fontsize=18)
   

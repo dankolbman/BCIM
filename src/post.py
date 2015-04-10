@@ -149,33 +149,44 @@ def main(args):
   plt.savefig(os.path.join(path, 'configuration.png'))
   plt.show()
 
-  size_hist = clusters.cluster_scan(parts, params, eps=1.1)
+  # Cluster sizes
+
+  size_hist = clusters.size_hist(parts, params, eps=1.1)
   graphics.plot_cluster_hist( size_hist, params )
   plt.tight_layout()
   plt.savefig(os.path.join(path, 'clusters.png'))
   plt.show()
 
-  # Species clustering
-  sp_hist = clusters.specie_scan(parts, params, 1.1)
+  # Species cluster sizes
+  if True:
+    sp_hist = clusters.specie_size(parts, params, 1.1)
 
-  f = plt.figure( figsize=( 12,6 ) )
-  f.text(0.5, 0.04, 'Cluster Size (Cells)', ha='center', va='center')
+    f = plt.figure( figsize=( 12,6 ) )
+    f.text(0.5, 0.04, 'Cluster Size (Cells)', ha='center', va='center')
 
-  ax = f.add_subplot( 1, 2, 1)
-  graphics.plot_cluster_hist( sp_hist[0], params, color='#E82C2C' )
-  ax.set_title('Healthy')
-  ax.set_xlabel('')
+    ax = f.add_subplot( 1, 2, 1)
+    graphics.plot_cluster_hist( sp_hist[0], params, color='#E82C2C' )
+    ax.set_title('Healthy')
+    ax.set_xlabel('')
 
-  ax = f.add_subplot( 1, 2, 2)
-  graphics.plot_cluster_hist( sp_hist[1], params, color='#245BFF' )
-  ax.set_title('Cancerous')
-  ax.set_xlabel('')
-  ax.set_ylabel('')
-  plt.suptitle('Cluster Sizes')
+    ax = f.add_subplot( 1, 2, 2)
+    graphics.plot_cluster_hist( sp_hist[1], params, color='#245BFF' )
+    ax.set_title('Cancerous')
+    ax.set_xlabel('')
+    ax.set_ylabel('')
+    plt.suptitle('Cluster Sizes')
+    plt.tight_layout()
+    plt.savefig(os.path.join(path, 'specie_clusters.png'))
+    plt.show()
+
+  vel_hist = clusters.vel_hist( parts, params, eps=1.1 )
+  graphics.plot_cluster_hist( vel_hist, params )
+  plt.title('Cluster Speed')
+  plt.ylabel('Mean Speed')
   plt.tight_layout()
-  plt.savefig(os.path.join(path, 'specie_clusters.png'))
+  plt.savefig(os.path.join(path, 'cluster_speeds.png'))
   plt.show()
-  
+
 
 if __name__ == "__main__":
   if(len(sys.argv) < 2):
