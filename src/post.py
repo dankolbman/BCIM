@@ -108,6 +108,9 @@ def main(args):
   elif not os.path.exists(os.path.join(path, 'param_dim.dat')):
     raise IOError('There is no dimensionless parameter file in the specified \
                     directory')
+
+
+
   # Compute average msd
   avg_msd = averageMSD(path)
 
@@ -121,7 +124,50 @@ def main(args):
       params = DataIO.read_params(os.path.join(path, f))
       break
 
-  fig = plt.figure(dpi=72, figsize=( 10,8))
+  if False:
+
+    fig = plt.figure(dpi=72, figsize=( 12,3))
+
+    gs = gridspec.GridSpec(1,4)
+
+    ax = plt.subplot(gs[0], projection='3d')
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+    ax.set_zticklabels([])
+    parts = DataIO.read_parts(os.path.join(path, 'trial1/parts.dat'), 99)
+    graphics.plot_config(parts, params)
+
+    ax = plt.subplot(gs[1], projection='3d')
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+    ax.set_zticklabels([])
+    parts = DataIO.read_parts(os.path.join(path, 'trial1/parts.dat'), 80)
+    graphics.plot_config(parts, params)
+
+    ax = plt.subplot(gs[2], projection='3d')
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+    ax.set_zticklabels([])
+    parts = DataIO.read_parts(os.path.join(path, 'trial1/parts.dat'), 70)
+    graphics.plot_config(parts, params)
+
+    ax = plt.subplot(gs[3], projection='3d')
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+    ax.set_zticklabels([])
+    parts = DataIO.read_parts(os.path.join(path, 'trial1/parts.dat'), 1)
+    graphics.plot_config(parts, params)
+
+    #plt.suptitle('$\phi=0.40$')
+    #plt.tight_layout()
+    plt.savefig('configs.png')
+    plt.show()
+    exit()
+
+
+  gs = gridspec.GridSpec(5,2)
+
+  fig = plt.figure(dpi=72, figsize=( 8,6))
 
   ax = plt.subplot(gs[0:4, :])
   # MSD plot
@@ -158,12 +204,11 @@ def main(args):
   plt.show()
 
   # Species cluster sizes
-  if True:
+  if False:
     sp_hist = clusters.specie_size(parts, params, 1.1)
 
     f = plt.figure( figsize=( 12,6 ) )
     f.text(0.5, 0.04, 'Cluster Size (Cells)', ha='center', va='center')
-
     ax = f.add_subplot( 1, 2, 1)
     graphics.plot_cluster_hist( sp_hist[0], params, color='#E82C2C' )
     ax.set_title('Healthy')
@@ -174,7 +219,7 @@ def main(args):
     ax.set_title('Cancerous')
     ax.set_xlabel('')
     ax.set_ylabel('')
-    plt.suptitle('Cluster Sizes')
+    plt.suptitle('Contact Distance, $\epsilon=0.1\sigma$')
     plt.tight_layout()
     plt.savefig(os.path.join(path, 'specie_clusters.png'))
     plt.show()
@@ -186,7 +231,15 @@ def main(args):
   plt.tight_layout()
   plt.savefig(os.path.join(path, 'cluster_speeds.png'))
   plt.show()
+  
+#t, avg_size = clusters.cluster_time( os.path.join(path, 'trial1/parts.dat'), params )
 
+  #print(os.path.join( path,  'cluster_sizes.txt'))
+  #np.savetxt( os.path.join( path,  'cluster_sizes.txt'), np.column_stack( (t, avg_size) ))
+
+  #plt.plot(t, avg_size)
+  #plt.show()
+  
 
 if __name__ == "__main__":
   if(len(sys.argv) < 2):

@@ -17,8 +17,9 @@ def plot_msd(msd):
   """
   lines = ['x', '+']
   for i in range(1,len(msd[1,:])):
+    labels = [ 'Cancerous', 'Healthy' ]
     # Line
-    plt.plot(msd[:,0], msd[:,i], lines[i%2], label='Species %d'%i )
+    plt.plot(msd[:,0], msd[:,i], lines[i%2], label=labels[i%2] )
     # Current axes
     ax = plt.gcf().gca()
     # Linear fit
@@ -50,7 +51,7 @@ def plot_config(parts, params):
     ypos.append(part.x[1])
     zpos.append(part.x[2])
 
-  ax.scatter(xpos,ypos,zpos,c=cl, s=100, lw=0)
+  ax.scatter(xpos,ypos,zpos,c=cl, s=70, lw=0)
   plot_bounds(params, plt.gca())
   ax.set_xlim3d(-params["size"], params["size"])
   ax.set_ylim3d(-params["size"], params["size"])
@@ -75,5 +76,4 @@ def plot_cluster_hist(hist, params, color='r'):
   plt.xlabel('Size of Cluster (Cells)')
   plt.ylabel('Number of Clusters')
   plt.xlim(0,len(hist))
-  plt.gcf().text( 0.7,0.8, '$\epsilon$ = {0}'.format(1.1), fontsize=18)
   

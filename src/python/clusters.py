@@ -1,8 +1,35 @@
 """
 Cluster analysis
 """
+import os
 import numpy as np
 from sklearn.cluster import dbscan
+
+from .DataIO import read_parts
+
+def cluster_time( filen, params ):
+
+  t = []
+
+  with open(filen, 'r') as f:
+    ctime = ''
+    for line in f:
+      l = line.split()
+      if l[0] != ctime and line[0] !='#':
+        ctime = l[0]
+        t.append( float(l[0]) )
+
+  avg_size = np.zeros(len(t))
+  #avg_size = np.zeros(10)
+  
+  for i in range(1,len(t)):
+    parts = read_parts( os.path.join(filen), len(t)-i )
+    sizes = size_hist(parts, params)
+    #avg_size[i] = np.mean(sizes[1:])/sum(sizes[1:]) + 1
+    avg_size[i] = sum([ i*sizes[i]/sum(sizes[1:]) for i in range(1,len(sizes)) ])
+  return t, avg_size
+    
+
 
 def size_hist(parts, params, eps=1.0, sp=0):
   """
