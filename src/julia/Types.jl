@@ -17,6 +17,7 @@ type PhysicalConst
   prop::Array{Float64,1}
   rep::Array{Float64,1}
   adh::Array{Float64,1}
+  div::Array{Float64,1}
   contact::Float64
   dia::Float64
   npart::Array{Int64,1}
@@ -34,6 +35,7 @@ function PhysicalConst(
               prop::Array{Float64,1},
               rep::Array{Float64,1},
               adh::Array{Float64,1},
+              div::Array{Float64,1},
               contact::Float64,
               dia::Float64,
               npart::Array{Int64,1})
@@ -48,6 +50,7 @@ function PhysicalConst(
               prop,
               rep,
               adh,
+              div,
               contact,
               dia,
               npart,
@@ -65,6 +68,7 @@ type DimensionlessConst
   prop::Array{Float64,1}
   rep::Array{Float64,1}
   adh::Array{Float64,1}
+  div::Array{Float64,1}
   contact::Float64
   dia::Float64
   npart::Array{Int64,1}
@@ -78,7 +82,7 @@ type DimensionlessConst
   diffus::Float64
   pretrad::Float64
   prerotd::Float64
-  end
+end
 
 # Converts physical parameters to dimensionless parameters
 function DimensionlessConst(pc::PhysicalConst)
@@ -96,8 +100,10 @@ function DimensionlessConst(pc::PhysicalConst)
   adh = pc.adh
   pretrad = sqrt(2.0*diffus/dt)
   prerotd = sqrt(2.0*rotdiffus*dt)
+  div = pc.div/utime
 
-return DimensionlessConst( dt,
+  return DimensionlessConst(
+    dt,
     pc.phi,
     pc.eta,
     pc.temp,
@@ -105,6 +111,7 @@ return DimensionlessConst( dt,
     pc.prop,
     rep,
     adh,
+    div,
     contact,
     dia,
     pc.npart,
@@ -124,6 +131,8 @@ type Part
   pos::Array{Float64}
   vel::Array{Float64}
   ang::Array{Float64}
+  # Division counter (counts number of steps since last division)
+  div::Float64
   # The total square distance, used for msd
   sqd::Float64
   # The starting coordinate
@@ -134,9 +143,9 @@ type Part
   adh::Array{Float64}
   rep::Array{Float64}
   # Constructors
-  Part(id, sp, pos, vel, ang, sqd) = new(id, sp, pos, vel, ang, sqd, pos,
+  Part(id, sp, pos, vel, ang, div, sqd) = new(id, sp, pos, vel, ang, div, sqd, pos,
        [0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0])
-  Part(id, sp, pos, vel, ang) = new(id, sp, pos, vel, ang, 0.0, pos,
+  Part(id, sp, pos, vel, ang, div) = new(id, sp, pos, vel, ang, div, 0.0, pos,
        [0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0])
 end
 

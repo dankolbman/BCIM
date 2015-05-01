@@ -10,6 +10,7 @@ import numpy as np
 import python.DataIO as DataIO
 import python.graphics as graphics
 import python.clusters as clusters
+import python.counts as counts
 
 # Format settings
 from matplotlib import rc
@@ -201,6 +202,11 @@ def main(args):
   graphics.plot_cluster_hist( size_hist, params )
   plt.tight_layout()
   plt.savefig(os.path.join(path, 'clusters.png'))
+  plt.show()
+
+  # Cell counts
+  t, count = counts.counts( os.path.join(path, 'trial1/parts.dat'), params )
+  graphics.plot_counts(t, count, params)
   plt.show()
 
   # Species cluster sizes

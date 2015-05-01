@@ -33,7 +33,7 @@ function uniformSphere(dc::DimensionlessConst)
       u = 2*rand()-1
       phi = 2*pi*rand()
       xyz = [ lam*sqrt(1-u^2)*cos(phi), lam*sqrt(1-u^2)*sin(phi), lam*u ]
-      parts[pl] = Part(pl, sp, xyz, [0, 0, 0], 2*pi*rand(2)) 
+      parts[pl] = Part(pl, sp, xyz, [0, 0, 0], 2*pi*rand(2), rand()*dc.div[sp])
       pl += 1
     end
   end
@@ -110,6 +110,37 @@ function assignParts(s::System)
   end
 end
 
+# Logistic function with k = 5/div_time
+# Params:
+#   div_timer - the current timer on the particle
+#   div_time - the time to divide
+function div_prob( div_timer, div_time )
+  return 1/(1+exp(-10/div_time*(div_timer - div_time)))
+end
+
+function divide(s::System)
+  for p in s.parts
+    # Should the cell be divided
+    if rand() < div_prob( p.div, s.dimConst.div[p.sp] )
+      p.div = 0
+      part = deepcopy(p)
+      #append!(s.parts, part)
+      s.parts = [ s.parts, part ]
+      # Choose random direction to seperate in
+      thet = 2*pi*rand()
+      phi = 2*pi*rand()
+      # Seperate particles by one radius in given direction
+      d = s.dimConst.dia/2.0 *  [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
+      p.pos += d
+      part.pos += d
+      # NB don't worry about containment issues, will be taken care of later in step
+    else
+      p.div += 1
+    end
+  end 
+end
+
 function step(s::System)
+  divide(s::System)
   forceCalc(s::System)
 end

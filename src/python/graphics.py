@@ -76,4 +76,18 @@ def plot_cluster_hist(hist, params, color='r'):
   plt.xlabel('Size of Cluster (Cells)')
   plt.ylabel('Number of Clusters')
   plt.xlim(0,len(hist))
+
+def plot_counts(t, counts, params):
+  s0 = []
+  s1 = []
+  s2 = []
+  for time in range(len(counts[0])):
+    s0.append(counts[0][time] + counts[1][time])
+    s1.append(counts[0][time])
+    s2.append(counts[1][time])
+  plt.plot(t, s0, '--k', label='Total')
+  plt.plot(t, s1, 'r', label='Healthy')
+  plt.plot(t, s2, 'b', label='Cancerous')
+  plt.title('Cell Counts')
+  plt.legend(loc=2)
   
