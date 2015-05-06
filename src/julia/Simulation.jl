@@ -1,36 +1,32 @@
 type Simulation
-  id::Int64
   path::ASCIIString
   s::System
   dimConst::DimensionlessConst
   l::Log
+  Simulation(dir, s, dimConst, l) = new(nextPath(dir), s, dimConst, l)
 end
 
 # Initialize a simulation with given parameters and log file
-# Uses default folder names of 'trial{id}' inside the given dir
-# Finds the next available id in the given dir
 function Simulation(dir::ASCIIString, dc::DimensionlessConst, l::Log)
+  return Simulation(dir, Sphere(dc), dc, l)
+end
+
+# Uses default folder names of 'trial{id}' inside the given dir
+# Finds the next available id in the given dir and makes a path for it
+function nextPath(dir::ASCIIString)
   id = 1
   # Find next available id
   while ispath(joinpath(dir, "trial$id"))
     id += 1
   end
   path = joinpath(dir, "trial$id")
+  println(path)
   mkdir(path)
-
-  return Simulation(id, path, dc, l)
-  
-end
-
-function Simulation(id::Int64, path::ASCIIString, dc::DimensionlessConst, l::Log)
-  s = System(dc)
-  return Simulation(id, path, s, dc, l)
+  return path
 end
 
 # Runs the simulation for the desired time
 function run(sim::Simulation, r::Range{Int})
-
-
   nequil = first(r)-1
   freq = r.step
   nsteps = last(r)
@@ -86,6 +82,6 @@ function run(sim::Simulation, r::Range{Int})
 
   writeMSD(joinpath(sim.path,"msd"), avgmsd)
 
-  log(sim.l, "Finished trial $(sim.id) in $(toq()) seconds")
+  log(sim.l, "Finished trial in $(toq()) seconds")
 
 end

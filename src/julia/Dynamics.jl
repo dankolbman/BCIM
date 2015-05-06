@@ -4,7 +4,6 @@
 function forceCalc(s::System)
 
   for p in s.parts
-    
     #p.vel = [ 0.0, 0.0, 0.0 ]
     p.brn = [ 0.0, 0.0, 0.0 ]
     p.prp = [ 0.0, 0.0, 0.0 ]
