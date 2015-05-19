@@ -2,26 +2,26 @@
 # It saves all simulation results inside its path for each one of its trials
 
 type Experiment
-  path::ASCIIString
+  path::String
   trials::Array{Simulation,1}
   dimConst::DimensionlessConst
   l::Log
 end
 
-function Experiment(path::ASCIIString, ntrials::Int64, pc::PhysicalConst)
+function Experiment(path::String, ntrials::Int64, pc::PhysicalConst)
   dc = DimensionlessConst(pc)
   Experiment(path, ntrials, dc, true)
 end
 
 # Experiment from physical constant
-function Experiment(path::ASCIIString, ntrials::Int64, pc::PhysicalConst, timestamp::Bool)
+function Experiment(path::String, ntrials::Int64, pc::PhysicalConst, timestamp::Bool)
   dc = DimensionlessConst(pc)
   writeConstants(joinpath(path,"param.dat"), pc)
   return Experiment(path, ntrials, dc, timestamp)
 end
 
 # Default to a spherical system
-function Experiment(path::ASCIIString, ntrials::Int64, dc::DimensionlessConst, timestamp::Bool)
+function Experiment(path::String, ntrials::Int64, dc::DimensionlessConst, timestamp::Bool)
   return Experiment(path, ntrials, dc, Sphere(dc), timestamp)
 end
 
@@ -32,7 +32,7 @@ end
 #   dc - the dimensionless constants for the experiment
 #   s - the simulation system
 #   timestamp - whether or not to append a timestamp to experiment directory
-function Experiment(path::ASCIIString, ntrials::Int64, dc::DimensionlessConst, s::System, timestamp::Bool)
+function Experiment(path::String, ntrials::Int64, dc::DimensionlessConst, s::System, timestamp::Bool)
   if timestamp
     path = "$path-$(strftime("%m-%d-%y-%H%M", time()))"
   end

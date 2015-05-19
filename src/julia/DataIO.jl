@@ -11,7 +11,7 @@
 #   parts - particle species array
 #   t - time when data is being recorded
 #   spec - which species to write
-function writeParts(filen::ASCIIString, parts::Array{Part}, t=0.0, spec=0)
+function writeParts(filen::String, parts::Array{Part}, t=0.0, spec=0)
   # Make file structure if it doesn't exist
   if(!isdir(dirname(filen)))
     mkpath(dirname(filen))
@@ -26,7 +26,7 @@ end
 
 
 # Write physical parameters to file
-function writeConstants(path::ASCIIString, pc::PhysicalConst)
+function writeConstants(path::String, pc::PhysicalConst)
   f = open(path, "a")
   println(f, "dt\t$(pc.dt)")
   println(f, "phi\t$(pc.phi)")
@@ -37,6 +37,7 @@ function writeConstants(path::ASCIIString, pc::PhysicalConst)
   println(f, "prop\t$(pc.prop)")
   println(f, "rep\t$(pc.rep)")
   println(f, "adh\t$(pc.adh)")
+  println(f, "div\t$(pc.div)")
   println(f, "contact\t$(pc.contact)")
   println(f, "dia\t$(pc.dia)")
   println(f, "npart\t$(pc.npart)")
@@ -47,7 +48,7 @@ function writeConstants(path::ASCIIString, pc::PhysicalConst)
 end
 
 # Write dimensionless parameters to file
-function writeConstants(path::ASCIIString, dc::DimensionlessConst)
+function writeConstants(path::String, dc::DimensionlessConst)
   f = open(path, "a")
   println(f, "dt\t$(dc.dt)")
   println(f, "phi\t$(dc.phi)")
@@ -58,6 +59,7 @@ function writeConstants(path::ASCIIString, dc::DimensionlessConst)
   println(f, "prop\t$(dc.prop)")
   println(f, "rep\t$(dc.rep)")
   println(f, "adh\t$(dc.adh)")
+  println(f, "div\t$(dc.div)")
   println(f, "contact\t$(dc.contact)")
   println(f, "dia\t$(dc.dia)")
   println(f, "npart\t$(dc.npart)")
@@ -79,7 +81,7 @@ end
 # Params
 #   filen - the file to write to
 #   msd - msd data [ time msd... ]
-function writeMSD(filen::ASCIIString, msd)
+function writeMSD(filen::String, msd)
   if(!isdir(dirname(filen)))
     mkpath(dirname(filen))
   end
