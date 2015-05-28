@@ -4,8 +4,17 @@
 Examples
 **************
 
+Running
+*******
+
+To run a simulation like the example below, Julia must be invoked from the top
+level directory of the repository (where the ``src`` folder resides), a from
+a directory that is appropriate for the ``include`` statement to find the source
+files. 
+
 Quick Example
 **************
+
 
 The following can be found in ``examples/num_parts.jl`` in the source.
 It creates an experiment with three trials and runs each one. It then
