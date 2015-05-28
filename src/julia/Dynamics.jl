@@ -148,8 +148,10 @@ function adhF(dc::DimensionlessConst, p1::Part, p2::Part)
       end
       # Force vector
       f *= [ sin(thet)*cos(phi),  sin(thet)*sin(phi), cos(thet) ]
-      if( p1.sp == p2.sp == 1)
+      if( p1.sp == p2.sp)
         f *= dc.adh[p1.sp]
+      elseif( p1.sp != p2.sp )
+        f *= dc.adh[3]  # Inter species adhesion
       end
       p1.adh += f
       p2.adh -= f
