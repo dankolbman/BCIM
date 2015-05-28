@@ -5,6 +5,9 @@
 include("../src/julia/BCIM.jl")
 #using BCIM
 
+# Hack to allow asynchronous experiment runs
+sleep(rand()*10)
+
 # Our physical constants
 pc = BCIM.PhysicalConst(  1.0e-5,           # dt
                           # Packing fraction

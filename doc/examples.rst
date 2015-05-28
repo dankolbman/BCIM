@@ -14,6 +14,15 @@ files. The simulation can then be run by passing the script to Julia:
 
     julia examples/num_part.jl
 
+Running on a Cluster
+*******************
+
+Using slurm, many identical simulations can be run at once. The following will
+run the `adh.jl` script on 10 different cores with 2048Mb allocated on each.
+
+     srun -N 10 -t 2000 --mem-per-cpu=2048 julia runs/vary_params/adh.jl 
+
+
 
 Quick Example
 **************
